@@ -132,6 +132,19 @@ psql "$TARGET_DB_URL" -f backup/data.sql
 
 Rehearse a restore into staging once before go-live, and then quarterly.
 
+## Rotating keys
+
+| Secret | Where it lives | How to rotate |
+|---|---|---|
+| Publishable key | `lib/core/config/env.dart` (public by design) | Create a new key under Project Settings → API Keys, update `env.dart`, release, raise `min_app_build`, then disable the old key. |
+| Secret key | Only on the machine running `tools/bootstrap` | Not used at runtime. Revoke it after bootstrapping; edge functions get theirs from the platform automatically. |
+| `SUPABASE_DB_PASSWORD`, `SUPABASE_ACCESS_TOKEN` | GitHub environment secrets | Reset in the dashboard, then update the secret. |
+| `PUSH_WEBHOOK_SECRET` | Function secret **and** Vault `push_webhook_secret` | Update both together (`supabase secrets set …` and `vault.update_secret`). Pushes fail closed in between. |
+| `FCM_SERVICE_ACCOUNT` | Function secret | Generate a new key in Firebase, `supabase secrets set`, then delete the old key in Google Cloud IAM. |
+| Android keystore | GitHub secrets + password manager | **Cannot be rotated** without every phone reinstalling. Protect it; never regenerate. |
+
+If a staff phone is lost, set the user to *suspended* in-app. Every request from that session is then refused immediately.
+
 ## Free-tier limits to watch
 
 | Limit | Mitigation |
