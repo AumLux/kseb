@@ -134,6 +134,12 @@ class MorePage extends ConsumerWidget {
                 onTap: () => context.go(Routes.org),
               ),
           ],
+          if (user.role.atLeast(AppRole.manager))
+            AppListRow(
+              leading: const Icon(Icons.gavel_rounded, color: AppColors.inkMute),
+              title: l10n.comTitle,
+              onTap: () => context.go(Routes.commercial),
+            ),
           SectionHeader(l10n.regSection),
           AppListRow(
             leading: const Icon(Icons.inventory_2_rounded, color: AppColors.inkMute),
