@@ -503,5 +503,111 @@
   "incNone": "No incidents",
   "incStatusOpen": "Open",
   "incStatusInvestigating": "Investigating",
-  "incStatusClosed": "Closed"
+  "incStatusClosed": "Closed",
+  "invTitle": "Inventory",
+  "invStock": "Stock",
+  "invRequests": "Requests",
+  "invSearch": "Search material or code",
+  "invAllStores": "All stores",
+  "invLowOnly": "Low stock only",
+  "invOnHand": "On hand",
+  "invReorderAt": "Reorder at {qty}",
+  "@invReorderAt": {
+    "placeholders": {
+      "qty": {
+        "type": "String"
+      }
+    }
+  },
+  "invLow": "Low",
+  "invNoStock": "No stock recorded yet",
+  "invNoStockHint": "Stock appears after the first approved receipt.",
+  "invNewRequest": "New request",
+  "invReqIssue": "Issue (take from store)",
+  "invReqReturn": "Return (unused to store)",
+  "invReqReceipt": "Receipt (new stock in)",
+  "invTypeIssue": "Issue",
+  "invTypeReturn": "Return",
+  "invTypeReceipt": "Receipt",
+  "invStore": "Store",
+  "invMaterial": "Material",
+  "invQuantity": "Quantity",
+  "invQtyInvalid": "Enter a quantity above zero",
+  "invAvailable": "Available: {qty}",
+  "@invAvailable": {
+    "placeholders": {
+      "qty": {
+        "type": "String"
+      }
+    }
+  },
+  "invUnitPrice": "Unit price (₹)",
+  "invSupplier": "Supplier",
+  "invInvoice": "Invoice / DC no.",
+  "invWorksheet": "For worksheet",
+  "invNoWorksheet": "Not linked to a worksheet",
+  "invPurpose": "Purpose",
+  "invPriority": "Priority",
+  "invPriorityLow": "Low",
+  "invPriorityMedium": "Medium",
+  "invPriorityHigh": "High",
+  "invPriorityCritical": "Critical",
+  "invRequiredBy": "Required by",
+  "invSubmit": "Send request",
+  "invRequestSent": "Request sent for approval",
+  "invRequestsEmpty": "No material requests",
+  "invMineFilter": "Mine",
+  "invToDecide": "To decide",
+  "invAllFilter": "All",
+  "invRequestDetail": "Material request",
+  "invRequestedBy": "Requested by",
+  "invDecidedBy": "Decided by",
+  "invCancelRequest": "Cancel request",
+  "invCancelConfirm": "Cancel this request?",
+  "invLedger": "Stock movements",
+  "invLedgerEmpty": "No movements yet",
+  "invAdjust": "Adjust stock",
+  "invAdjustHelp": "Use a positive number to add, negative to remove (physical count correction).",
+  "invScrap": "Record as scrap",
+  "invTransfer": "Transfer",
+  "invFromStore": "From store",
+  "invToStore": "To store",
+  "invCatalog": "Material catalogue",
+  "invAddMaterial": "Add material",
+  "invCode": "Code",
+  "invName": "Name",
+  "invCategory": "Category",
+  "invUnit": "Unit",
+  "invHsn": "HSN code",
+  "invReorderLevel": "Reorder level",
+  "invStores": "Stores",
+  "invAddStore": "Add store",
+  "invStoreName": "Store name",
+  "invMaterialsUsed": "Materials",
+  "invMaterialsUsedEmpty": "No materials issued for this job yet",
+  "invIssued": "Issued {qty}",
+  "@invIssued": {
+    "placeholders": {
+      "qty": {
+        "type": "String"
+      }
+    }
+  },
+  "invReturned": "Returned {qty}",
+  "@invReturned": {
+    "placeholders": {
+      "qty": {
+        "type": "String"
+      }
+    }
+  },
+  "invRequestForJob": "Request material",
+  "invExportRegister": "Stock register",
+  "invTxnReceipt": "Receipt",
+  "invTxnIssue": "Issue",
+  "invTxnReturn": "Return",
+  "invTxnAdjustment": "Adjustment",
+  "invTxnTransferIn": "Transfer in",
+  "invTxnTransferOut": "Transfer out",
+  "invTxnScrap": "Scrap"
 }

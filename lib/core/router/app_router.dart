@@ -10,6 +10,10 @@ import '../../features/auth/presentation/change_password_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
 import '../../features/home/home_page.dart';
+import '../../features/inventory/presentation/catalog_pages.dart';
+import '../../features/inventory/presentation/inventory_page.dart';
+import '../../features/inventory/presentation/material_request_detail_page.dart';
+import '../../features/inventory/presentation/material_request_form_page.dart';
 import '../../features/leave/leave.dart';
 import '../../features/more/more_page.dart';
 import '../../features/more/sync_queue_page.dart';
@@ -40,6 +44,7 @@ abstract final class Routes {
   static const holidays = '/more/holidays';
   static const approvals = '/home/approvals';
   static const leave = '/attendance/leave';
+  static const inventory = '/more/inventory';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -143,6 +148,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
                 GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
                 GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
+                GoRoute(
+                  path: 'inventory',
+                  builder: (_, __) => const InventoryPage(),
+                  routes: [
+                    GoRoute(
+                      path: 'new',
+                      builder: (_, s) => MaterialRequestFormPage(worksheetId: s.uri.queryParameters['worksheet']),
+                    ),
+                    GoRoute(
+                      path: 'requests/:id',
+                      builder: (_, s) => MaterialRequestDetailPage(id: s.pathParameters['id']!),
+                    ),
+                    GoRoute(path: 'catalog', builder: (_, __) => const CatalogPage()),
+                    GoRoute(path: 'stores', builder: (_, __) => const StoresPage()),
+                  ],
+                ),
               ],
             ),
           ]),
