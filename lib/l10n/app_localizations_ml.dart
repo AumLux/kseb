@@ -1996,4 +1996,58 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get comPdfTooLarge => 'ഈ PDF 10 MB-യിൽ കൂടുതലാണ്.';
+
+  @override
+  String get notifTitle => 'അറിയിപ്പുകൾ';
+
+  @override
+  String get notifEmpty => 'പുതിയ അറിയിപ്പുകളില്ല';
+
+  @override
+  String get notifMarkAll => 'എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക';
+
+  @override
+  String get notifChannelName => 'AumLux അപ്ഡേറ്റുകൾ';
+
+  @override
+  String get notifChannelDescription =>
+      'അംഗീകാരങ്ങൾ, മുന്നറിയിപ്പുകൾ, ഓർമ്മപ്പെടുത്തലുകൾ';
+
+  @override
+  String get bonusTitle => 'ബോണസ്';
+
+  @override
+  String get bonusMyTotal => 'എനിക്ക് അംഗീകരിച്ച ബോണസ്';
+
+  @override
+  String get bonusPoints => 'പോയിന്റുകൾ';
+
+  @override
+  String get bonusAmount => 'തുക';
+
+  @override
+  String get bonusPropose => 'ബോണസ് ശുപാർശ ചെയ്യുക';
+
+  @override
+  String get bonusFor => 'ആർക്ക്';
+
+  @override
+  String get bonusReason => 'കാരണം';
+
+  @override
+  String get bonusReasonHint =>
+      'ഉദാ. കൊടുങ്കാറ്റിന് ശേഷമുള്ള പുനഃസ്ഥാപന ഓവർടൈം, ഒക്ടോ 14–15';
+
+  @override
+  String get bonusNeedValue => 'പോയിന്റോ തുകയോ നൽകുക';
+
+  @override
+  String get bonusProposed => 'അംഗീകാരത്തിനായി ബോണസ് ശുപാർശ ചെയ്തു';
+
+  @override
+  String get bonusEmpty => 'ഇതുവരെ ബോണസ് രേഖകളില്ല';
+
+  @override
+  String get bonusPendingNote =>
+      'ബോണസ് അംഗീകരിക്കുന്നത് സി.ഒ.ഒ അല്ലെങ്കിൽ ഡയറക്ടർ ആണ്.';
 }
