@@ -37,6 +37,8 @@ class _Gps implements LocationService {
   _Gps({this.failure});
   final AppFailure? failure;
   @override
+  Future<bool> permissionUndecided() async => false;
+  @override
   Future<CapturedLocation> current() async {
     if (failure != null) throw failure!;
     return const CapturedLocation(lat: 9.9943, lng: 76.2999, accuracyM: 8, isMocked: false);

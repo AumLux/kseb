@@ -5,7 +5,7 @@
 | Staging | `dtficnziewtaplbqoofn` | `staging` |
 | Production | `zjgqpyiceqofubjbevtv` | `releases` |
 
-Both run on the Supabase **free tier**. Firebase is kept only for FCM push and Crashlytics, which are free on Spark.
+Both run on the Supabase **free tier**. Firebase is kept only for FCM push, which is free on Spark. Crash reports go to our own `client_errors` table, so no extra service is needed.
 
 ## Layout
 
@@ -30,6 +30,8 @@ Every table has RLS and **no default grants**. Reads are scoped by the caller's 
    - `SUPABASE_ACCESS_TOKEN`: a personal access token from supabase.com/dashboard/account/tokens.
    - `SUPABASE_DB_PASSWORD`: that project's database password.
    - `BACKUP_PASSPHRASE` (production only): a long random passphrase for the encrypted nightly backups. Store it in the company password manager too; without it, backups can't be restored.
+
+   Also add these **repository** secrets for Android release signing (see [Android releases](#android-releases)): `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
 2. **Supabase dashboard → Authentication → Providers → Email.** Turn off "Allow new users to sign up" and "Confirm email". The `config.toml` values only apply to the local stack.
 3. Push to `staging`. The `Supabase` workflow runs the tests, applies migrations plus the sample seed, and deploys functions.
 4. **Bootstrap the first Director** (once per project):
@@ -44,18 +46,55 @@ Every table has RLS and **no default grants**. Reads are scoped by the caller's 
 
 In-app notifications (the bell, kept live by Realtime) work without any setup. To also deliver them to phones through FCM:
 
-1. **Firebase console → Project settings → Service accounts → Generate new private key.** Then:
+1. **Register the Android app.** The package is now `com.aumlux.app` (it was `com.example.kseb`), so FCM needs a matching Firebase app. Add an Android app with that package in the Firebase console, then from the repo root run:
+   ```bash
+   flutterfire configure --project=<firebase-project-id> --platforms=android,web
+   ```
+   This rewrites `lib/firebase_options.dart` and `android/app/google-services.json`. Re-add the Google Services Gradle plugin only if you need it; `firebase_options.dart` is enough for FCM. Until this is done, push initialisation fails quietly and everything else works.
+2. **Firebase console → Project settings → Service accounts → Generate new private key.** Then:
    ```bash
    supabase secrets set --project-ref <ref> FCM_SERVICE_ACCOUNT="$(cat service-account.json)" PUSH_WEBHOOK_SECRET=<long random string>
    ```
-2. In the SQL editor of the same project:
+3. In the SQL editor of the same project:
    ```sql
    select vault.create_secret('https://<ref>.supabase.co/functions/v1/push', 'push_function_url');
    select vault.create_secret('<the same long random string>', 'push_webhook_secret');
    ```
-3. The Android app registers its FCM token after sign-in and unregisters it on sign-out. Tapping a notification opens the linked screen.
+4. The Android app registers its FCM token after sign-in and unregisters it on sign-out. Tapping a notification opens the linked screen.
 
 Without these secrets, the database trigger is a no-op and nothing else is affected.
+
+## Android releases
+
+The `Aumlux Release Cycle` workflow (`deploy-aumlux.yml`) runs as follows:
+
+| Event | What happens |
+|---|---|
+| PR | `flutter analyze` and `flutter test` |
+| Push to `staging` | Tests, then **two** builds from the same commit: a *staging* site (staging project) and a *production* site (production project, `--dart-define=AUMLUX_ENV=production`). Both are kept as artifacts. |
+| Push to `releases` | Promotes the **production** artifact of the latest green staging run to GitHub Pages (`aumlux.simplewebsite.in`): web app at `/web/`, APK at `/downloads/aumlux.apk`. |
+
+What ships is exactly what was tested on staging, and a staging-pointed build can never reach production (the deploy step checks `environment=production`).
+
+**Signing.** Create the release keystore once and keep it, together with its passwords, in the company password manager. If the key is lost, installed apps can't be updated; every phone would need an uninstall.
+```bash
+keytool -genkeypair -v -keystore aumlux-release.jks -alias aumlux -keyalg RSA -keysize 4096 -validity 10000
+base64 -w0 aumlux-release.jks   # → ANDROID_KEYSTORE_BASE64
+```
+Production builds that come out debug-signed fail the workflow. For a local release build, create `android/key.properties` (gitignored) with `storeFile`, `storePassword`, `keyAlias` and `keyPassword`.
+
+**Build numbers** are `1000 + run number`, so each CI build installs over the last one. To force everyone onto a build (for example after a breaking schema change), set the minimum in the production SQL editor:
+```sql
+update public.app_settings set value = '1057' where key = 'min_app_build';
+```
+Older Android builds then show "Update required" with a download button. Unsynced outbox items stay on the phone and sync after updating. The web app is always current.
+
+## Crash reports
+
+Release builds send uncaught errors to `public.client_errors`: app version, platform, message, stack, signed-in user. Only the COO and Director can read them. Each session caps and de-duplicates its reports, and rows older than 60 days are purged weekly.
+```sql
+select created_at, app_version, platform, message from public.client_errors order by created_at desc limit 50;
+```
 
 ## Accounts and sign-in
 
