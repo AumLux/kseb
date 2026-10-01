@@ -127,17 +127,17 @@ class _DashboardBody extends StatelessWidget {
       if (dashboard.has('low_stock_items'))
         (label: l10n.kpiLowStock, value: Fmt.qty(dashboard.number('low_stock_items')), icon: Icons.inventory_2_rounded, route: Routes.inventory),
       if (dashboard.has('active_work_orders'))
-        (label: l10n.kpiActiveWorkOrders, value: Fmt.qty(dashboard.number('active_work_orders')), icon: Icons.description_rounded, route: null),
+        (label: l10n.kpiActiveWorkOrders, value: Fmt.qty(dashboard.number('active_work_orders')), icon: Icons.description_rounded, route: Routes.commercial),
       if (dashboard.has('open_tenders'))
-        (label: l10n.kpiOpenTenders, value: Fmt.qty(dashboard.number('open_tenders')), icon: Icons.gavel_rounded, route: null),
+        (label: l10n.kpiOpenTenders, value: Fmt.qty(dashboard.number('open_tenders')), icon: Icons.gavel_rounded, route: Routes.commercial),
       if (dashboard.has('deposits_held'))
-        (label: l10n.kpiDepositsHeld, value: Fmt.moneyCompact(dashboard.number('deposits_held')), icon: Icons.account_balance_rounded, route: null),
+        (label: l10n.kpiDepositsHeld, value: Fmt.moneyCompact(dashboard.number('deposits_held')), icon: Icons.account_balance_rounded, route: Routes.commercial),
       if (dashboard.has('deposits_expiring_30d'))
-        (label: l10n.kpiDepositsExpiring, value: Fmt.qty(dashboard.number('deposits_expiring_30d')), icon: Icons.timer_rounded, route: null),
+        (label: l10n.kpiDepositsExpiring, value: Fmt.qty(dashboard.number('deposits_expiring_30d')), icon: Icons.timer_rounded, route: Routes.commercial),
       if (dashboard.has('receivables_outstanding'))
-        (label: l10n.kpiReceivables, value: Fmt.moneyCompact(dashboard.number('receivables_outstanding')), icon: Icons.request_quote_rounded, route: null),
+        (label: l10n.kpiReceivables, value: Fmt.moneyCompact(dashboard.number('receivables_outstanding')), icon: Icons.request_quote_rounded, route: Routes.commercial),
       if (dashboard.has('receivables_over_90d'))
-        (label: l10n.kpiReceivables90, value: Fmt.moneyCompact(dashboard.number('receivables_over_90d')), icon: Icons.warning_amber_rounded, route: null),
+        (label: l10n.kpiReceivables90, value: Fmt.moneyCompact(dashboard.number('receivables_over_90d')), icon: Icons.warning_amber_rounded, route: Routes.commercial),
     ];
 
     return Column(

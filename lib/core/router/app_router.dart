@@ -9,6 +9,7 @@ import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/change_password_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
+import '../../features/commercial/entity_pages.dart';
 import '../../features/home/home_page.dart';
 import '../../features/inventory/presentation/catalog_pages.dart';
 import '../../features/inventory/presentation/inventory_page.dart';
@@ -49,6 +50,7 @@ abstract final class Routes {
   static const inventory = '/more/inventory';
   static const poles = '/more/poles';
   static const assets = '/more/assets';
+  static const commercial = '/more/commercial';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -152,6 +154,29 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
                 GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
                 GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
+                GoRoute(
+                  path: 'commercial',
+                  builder: (_, __) => const CommercialHomePage(),
+                  routes: [
+                    GoRoute(
+                      path: ':entity',
+                      builder: (_, s) => EntityListPage(entityKey: s.pathParameters['entity']!),
+                      routes: [
+                        GoRoute(path: 'new', builder: (_, s) => EntityFormPage(entityKey: s.pathParameters['entity']!)),
+                        GoRoute(
+                          path: ':id',
+                          builder: (_, s) => EntityDetailPage(entityKey: s.pathParameters['entity']!, id: s.pathParameters['id']!),
+                          routes: [
+                            GoRoute(
+                              path: 'edit',
+                              builder: (_, s) => EntityFormPage(entityKey: s.pathParameters['entity']!, id: s.pathParameters['id']),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'poles',
                   builder: (_, __) => const PolesPage(),
