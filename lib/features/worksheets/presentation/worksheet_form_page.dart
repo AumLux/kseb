@@ -108,6 +108,21 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
     }
 
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton(
+                    label: l10n.wsSaveSubmit,
+                    icon: Icons.send_rounded,
+                    expand: true,
+                    loading: _busy == 'submit',
+                    onPressed: _busy == null ? () => _save(submit: true) : null,
+                  ),
+        AppButton.secondary(
+                    label: l10n.wsSaveDraft,
+                    expand: true,
+                    loading: _busy == 'draft',
+                    onPressed: _busy == null ? () => _save(submit: false) : null,
+                  ),
+      ]),
       appBar: AppBar(title: Text(_isEdit ? l10n.wsEdit : l10n.wsNew)),
       body: SafeArea(
         child: Align(
@@ -191,22 +206,7 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
                     minLines: 2,
                     textCapitalization: TextCapitalization.sentences,
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  AppButton(
-                    label: l10n.wsSaveSubmit,
-                    icon: Icons.send_rounded,
-                    expand: true,
-                    loading: _busy == 'submit',
-                    onPressed: _busy == null ? () => _save(submit: true) : null,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  AppButton.secondary(
-                    label: l10n.wsSaveDraft,
-                    expand: true,
-                    loading: _busy == 'draft',
-                    onPressed: _busy == null ? () => _save(submit: false) : null,
-                  ),
-                ],
+],
               ),
             ),
           ),

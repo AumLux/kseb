@@ -4255,6 +4255,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pole location'**
   String get poleMapLocation;
+
+  /// No description provided for @commonDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get commonDetails;
+
+  /// No description provided for @invValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get invValue;
+
+  /// No description provided for @commonOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get commonOpen;
+
+  /// No description provided for @moreApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get moreApp;
 }
 
 class _AppLocalizationsDelegate

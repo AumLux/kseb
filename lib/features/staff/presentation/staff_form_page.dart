@@ -140,6 +140,13 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
     final needsSection = _role != null && !_role!.isExecutive;
 
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton.tertiary(
+                        label: l10n.staffCodeUseAuto,
+                        icon: Icons.auto_awesome_rounded,
+                        onPressed: () => setState(() => _autoCode = true),
+                      ),
+      ]),
       appBar: AppBar(title: Text(_isEdit ? l10n.staffEditTitle : l10n.staffNewTitle)),
       body: SafeArea(
         child: Align(
@@ -177,12 +184,7 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                   if (!_isEdit)
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: AppButton.tertiary(
-                        label: l10n.staffCodeUseAuto,
-                        icon: Icons.auto_awesome_rounded,
-                        onPressed: () => setState(() => _autoCode = true),
-                      ),
-                    ),
+),
                   ],
                   const SizedBox(height: AppSpacing.lg),
                   AppTextField(
@@ -300,9 +302,19 @@ class _AutoCodeField extends ConsumerWidget {
               },
               const SizedBox(height: AppSpacing.xxs),
               Text(l10n.staffCodeAutoHelper, style: AppTypography.caption),
+              // Below, not beside: the Malayalam label is long.
+              TextButton(
+                onPressed: onCustom,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 40),
+                  tapTargetSize: MaterialTapTargetSize.padded,
+                  alignment: Alignment.centerLeft,
+                ),
+                child: Text(l10n.staffCodeUseCustom),
+              ),
             ]),
           ),
-          TextButton(onPressed: onCustom, child: Text(l10n.staffCodeUseCustom)),
         ]),
       ),
     ]);

@@ -151,6 +151,7 @@ class _StockTabState extends ConsumerState<_StockTab> {
           itemBuilder: (context, i) {
             final s = lines[i];
             return AppListRow(
+              leading: IconTile(Icons.inventory_2_rounded, color: s.lowStock ? AppColors.warning : AppColors.info),
               title: s.materialName,
               subtitle: '${s.materialCode} · ${s.storeName}',
               trailing: Column(
@@ -308,6 +309,8 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
                     itemBuilder: (context, i) {
                       final e = value[i];
                       return AppListRow(
+                        leading: IconTile(e.qtyDelta > 0 ? Icons.south_west_rounded : Icons.north_east_rounded,
+                            color: e.qtyDelta > 0 ? AppColors.success : AppColors.danger),
                         title: txnLabel(l10n, e.txnType),
                         subtitle: [Fmt.dateTime(e.createdAt), ?e.note].join(' · '),
                         trailing: Text(
@@ -460,6 +463,11 @@ class _RequestsTabState extends ConsumerState<_RequestsTab> {
                   itemBuilder: (context, i) {
                     final r = list[i];
                     return AppListRow(
+                      leading: IconTile(switch (r.type.name) {
+                        'receipt' => Icons.move_to_inbox_rounded,
+                        'issue' => Icons.outbox_rounded,
+                        _ => Icons.assignment_return_rounded,
+                      }, color: AppColors.info),
                       title: '${requestTypeLabel(l10n, r.type)} · ${r.materialName}',
                       subtitle: [r.code, Fmt.qty(r.quantity, unit: r.unit), r.storeName].join(' · '),
                       trailing: requestChip(l10n, r.status),

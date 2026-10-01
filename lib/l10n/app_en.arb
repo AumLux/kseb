@@ -936,5 +936,9 @@
   "photoRecovered": "Recovered the photo you took before the app closed",
   "photoGpsTagged": "GPS tagged",
   "wsMapLocation": "Worksite location",
-  "poleMapLocation": "Pole location"
+  "poleMapLocation": "Pole location",
+  "commonDetails": "Details",
+  "invValue": "Value",
+  "commonOpen": "Open",
+  "moreApp": "App"
 }

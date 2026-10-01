@@ -100,6 +100,7 @@ class BonusPage extends ConsumerWidget {
             else
               for (final e in value)
                 AppListRow(
+                  leading: const IconTile(Icons.card_giftcard_rounded, color: AppColors.brandOrangeInk),
                   title: e.reason,
                   subtitle: [
                     if (e.userId != me.id) people.where((p) => p.id == e.userId).firstOrNull?.fullName ?? '—',

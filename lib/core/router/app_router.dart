@@ -96,12 +96,18 @@ class _SessionListenable extends ChangeNotifier {
   void notify() => notifyListeners();
 }
 
+/// The app-wide navigator. Sub-screens (details, forms, registers) open on
+/// it, full-screen above the tab bar, so they get the whole screen and a
+/// pinned primary action; tab roots stay in the shell.
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _SessionListenable();
   ref.listen(sessionProvider, (_, __) => refresh.notify());
   ref.onDispose(refresh.dispose);
 
   final router = GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: Routes.splash,
     refreshListenable: refresh,
     redirect: (context, state) => resolveRedirect(
@@ -134,8 +140,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: Routes.home,
               builder: (_, __) => const HomePage(),
               routes: [
-                GoRoute(path: 'approvals', builder: (_, __) => const ApprovalsPage()),
-                GoRoute(path: 'notifications', builder: (_, __) => const NotificationsPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'approvals', builder: (_, __) => const ApprovalsPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'notifications', builder: (_, __) => const NotificationsPage()),
               ],
             ),
           ]),
@@ -143,7 +149,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: Routes.attendance,
               builder: (_, __) => const AttendancePage(),
-              routes: [GoRoute(path: 'leave', builder: (_, __) => const LeavePage())],
+              routes: [GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'leave', builder: (_, __) => const LeavePage())],
             ),
           ]),
           StatefulShellBranch(restorationScopeId: 'branch3', routes: [
@@ -151,8 +157,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: Routes.work,
               builder: (_, __) => const WorksheetsPage(),
               routes: [
-                GoRoute(path: 'new', builder: (_, __) => const WorksheetFormPage()),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, __) => const WorksheetFormPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: ':id',
                   builder: (_, s) => WorksheetDetailPage(id: s.pathParameters['id']!),
                   routes: [
@@ -167,8 +173,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: Routes.more,
               builder: (_, __) => const MorePage(),
               routes: [
-                GoRoute(path: 'sync', builder: (_, __) => const SyncQueuePage()),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'sync', builder: (_, __) => const SyncQueuePage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: 'staff',
                   builder: (_, __) => const StaffListPage(),
                   routes: [
@@ -185,11 +191,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
-                GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
-                GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
-                GoRoute(path: 'bonus', builder: (_, __) => const BonusPage()),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'teams', builder: (_, __) => const TeamsPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'org', builder: (_, __) => const OrgPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'holidays', builder: (_, __) => const HolidaysPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'bonus', builder: (_, __) => const BonusPage()),
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: 'commercial',
                   builder: (_, __) => const CommercialHomePage(),
                   routes: [
@@ -212,7 +218,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: 'poles',
                   builder: (_, __) => const PolesPage(),
                   routes: [
@@ -224,7 +230,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: 'assets',
                   builder: (_, __) => const AssetsPage(),
                   routes: [
@@ -236,7 +242,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                GoRoute(
+                GoRoute(parentNavigatorKey: rootNavigatorKey, 
                   path: 'inventory',
                   builder: (_, __) => const InventoryPage(),
                   routes: [

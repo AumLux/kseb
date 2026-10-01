@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/connectivity/connectivity_provider.dart';
 import 'core/design/design.dart';
 import 'core/l10n/l10n.dart';
 import 'core/l10n/locale_controller.dart';
@@ -65,9 +66,23 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
       builder: (context, child) {
         if (ref.watch(updateRequiredProvider)) return const UpdateRequiredPage();
         final minutes = ref.watch(appSettingsProvider).value?.idleTimeoutMinutes ?? 15;
+        final online = ref.watch(onlineProvider).value ?? true;
+        final page = child ?? const SizedBox.shrink();
         return IdleGuard(
           timeoutMinutes: minutes,
-          child: child ?? const SizedBox.shrink(),
+          // App-level, so full-screen pages (forms, details) show it too.
+          child: online
+              ? page
+              : Column(children: [
+                  Material(
+                    color: AppColors.warningBg,
+                    child: SafeArea(
+                      bottom: false,
+                      child: OfflineBanner(message: AppLocalizations.of(context).offlineBanner),
+                    ),
+                  ),
+                  Expanded(child: MediaQuery.removePadding(context: context, removeTop: true, child: page)),
+                ]),
         );
       },
     );

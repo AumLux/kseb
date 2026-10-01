@@ -80,88 +80,104 @@ class _MaterialRequestDetailPageState extends ConsumerState<MaterialRequestDetai
     final canDecide = pending && r.requestedBy != me.id && requester != null && me.role.outranks(requester.role);
     final canCancel = pending && r.requestedBy == me.id;
 
-    Widget fact(String label, String? value) =>
-        value == null || value.isEmpty ? const SizedBox.shrink() : AppListRow(title: value, subtitle: label);
+    final actions = <Widget>[
+      if (canDecide)
+        Row(children: [
+          Expanded(
+            child: AppButton.secondary(
+              label: l10n.approvalsReject,
+              loading: _busy == 'reject',
+              onPressed: _busy != null
+                  ? null
+                  : () async {
+                      final note = await _reason();
+                      if (note != null) {
+                        await _run('reject', () => ref.read(inventoryRepositoryProvider).decide(r.id, false, note: note));
+                      }
+                    },
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: AppButton(
+              label: l10n.approvalsApprove,
+              loading: _busy == 'approve',
+              onPressed: _busy != null
+                  ? null
+                  : () => _run('approve', () => ref.read(inventoryRepositoryProvider).decide(r.id, true)),
+            ),
+          ),
+        ])
+      else if (canCancel)
+        AppButton.secondary(
+          label: l10n.invCancelRequest,
+          expand: true,
+          loading: _busy == 'cancel',
+          onPressed: _busy != null
+              ? null
+              : () async {
+                  if (await confirmAction(context, message: l10n.invCancelConfirm, confirmLabel: l10n.invCancelRequest)) {
+                    await _run('cancel', () => ref.read(inventoryRepositoryProvider).cancel(r.id));
+                  }
+                },
+        ),
+    ];
 
-    return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
+    final list = ListView(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xxxl),
       children: [
-        Container(
-          color: AppColors.canvas,
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Wrap(spacing: AppSpacing.sm, children: [
+        FadeSlideIn(
+          child: DetailHeader(
+            icon: switch (r.type.name) {
+              'receipt' => Icons.move_to_inbox_rounded,
+              'issue' => Icons.outbox_rounded,
+              _ => Icons.assignment_return_rounded,
+            },
+            iconColor: AppColors.info,
+            title: r.materialName,
+            subtitle: [r.code, requestTypeLabel(l10n, r.type)].join(' · '),
+            status: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
               requestChip(l10n, r.status),
-              StatusChip(label: requestTypeLabel(l10n, r.type), tone: StatusTone.brand, dense: true),
               if (r.priority.index >= Priority.high.index)
                 StatusChip(label: priorityLabel(l10n, r.priority), tone: StatusTone.danger, dense: true),
             ]),
-            const SizedBox(height: AppSpacing.sm),
-            Text(r.materialName, style: AppTypography.title),
-            Text(Fmt.qty(r.quantity, unit: r.unit), style: AppTypography.kpi),
-          ]),
+          ),
         ),
-        if (canDecide || canCancel)
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: canDecide
-                ? Row(children: [
-                    Expanded(
-                      child: AppButton.secondary(
-                        label: l10n.approvalsReject,
-                        loading: _busy == 'reject',
-                        onPressed: _busy != null
-                            ? null
-                            : () async {
-                                final note = await _reason();
-                                if (note != null) {
-                                  await _run('reject', () => ref.read(inventoryRepositoryProvider).decide(r.id, false, note: note));
-                                }
-                              },
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: AppButton(
-                        label: l10n.approvalsApprove,
-                        loading: _busy == 'approve',
-                        onPressed: _busy != null
-                            ? null
-                            : () => _run('approve', () => ref.read(inventoryRepositoryProvider).decide(r.id, true)),
-                      ),
-                    ),
-                  ])
-                : AppButton.secondary(
-                    label: l10n.invCancelRequest,
-                    expand: true,
-                    loading: _busy == 'cancel',
-                    onPressed: _busy != null
-                        ? null
-                        : () async {
-                            if (await confirmAction(context,
-                                message: l10n.invCancelConfirm, confirmLabel: l10n.invCancelRequest)) {
-                              await _run('cancel', () => ref.read(inventoryRepositoryProvider).cancel(r.id));
-                            }
-                          },
-                  ),
+        const SizedBox(height: AppSpacing.lg),
+        StatStrip(items: [
+          StatItem(label: l10n.invQuantity, value: Fmt.qty(r.quantity, unit: r.unit)),
+          if (r.unitPrice != null) StatItem(label: l10n.invUnitPrice, value: Fmt.money(r.unitPrice)),
+          if (r.unitPrice != null) StatItem(label: l10n.invValue, value: Fmt.moneyCompact(r.unitPrice! * r.quantity)),
+        ]),
+        if (r.decisionNote != null && r.decisionNote!.trim().isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.lg),
+          NoteBanner(
+            text: '${l10n.wsDecision}: ${r.decisionNote}',
+            tone: r.status == 'rejected' ? AppColors.danger : AppColors.info,
+            icon: r.status == 'rejected' ? Icons.report_rounded : Icons.info_rounded,
           ),
-        fact(l10n.invStore, r.storeName),
-        fact(l10n.invPurpose, r.purpose),
-        fact(l10n.invRequestedBy, '${requester?.fullName ?? '—'} · ${Fmt.dateTime(r.createdAt)}'),
-        fact(l10n.invRequiredBy, r.requiredBy == null ? null : Fmt.date(r.requiredBy)),
-        fact(l10n.invUnitPrice, r.unitPrice == null ? null : Fmt.money(r.unitPrice)),
-        fact(l10n.invSupplier, r.supplier),
-        fact(l10n.invInvoice, r.invoiceRef),
-        if (r.decidedAt != null)
-          fact(l10n.invDecidedBy, '${decider?.fullName ?? '—'} · ${Fmt.dateTime(r.decidedAt)}'),
-        fact(l10n.wsDecision, r.decisionNote),
-        if (r.worksheetId != null)
-          AppListRow(
-            leading: const Icon(Icons.assignment_rounded, color: AppColors.inkMute),
-            title: l10n.invWorksheet,
-            onTap: () => context.push('/work/${r.worksheetId}'),
-          ),
+        ],
+        InfoGroup(title: l10n.commonDetails, rows: [
+          InfoRow(l10n.invStore, r.storeName, icon: Icons.warehouse_rounded),
+          InfoRow(l10n.invPurpose, r.purpose, icon: Icons.notes_rounded),
+          InfoRow(l10n.invRequestedBy, '${requester?.fullName ?? '—'} · ${Fmt.dateTime(r.createdAt)}',
+              icon: Icons.person_rounded),
+          InfoRow(l10n.invRequiredBy, r.requiredBy == null ? null : Fmt.date(r.requiredBy), icon: Icons.event_rounded),
+          InfoRow(l10n.invSupplier, r.supplier, icon: Icons.local_shipping_rounded),
+          InfoRow(l10n.invInvoice, r.invoiceRef, icon: Icons.receipt_long_rounded, tabular: true),
+          if (r.decidedAt != null)
+            InfoRow(l10n.invDecidedBy, '${decider?.fullName ?? '—'} · ${Fmt.dateTime(r.decidedAt)}',
+                icon: Icons.how_to_reg_rounded),
+          if (r.worksheetId != null)
+            InfoRow(l10n.invWorksheet, l10n.commonOpen,
+                icon: Icons.handyman_rounded, onTap: () => context.push('/work/${r.worksheetId}')),
+        ]),
       ],
     );
+
+    return Column(children: [
+      Expanded(child: list),
+      if (actions.isNotEmpty) StickyActionBar(children: actions),
+    ]);
   }
 }

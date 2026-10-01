@@ -163,6 +163,7 @@ class LeavePage extends ConsumerWidget {
                   itemBuilder: (context, i) {
                     final r = value[i];
                     return AppListRow(
+                      leading: DateBlock(r.from, color: AppColors.info),
                       title: '${leaveTypeLabel(l10n, r.type)} · ${l10n.leaveDays(r.days)}',
                       subtitle: [
                         '${MaterialLocalizations.of(context).formatMediumDate(r.from)} – '

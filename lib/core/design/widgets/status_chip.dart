@@ -106,10 +106,13 @@ class StatusChip extends StatelessWidget {
       fontWeight: FontWeight.w600,
       height: 1.25,
     );
+    // Capped so a long label (Malayalam runs ~2x English) truncates inside
+    // the pill instead of pushing its row off-screen.
     return Semantics(
       label: label,
       excludeSemantics: true,
       child: Container(
+        constraints: BoxConstraints(maxWidth: dense ? 150 : 190),
         padding: EdgeInsets.symmetric(
           horizontal: dense ? AppSpacing.sm : AppSpacing.sm + 2,
           vertical: dense ? 3 : AppSpacing.xs + 1,

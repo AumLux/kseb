@@ -2221,4 +2221,16 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get poleMapLocation => 'പോസ്റ്റിന്റെ സ്ഥലം';
+
+  @override
+  String get commonDetails => 'വിശദാംശങ്ങൾ';
+
+  @override
+  String get invValue => 'മൂല്യം';
+
+  @override
+  String get commonOpen => 'തുറക്കുക';
+
+  @override
+  String get moreApp => 'ആപ്പ്';
 }

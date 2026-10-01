@@ -692,5 +692,9 @@
   "photoRecovered": "ആപ്പ് അടയുന്നതിന് മുമ്പ് എടുത്ത ഫോട്ടോ വീണ്ടെടുത്തു",
   "photoGpsTagged": "ജിപിഎസ് ടാഗ് ചെയ്തു",
   "wsMapLocation": "പ്രവൃത്തി സ്ഥലം",
-  "poleMapLocation": "പോസ്റ്റിന്റെ സ്ഥലം"
+  "poleMapLocation": "പോസ്റ്റിന്റെ സ്ഥലം",
+  "commonDetails": "വിശദാംശങ്ങൾ",
+  "invValue": "മൂല്യം",
+  "commonOpen": "തുറക്കുക",
+  "moreApp": "ആപ്പ്"
 }

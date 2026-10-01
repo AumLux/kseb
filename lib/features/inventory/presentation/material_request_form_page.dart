@@ -106,6 +106,9 @@ class _MaterialRequestFormPageState extends ConsumerState<MaterialRequestFormPag
     final decimal = [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))];
 
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton(label: l10n.invSubmit, icon: Icons.send_rounded, expand: true, loading: _busy, onPressed: _submit),
+      ]),
       appBar: AppBar(title: Text(l10n.invNewRequest)),
       body: SafeArea(
         child: Align(
@@ -231,9 +234,7 @@ class _MaterialRequestFormPageState extends ConsumerState<MaterialRequestFormPag
                       if (d != null) setState(() => _requiredBy = d);
                     },
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  AppButton(label: l10n.invSubmit, icon: Icons.send_rounded, expand: true, loading: _busy, onPressed: _submit),
-                ],
+],
               ),
             ),
           ),

@@ -185,10 +185,11 @@ abstract final class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
-        elevation: 0,
-        focusElevation: 0,
-        hoverElevation: 0,
-        highlightElevation: 0,
+        // A soft lift so the FAB reads as floating above lists.
+        elevation: 3,
+        focusElevation: 3,
+        hoverElevation: 4,
+        highlightElevation: 2,
         shape: const StadiumBorder(),
         extendedTextStyle: t(AppTypography.button).copyWith(fontSize: 15),
       ),
@@ -211,14 +212,41 @@ abstract final class AppTheme {
         prefixIconColor: AppColors.inkMute,
         suffixIconColor: AppColors.inkMute,
       ),
+      // Groww-style filter pills: selected = ink pill with white text, no
+      // checkmark; unselected = white with a hairline.
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.canvas,
-        selectedColor: AppColors.primarySoft,
-        checkmarkColor: AppColors.primaryDeep,
-        side: const BorderSide(color: AppColors.hairline),
+        color: WidgetStateProperty.resolveWith(
+            (s) => s.contains(WidgetState.selected) ? AppColors.ink : AppColors.canvas),
+        side: WidgetStateBorderSide.resolveWith((s) => BorderSide(
+            color: s.contains(WidgetState.selected) ? AppColors.ink : AppColors.hairline)),
+        showCheckmark: false,
+        checkmarkColor: AppColors.onDark,
         shape: const StadiumBorder(),
-        labelStyle: t(AppTypography.label),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+        // Chips resolve the label *colour* by state (not the whole style).
+        labelStyle: t(AppTypography.label).copyWith(
+          fontSize: 13.5,
+          fontWeight: FontWeight.w600,
+          color: WidgetStateColor.resolveWith(
+              (s) => s.contains(WidgetState.selected) ? AppColors.onDark : AppColors.inkSecondary),
+        ),
+        iconTheme: const IconThemeData(size: 18, color: AppColors.inkSecondary),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        labelPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+        pressElevation: 0,
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: AppColors.ink,
+        unselectedLabelColor: AppColors.inkMute,
+        labelStyle: t(AppTypography.label).copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: t(AppTypography.label).copyWith(fontSize: 15, fontWeight: FontWeight.w500),
+        indicatorSize: TabBarIndicatorSize.label,
+        indicator: const UnderlineTabIndicator(
+          borderSide: BorderSide(color: AppColors.primary, width: 3),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(3)),
+        ),
+        dividerColor: AppColors.hairline,
+        overlayColor: WidgetStatePropertyAll(AppColors.primary.withValues(alpha: 0.06)),
+        splashFactory: NoSplash.splashFactory,
       ),
       listTileTheme: ListTileThemeData(
         minVerticalPadding: AppSpacing.md,

@@ -2211,4 +2211,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get poleMapLocation => 'Pole location';
+
+  @override
+  String get commonDetails => 'Details';
+
+  @override
+  String get invValue => 'Value';
+
+  @override
+  String get commonOpen => 'Open';
+
+  @override
+  String get moreApp => 'App';
 }

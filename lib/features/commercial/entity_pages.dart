@@ -148,6 +148,7 @@ class _EntityListPageState extends ConsumerState<EntityListPage> {
                   itemBuilder: (context, i) {
                     final r = filtered[i];
                     return AppListRow(
+                      leading: IconTile(_e.icon),
                       title: _e.display(r).isEmpty
                           ? formatField(l10n, _e.fields.first, r[_e.fields.first.key])
                           : _e.display(r),
@@ -206,25 +207,47 @@ class EntityDetailPage extends ConsumerWidget {
       ),
       body: switch (row) {
         AsyncData(:final value) => ListView(padding: const EdgeInsets.only(bottom: AppSpacing.xxxl), children: [
-            Container(
-              color: AppColors.canvas,
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                ?_statusChip(l10n, e, value),
-                const SizedBox(height: AppSpacing.sm),
-                Text(e.display(value), style: AppTypography.title),
-              ]),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+              child: Builder(builder: (context) {
+                final shown = [
+                  for (final f in e.fields)
+                    if (value[f.key] != null && f.key != e.statusField) f,
+                ];
+                // The register's amounts lead, as headline numbers.
+                final money = shown.where((f) => f.kind == FieldKind.money).take(3).toList();
+                return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  FadeSlideIn(
+                    child: DetailHeader(
+                      icon: e.icon,
+                      title: e.display(value).isEmpty ? e.title(l10n) : e.display(value),
+                      subtitle: e.title(l10n),
+                      status: _statusChip(l10n, e, value),
+                    ),
+                  ),
+                  if (money.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    StatStrip(items: [
+                      for (final f in money)
+                        StatItem(label: f.label(l10n), value: formatField(l10n, f, value[f.key])),
+                    ]),
+                  ],
+                  InfoGroup(title: l10n.commonDetails, rows: [
+                    for (final f in shown)
+                      if (!money.contains(f))
+                        InfoRow(
+                          f.label(l10n),
+                          formatField(l10n, f, value[f.key], refs: refs[f.refEntity] ?? const {}),
+                          tabular: f.kind == FieldKind.money || f.kind == FieldKind.gstin,
+                          onTap: f.kind == FieldKind.ref && f.refEntity != 'sections'
+                              ? () => context.push(
+                                  '/more/commercial/${f.refEntity == 'tenders' ? 'tenders' : 'work-orders'}/${value[f.key]}')
+                              : null,
+                        ),
+                  ]),
+                ]);
+              }),
             ),
-            for (final f in e.fields)
-              if (value[f.key] != null && f.key != e.statusField)
-                AppListRow(
-                  title: formatField(l10n, f, value[f.key], refs: refs[f.refEntity] ?? const {}),
-                  subtitle: f.label(l10n),
-                  onTap: f.kind == FieldKind.ref && f.refEntity != 'sections'
-                      ? () => context.push(
-                          '/more/commercial/${f.refEntity == 'tenders' ? 'tenders' : 'work-orders'}/${value[f.key]}')
-                      : null,
-                ),
             for (final link in linksFor(e)) _LinkedSection(link: link, id: id),
             DocumentList(owner: (table: e.table, id: id), canAdd: me.role.isExecutive),
           ]),
@@ -254,7 +277,7 @@ class _LinkedSection extends ConsumerWidget {
       SectionHeader(link.entity.title(l10n)),
       for (final r in rows)
         AppListRow(
-          leading: Icon(link.entity.icon, color: AppColors.inkMute),
+          leading: IconTile(link.entity.icon, size: 36),
           title: link.entity.display(r),
           subtitle: _secondary(l10n, link.entity, r, refs),
           trailing: _statusChip(l10n, link.entity, r),
@@ -457,6 +480,9 @@ class _EntityFormPageState extends ConsumerState<EntityFormPage> {
       if (!_loaded) return Scaffold(appBar: AppBar(), body: const LoadingView());
     }
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
+      ]),
       appBar: AppBar(title: Text(_e.title(l10n))),
       body: SafeArea(
         child: Align(
@@ -467,8 +493,7 @@ class _EntityFormPageState extends ConsumerState<EntityFormPage> {
               key: _formKey,
               child: ListView(padding: const EdgeInsets.all(AppSpacing.lg), children: [
                 for (final f in _e.fields) ...[_field(l10n, f), const SizedBox(height: AppSpacing.lg)],
-                AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
-              ]),
+]),
             ),
           ),
         ),

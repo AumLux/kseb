@@ -12,6 +12,7 @@ export 'widgets/app_list_row.dart';
 export 'widgets/app_text_field.dart';
 export 'widgets/avatar.dart';
 export 'widgets/gradient_mesh.dart';
+export 'widgets/info_group.dart';
 export 'widgets/lazy_list_view.dart';
 export 'widgets/stat_strip.dart';
 export 'widgets/state_views.dart';

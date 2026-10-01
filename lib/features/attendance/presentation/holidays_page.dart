@@ -131,6 +131,7 @@ class _HolidaysPageState extends ConsumerState<HolidaysPage> {
             AsyncData(:final value) => Column(children: [
                 for (final h in value)
                   AppListRow(
+                    leading: DateBlock(h.date, color: AppColors.ruby),
                     title: h.name,
                     subtitle: MaterialLocalizations.of(context).formatFullDate(h.date),
                     trailing: (me.role.isExecutive || h.sectionId != null)

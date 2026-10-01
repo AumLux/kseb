@@ -74,133 +74,138 @@ class MorePage extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     if (user == null) return const SizedBox.shrink();
 
+    final admin = <_Item>[
+      if (user.role.atLeast(AppRole.supervisor))
+        _Item(Icons.groups_rounded, AppColors.primaryDeep,
+            user.role.atLeast(AppRole.manager) ? l10n.staffTitle : l10n.staffMyTeam, () => context.go(Routes.staff)),
+      if (user.role.atLeast(AppRole.manager))
+        _Item(Icons.groups_2_rounded, AppColors.info, l10n.teamsTitle, () => context.go(Routes.teams)),
+      if (user.role.atLeast(AppRole.manager))
+        _Item(Icons.event_rounded, AppColors.ruby, l10n.holidaysTitle, () => context.go(Routes.holidays)),
+      if (user.role.isExecutive)
+        _Item(Icons.account_tree_rounded, AppColors.success, l10n.orgTitle, () => context.go(Routes.org)),
+      if (user.role.atLeast(AppRole.manager))
+        _Item(Icons.gavel_rounded, AppColors.brandOrangeInk, l10n.comTitle, () => context.go(Routes.commercial)),
+    ];
+    final registers = <_Item>[
+      _Item(Icons.inventory_2_rounded, AppColors.info, l10n.invTitle, () => context.go(Routes.inventory)),
+      _Item(Icons.electrical_services_rounded, AppColors.ruby, l10n.poleTitle, () => context.go(Routes.poles)),
+      _Item(Icons.devices_other_rounded, AppColors.inkSecondary, l10n.assetTitle, () => context.go(Routes.assets)),
+    ];
+    final app = <_Item>[
+      if (FeatureFlags.enableBonusModule)
+        _Item(Icons.card_giftcard_rounded, AppColors.brandOrangeInk, l10n.bonusTitle, () => context.go(Routes.bonus)),
+      _Item(
+        Icons.sync_rounded,
+        AppColors.info,
+        l10n.moreSyncQueue,
+        () => context.go(Routes.syncQueue),
+        subtitle: outbox.ops.isEmpty ? l10n.moreSyncQueueEmpty : l10n.pendingSync(outbox.ops.length),
+        trailing: outbox.failed > 0 ? StatusChip(label: l10n.syncFailed, tone: StatusTone.danger, dense: true) : null,
+      ),
+      _Item(Icons.translate_rounded, AppColors.primaryDeep, l10n.moreLanguage, () => _pickLanguage(context, ref),
+          subtitle: locale.languageCode == 'ml' ? l10n.languageMalayalam : l10n.languageEnglish),
+      _Item(Icons.password_rounded, AppColors.warning, l10n.moreChangePassword, () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const ChangePasswordPage(voluntary: true)),
+          )),
+      _Item(Icons.info_outline_rounded, AppColors.inkSecondary, l10n.moreAbout, () => _about(context)),
+    ];
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.moreTitle)),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.xxl),
         children: [
-          Container(
-            color: AppColors.canvas,
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundColor: AppColors.primarySoft,
-                  child: Text(
-                    user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : '?',
-                    style: AppTypography.title.copyWith(color: AppColors.primaryInk),
-                  ),
-                ),
+          FadeSlideIn(
+            child: AppCard(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Row(children: [
+                Avatar(user.fullName, size: 56),
                 const SizedBox(width: AppSpacing.lg),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(user.fullName, style: AppTypography.subtitle),
-                      const SizedBox(height: AppSpacing.xxs),
-                      Text('${user.employeeCode} · ${roleLabel(l10n, user.role)}',
-                          style: AppTypography.caption),
-                      if (user.email != null || user.phone != null)
-                        Text(user.email ?? user.phone!, style: AppTypography.caption),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(user.fullName, style: AppTypography.subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: AppSpacing.xs),
+                    Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
+                      StatusChip(label: roleLabel(l10n, user.role), tone: StatusTone.brand, dense: true),
+                      StatusChip(label: user.employeeCode, dense: true),
+                    ]),
+                    if (user.email != null || user.phone != null) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(user.email ?? user.phone!, style: AppTypography.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
                     ],
-                  ),
+                  ]),
                 ),
-              ],
+              ]),
             ),
           ),
-          const Divider(),
-          if (user.role.atLeast(AppRole.supervisor)) ...[
-            SectionHeader(l10n.adminSection),
-            AppListRow(
-              leading: const IconTile(Icons.groups_rounded, size: 36),
-              title: user.role.atLeast(AppRole.manager) ? l10n.staffTitle : l10n.staffMyTeam,
-              onTap: () => context.go(Routes.staff),
-            ),
-            if (user.role.atLeast(AppRole.manager))
-              AppListRow(
-                leading: const IconTile(Icons.groups_2_rounded, size: 36),
-                title: l10n.teamsTitle,
-                onTap: () => context.go(Routes.teams),
+          if (admin.isNotEmpty) _Group(title: l10n.adminSection, items: admin, index: 1),
+          _Group(title: l10n.regSection, items: registers, index: 2),
+          _Group(title: l10n.moreApp, items: app, index: 3),
+          const SizedBox(height: AppSpacing.lg),
+          FadeSlideIn(
+            index: 4,
+            child: AppCard(
+              padding: EdgeInsets.zero,
+              child: AppListRow(
+                leading: const IconTile(Icons.logout_rounded, color: AppColors.danger, size: 36),
+                title: l10n.moreSignOut,
+                showDivider: false,
+                onTap: () => _confirmSignOut(context, ref, outbox.ops.length),
               ),
-            if (user.role.atLeast(AppRole.manager))
-              AppListRow(
-                leading: const IconTile(Icons.event_rounded, size: 36),
-                title: l10n.holidaysTitle,
-                onTap: () => context.go(Routes.holidays),
-              ),
-            if (user.role.isExecutive)
-              AppListRow(
-                leading: const IconTile(Icons.account_tree_rounded, size: 36),
-                title: l10n.orgTitle,
-                onTap: () => context.go(Routes.org),
-              ),
-          ],
-          if (user.role.atLeast(AppRole.manager))
-            AppListRow(
-              leading: const IconTile(Icons.gavel_rounded, size: 36),
-              title: l10n.comTitle,
-              onTap: () => context.go(Routes.commercial),
             ),
-          SectionHeader(l10n.regSection),
-          AppListRow(
-            leading: const IconTile(Icons.inventory_2_rounded, size: 36),
-            title: l10n.invTitle,
-            onTap: () => context.go(Routes.inventory),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.electrical_services_rounded, size: 36),
-            title: l10n.poleTitle,
-            onTap: () => context.go(Routes.poles),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.devices_other_rounded, size: 36),
-            title: l10n.assetTitle,
-            onTap: () => context.go(Routes.assets),
-          ),
-          SectionHeader(l10n.moreTitle),
-          if (FeatureFlags.enableBonusModule)
-            AppListRow(
-              leading: const IconTile(Icons.card_giftcard_rounded, size: 36),
-              title: l10n.bonusTitle,
-              onTap: () => context.go(Routes.bonus),
-            ),
-          AppListRow(
-            leading: const IconTile(Icons.sync_rounded, size: 36),
-            title: l10n.moreSyncQueue,
-            subtitle: outbox.ops.isEmpty
-                ? l10n.moreSyncQueueEmpty
-                : l10n.pendingSync(outbox.ops.length),
-            trailing: outbox.failed > 0
-                ? StatusChip(label: l10n.syncFailed, tone: StatusTone.danger, dense: true)
-                : null,
-            onTap: () => context.go(Routes.syncQueue),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.translate_rounded, size: 36),
-            title: l10n.moreLanguage,
-            subtitle: locale.languageCode == 'ml' ? l10n.languageMalayalam : l10n.languageEnglish,
-            onTap: () => _pickLanguage(context, ref),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.password_rounded, size: 36),
-            title: l10n.moreChangePassword,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const ChangePasswordPage(voluntary: true)),
-            ),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.info_outline_rounded, size: 36),
-            title: l10n.moreAbout,
-            onTap: () => _about(context),
-          ),
-          AppListRow(
-            leading: const IconTile(Icons.logout_rounded, color: AppColors.danger, size: 36),
-            title: l10n.moreSignOut,
-            showDivider: false,
-            onTap: () => _confirmSignOut(context, ref, outbox.ops.length),
           ),
         ],
       ),
     );
   }
+}
+
+class _Item {
+  const _Item(this.icon, this.tint, this.title, this.onTap, {this.subtitle, this.trailing});
+
+  final IconData icon;
+  final Color tint;
+  final String title;
+  final VoidCallback onTap;
+  final String? subtitle;
+  final Widget? trailing;
+}
+
+/// A titled card of menu rows (Notion/Groww settings style).
+class _Group extends StatelessWidget {
+  const _Group({required this.title, required this.items, required this.index});
+
+  final String title;
+  final List<_Item> items;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) => FadeSlideIn(
+        index: index,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xl, AppSpacing.xs, AppSpacing.sm),
+            child: Semantics(
+              header: true,
+              child: Text(title.toUpperCase(), style: AppTypography.overline),
+            ),
+          ),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              for (final (i, it) in items.indexed)
+                AppListRow(
+                  leading: IconTile(it.icon, color: it.tint, size: 36),
+                  title: it.title,
+                  subtitle: it.subtitle,
+                  trailing: it.trailing,
+                  showDivider: i < items.length - 1,
+                  dividerIndent: AppSpacing.lg + 36 + AppSpacing.md,
+                  onTap: it.onTap,
+                ),
+            ]),
+          ),
+        ]),
+      );
 }

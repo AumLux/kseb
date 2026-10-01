@@ -97,90 +97,64 @@ class _StaffDetailPageState extends ConsumerState<StaffDetailPage> {
             m.teamId != null &&
             me.teamIds.contains(m.teamId));
 
-    Widget fact(String label, String value) => AppListRow(title: value, subtitle: label);
+    // Account actions as a Notion-style list: icon, label, one tap.
+    final actions = <(IconData, String, Color, VoidCallback?)>[
+      if (canManage && m.status != StaffStatus.exited)
+        (Icons.edit_rounded, l10n.staffEdit, AppColors.primaryDeep, () async {
+          await context.push('/more/staff/${m.id}/edit');
+          ref.invalidate(staffMemberProvider(widget.userId));
+        }),
+      if (canReset && m.status == StaffStatus.active)
+        (Icons.key_rounded, l10n.staffResetPassword, AppColors.info, () => _reset(m)),
+      if (canManage && m.status != StaffStatus.active)
+        (Icons.restart_alt_rounded, l10n.staffReactivate, AppColors.success, () => _setStatus(m, StaffStatus.active)),
+      if (canManage && m.status == StaffStatus.active)
+        (Icons.pause_circle_rounded, l10n.staffSuspend, AppColors.warning, () => _setStatus(m, StaffStatus.suspended)),
+      if (canManage && m.status != StaffStatus.exited)
+        (Icons.logout_rounded, l10n.staffMarkExited, AppColors.danger, () => _setStatus(m, StaffStatus.exited)),
+    ];
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xxl),
       children: [
-        Container(
-          color: AppColors.canvas,
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: AppColors.primarySoft,
-                child: Text(m.fullName[0].toUpperCase(),
-                    style: AppTypography.title.copyWith(color: AppColors.primaryInk)),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(m.fullName, style: AppTypography.subtitle),
-                    const SizedBox(height: AppSpacing.xs),
-                    Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
-                      StatusChip(label: roleLabel(l10n, m.role), tone: StatusTone.brand, dense: true),
-                      StatusChip.fromDomain(m.status.name, label: staffStatusLabel(l10n, m.status)),
-                    ]),
-                  ],
-                ),
-              ),
-            ],
+        FadeSlideIn(
+          child: DetailHeader(
+            leading: Avatar(m.fullName, size: 56),
+            title: m.fullName,
+            subtitle: m.employeeCode,
+            status: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
+              StatusChip(label: roleLabel(l10n, m.role), tone: StatusTone.brand, dense: true),
+              StatusChip.fromDomain(m.status.name, label: staffStatusLabel(l10n, m.status)),
+            ]),
           ),
         ),
-        const Divider(),
-        fact(l10n.staffEmployeeCode, m.employeeCode),
-        fact(l10n.staffSection, m.sectionName ?? '—'),
-        fact(l10n.staffTeam, m.teamName ?? l10n.staffNoTeam),
-        if (m.phone != null) fact(l10n.staffPhone, m.phone!),
-        if (m.email != null) fact(l10n.staffEmail, m.email!),
-        if (m.dob != null) fact(l10n.staffDob, Fmt.date(m.dob)),
-        fact(l10n.staffJoined, Fmt.date(m.joinedOn)),
-        if (canManage || canReset) ...[
+        InfoGroup(title: l10n.commonDetails, rows: [
+          InfoRow(l10n.staffEmployeeCode, m.employeeCode, icon: Icons.badge_rounded, tabular: true),
+          InfoRow(l10n.staffSection, m.sectionName ?? '—', icon: Icons.location_city_rounded),
+          InfoRow(l10n.staffTeam, m.teamName ?? l10n.staffNoTeam, icon: Icons.groups_rounded),
+          InfoRow(l10n.staffPhone, m.phone, icon: Icons.call_rounded, tabular: true),
+          InfoRow(l10n.staffEmail, m.email, icon: Icons.mail_rounded),
+          InfoRow(l10n.staffDob, m.dob == null ? null : Fmt.date(m.dob), icon: Icons.cake_rounded),
+          InfoRow(l10n.staffJoined, Fmt.date(m.joinedOn), icon: Icons.event_available_rounded),
+        ]),
+        if (actions.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xl),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: Wrap(
-              spacing: AppSpacing.md,
-              runSpacing: AppSpacing.md,
-              children: [
-                if (canManage && m.status != StaffStatus.exited)
-                  AppButton.secondary(
-                    label: l10n.staffEdit,
-                    icon: Icons.edit_rounded,
-                    onPressed: _busy
-                        ? null
-                        : () async {
-                            await context.push('/more/staff/${m.id}/edit');
-                            ref.invalidate(staffMemberProvider(widget.userId));
-                          },
-                  ),
-                if (canReset && m.status == StaffStatus.active)
-                  AppButton.secondary(
-                    label: l10n.staffResetPassword,
-                    icon: Icons.key_rounded,
-                    loading: _busy,
-                    onPressed: () => _reset(m),
-                  ),
-                if (canManage && m.status == StaffStatus.active)
-                  AppButton.tertiary(
-                    label: l10n.staffSuspend,
-                    onPressed: _busy ? null : () => _setStatus(m, StaffStatus.suspended),
-                  ),
-                if (canManage && m.status != StaffStatus.active)
-                  AppButton.secondary(
-                    label: l10n.staffReactivate,
-                    onPressed: _busy ? null : () => _setStatus(m, StaffStatus.active),
-                  ),
-                if (canManage && m.status != StaffStatus.exited)
-                  AppButton.tertiary(
-                    label: l10n.staffMarkExited,
-                    onPressed: _busy ? null : () => _setStatus(m, StaffStatus.exited),
-                  ),
-              ],
+          if (_busy)
+            const Padding(
+              padding: EdgeInsets.only(bottom: AppSpacing.sm),
+              child: LinearProgressIndicator(minHeight: 2),
             ),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              for (final (i, (icon, label, tint, onTap)) in actions.indexed)
+                AppListRow(
+                  leading: IconTile(icon, color: tint, size: 36),
+                  title: label,
+                  showDivider: i < actions.length - 1,
+                  onTap: _busy ? null : onTap,
+                ),
+            ]),
           ),
         ],
       ],

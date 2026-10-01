@@ -89,22 +89,22 @@ class _LocationFieldState extends ConsumerState<LocationField> {
               )
             : const SizedBox(width: double.infinity),
       ),
-      Row(children: [
-        Expanded(
-          child: AppButton.secondary(
-            label: l10n.wsUseGps,
-            icon: Icons.my_location_rounded,
-            loading: _locating,
-            onPressed: _gps,
-          ),
+      // Natural-width buttons that wrap to a second line when the labels are
+      // long (Malayalam) instead of truncating.
+      Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
+        OutlinedButton.icon(
+          onPressed: _locating ? null : _gps,
+          style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg)),
+          icon: _locating
+              ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.my_location_rounded, size: 18),
+          label: Text(l10n.wsUseGps),
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: AppButton.secondary(
-            label: _has ? l10n.mapChangeOnMap : l10n.mapSetOnMap,
-            icon: Icons.map_rounded,
-            onPressed: _pick,
-          ),
+        OutlinedButton.icon(
+          onPressed: _pick,
+          style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg)),
+          icon: const Icon(Icons.map_rounded, size: 18),
+          label: Text(_has ? l10n.mapChangeOnMap : l10n.mapSetOnMap),
         ),
       ]),
     ]);

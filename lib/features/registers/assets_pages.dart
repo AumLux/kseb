@@ -8,7 +8,6 @@ import '../../core/format/formatters.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/media/photo_strip.dart';
 import '../../core/ui/dialogs.dart';
-import '../../core/ui/maps.dart';
 import '../auth/application/session_controller.dart';
 import '../auth/domain/app_user.dart';
 import '../org/data/org_repository.dart';
@@ -17,6 +16,8 @@ import 'registers_labels.dart';
 import 'registers_repository.dart';
 import '../../core/ui/sheets.dart';
 import '../org/presentation/section_picker.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import '../../core/maps/app_map.dart';
 
 class AssetsPage extends ConsumerStatefulWidget {
   const AssetsPage({super.key});
@@ -82,6 +83,7 @@ class _AssetsPageState extends ConsumerState<AssetsPage> {
                     itemBuilder: (context, i) {
                       final a = list[i];
                       return AppListRow(
+                        leading: const IconTile(Icons.devices_other_rounded, color: AppColors.info),
                         title: '${a.tag} · ${a.name}',
                         subtitle: [
                           assetCategoryLabel(l10n, a.category),
@@ -225,6 +227,9 @@ class _AssetFormPageState extends ConsumerState<AssetFormPage> {
         ]);
 
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
+      ]),
       appBar: AppBar(title: Text(_isEdit ? _tag.text : l10n.assetNew)),
       body: SafeArea(
         child: Align(
@@ -296,9 +301,7 @@ class _AssetFormPageState extends ConsumerState<AssetFormPage> {
                       (v) => _status = v),
                 ],
                 AppTextField(label: l10n.assetNotes, controller: _notes, maxLines: 3),
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
-              ]),
+]),
             ),
           ),
         ),
@@ -443,55 +446,94 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
       ),
       body: switch (asset) {
         AsyncData(:final value) => ListView(padding: const EdgeInsets.only(bottom: AppSpacing.xxxl), children: [
-            Container(
-              color: AppColors.canvas,
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Wrap(spacing: AppSpacing.sm, children: [
-                  assetStatusChip(l10n, value.status),
-                  StatusChip(label: assetConditionLabel(l10n, value.condition), dense: true),
-                  StatusChip(label: assetCategoryLabel(l10n, value.category), tone: StatusTone.brand, dense: true),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                FadeSlideIn(
+                  child: DetailHeader(
+                    icon: Icons.devices_other_rounded,
+                    iconColor: AppColors.info,
+                    title: value.name,
+                    subtitle: [value.tag, ?tree?.byId(value.sectionId)?.name].join(' · '),
+                    status: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
+                      assetStatusChip(l10n, value.status),
+                      StatusChip(label: assetConditionLabel(l10n, value.condition), dense: true),
+                      StatusChip(label: assetCategoryLabel(l10n, value.category), tone: StatusTone.brand, dense: true),
+                    ]),
+                  ),
+                ),
+                if (me.role.atLeast(AppRole.supervisor) && !value.scrapped) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  // Round action tiles (Groww "Buy / Sell" row).
+                  LayoutBuilder(builder: (context, c) {
+                    final tiles = <(IconData, String, Color, String)>[
+                      (Icons.person_add_alt_rounded, l10n.assetEvAssign, AppColors.primaryDeep, 'assigned'),
+                      (Icons.fact_check_rounded, l10n.assetEvInspect, AppColors.info, 'inspected'),
+                      (Icons.build_rounded, l10n.assetEvRepair, AppColors.brandOrangeInk, 'repaired'),
+                      (Icons.swap_vert_rounded, l10n.assetEvStatus, AppColors.inkSecondary, 'status_changed'),
+                      if (me.role.atLeast(AppRole.manager)) ...[
+                        (Icons.local_shipping_rounded, l10n.assetEvMove, AppColors.success, 'moved'),
+                        (Icons.delete_outline_rounded, l10n.assetEvScrap, AppColors.danger, 'scrapped'),
+                      ],
+                    ];
+                    final w = c.maxWidth / (c.maxWidth >= 600 ? 6 : 4);
+                    return Wrap(children: [
+                      for (final (icon, label, tint, type) in tiles)
+                        SizedBox(
+                          width: w,
+                          child: QuickAction(
+                            icon: icon,
+                            label: label,
+                            tint: tint,
+                            onTap: _busy ? () {} : () => _event(value, type),
+                          ),
+                        ),
+                    ]);
+                  }),
+                ],
+                InfoGroup(title: l10n.commonDetails, rows: [
+                  InfoRow(l10n.assetAssignedTo,
+                      value.assignedTo == null ? l10n.assetUnassigned : name(value.assignedTo),
+                      icon: Icons.person_rounded),
+                  InfoRow(l10n.assetSerial, value.serialNo, icon: Icons.qr_code_2_rounded, tabular: true),
+                  InfoRow('${l10n.assetMake} / ${l10n.assetRating}',
+                      (value.make == null && value.rating == null) ? null : [?value.make, ?value.rating].join(' · '),
+                      icon: Icons.precision_manufacturing_rounded),
+                  InfoRow(l10n.assetLocation, value.locationText, icon: Icons.place_rounded),
+                  InfoRow(
+                    l10n.assetPurchaseDate,
+                    (value.purchaseDate == null && value.purchaseValue == null)
+                        ? null
+                        : [
+                            if (value.purchaseDate != null) Fmt.date(value.purchaseDate),
+                            if (value.purchaseValue != null) Fmt.money(value.purchaseValue),
+                          ].join(' · '),
+                    icon: Icons.receipt_long_rounded,
+                    tabular: true,
+                  ),
                 ]),
-                const SizedBox(height: AppSpacing.sm),
-                Text(value.name, style: AppTypography.title),
-                Text([value.tag, ?tree?.byId(value.sectionId)?.name].join(' · '), style: AppTypography.caption),
+                if (value.lat != null && value.lng != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  LocationPreview(
+                    height: 150,
+                    title: value.name,
+                    points: [
+                      MapPoint(
+                        point: LatLng(value.lat!, value.lng!),
+                        color: AppColors.info,
+                        icon: Icons.devices_other_rounded,
+                        label: value.name,
+                      ),
+                    ],
+                  ),
+                ],
               ]),
             ),
-            if (me.role.atLeast(AppRole.supervisor) && !value.scrapped)
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
-                  AppButton.secondary(label: l10n.assetEvAssign, icon: Icons.person_add_alt_rounded, onPressed: _busy ? null : () => _event(value, 'assigned')),
-                  AppButton.secondary(label: l10n.assetEvInspect, icon: Icons.fact_check_rounded, onPressed: _busy ? null : () => _event(value, 'inspected')),
-                  AppButton.secondary(label: l10n.assetEvRepair, icon: Icons.build_rounded, onPressed: _busy ? null : () => _event(value, 'repaired')),
-                  AppButton.secondary(label: l10n.assetEvStatus, icon: Icons.swap_vert_rounded, onPressed: _busy ? null : () => _event(value, 'status_changed')),
-                  if (me.role.atLeast(AppRole.manager)) ...[
-                    AppButton.secondary(label: l10n.assetEvMove, icon: Icons.local_shipping_rounded, onPressed: _busy ? null : () => _event(value, 'moved')),
-                    AppButton.tertiary(label: l10n.assetEvScrap, onPressed: _busy ? null : () => _event(value, 'scrapped')),
-                  ],
-                ]),
-              ),
-            AppListRow(title: value.assignedTo == null ? l10n.assetUnassigned : name(value.assignedTo), subtitle: l10n.assetAssignedTo),
-            if (value.serialNo != null) AppListRow(title: value.serialNo!, subtitle: l10n.assetSerial),
-            if (value.make != null || value.rating != null)
-              AppListRow(title: [?value.make, ?value.rating].join(' · '), subtitle: '${l10n.assetMake} / ${l10n.assetRating}'),
-            if (value.locationText != null) AppListRow(title: value.locationText!, subtitle: l10n.assetLocation),
-            if (value.purchaseDate != null || value.purchaseValue != null)
-              AppListRow(
-                title: [if (value.purchaseDate != null) Fmt.date(value.purchaseDate), if (value.purchaseValue != null) Fmt.money(value.purchaseValue)].join(' · '),
-                subtitle: l10n.assetPurchaseDate,
-              ),
-            if (value.lat != null)
-              AppListRow(
-                leading: const Icon(Icons.map_rounded, color: AppColors.inkMute),
-                title: l10n.openInMaps,
-                onTap: () => openInMaps(value.lat!, value.lng!),
-              ),
             PhotoStrip(owner: (table: 'assets', id: value.id), canAdd: !value.scrapped),
             SectionHeader(l10n.assetHistory),
             for (final e in events)
               AppListRow(
-                leading: const Icon(Icons.history_rounded, color: AppColors.inkMute),
+                leading: const IconTile(Icons.history_rounded, color: AppColors.inkSecondary, size: 36),
                 title: assetEventLabel(l10n, e.type),
                 subtitle: [
                   Fmt.dateTime(e.at),

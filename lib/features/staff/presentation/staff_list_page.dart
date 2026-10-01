@@ -115,12 +115,12 @@ class _List extends ConsumerWidget {
         itemBuilder: (context, i) {
           final m = members[i];
           return AppListRow(
-            leading: CircleAvatar(
-              backgroundColor: AppColors.canvasSunken,
-              child: Text(m.fullName[0].toUpperCase(), style: AppTypography.bodyStrong),
-            ),
+            leading: Avatar(m.fullName),
             title: m.fullName,
-            subtitle: [m.employeeCode, roleLabel(l10n, m.role), ?m.sectionName].join(' · '),
+            subtitle: [
+              '${m.employeeCode} · ${roleLabel(l10n, m.role)}',
+              ?m.sectionName,
+            ].join('\n'),
             trailing: m.status == StaffStatus.active
                 ? null
                 : StatusChip.fromDomain(m.status.name, label: staffStatusLabel(l10n, m.status)),

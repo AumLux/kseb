@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/connectivity/connectivity_provider.dart';
 import '../../core/design/design.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/media/photo_strip.dart';
@@ -26,7 +25,6 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final online = ref.watch(onlineProvider).value ?? true;
     // A photo taken while Android had killed the app is attached on return.
     ref.listen(photoRecoveryProvider, (_, next) {
       if ((next.value ?? 0) > 0) showSnack(context, l10n.photoRecovered);
@@ -38,12 +36,7 @@ class AppShell extends ConsumerWidget {
       (Icons.grid_view_outlined, Icons.grid_view_rounded, l10n.navMore),
     ];
 
-    final body = Column(
-      children: [
-        if (!online) SafeArea(bottom: false, child: OfflineBanner(message: l10n.offlineBanner)),
-        Expanded(child: navigationShell),
-      ],
-    );
+    final body = navigationShell;
 
     return LayoutBuilder(builder: (context, constraints) {
       // The rail is for genuinely large screens. A phone in landscape is wide

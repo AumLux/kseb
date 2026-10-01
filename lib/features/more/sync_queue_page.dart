@@ -50,6 +50,8 @@ class SyncQueuePage extends ConsumerWidget {
                 if (state.processing) const LinearProgressIndicator(),
                 for (final op in state.ops)
                   AppListRow(
+                    leading: IconTile(op.failed ? Icons.error_rounded : Icons.cloud_upload_rounded,
+                        color: op.failed ? AppColors.danger : AppColors.info),
                     title: op.label,
                     subtitle: [
                       Fmt.dateTime(op.createdAt),

@@ -39,6 +39,7 @@ class CatalogPage extends ConsumerWidget {
             itemBuilder: (context, i) {
               final m = value[i];
               return AppListRow(
+                leading: const IconTile(Icons.category_rounded, color: AppColors.inkSecondary),
                 title: m.name,
                 subtitle: '${m.code} · ${m.category} · ${l10n.invReorderAt(Fmt.qty(m.reorderLevel, unit: m.unit))}',
                 onTap: () => edit(m),

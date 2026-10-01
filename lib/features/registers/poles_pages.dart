@@ -9,7 +9,6 @@ import '../../core/format/formatters.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/media/photo_strip.dart';
 import '../../core/ui/dialogs.dart';
-import '../../core/ui/maps.dart';
 import '../auth/application/session_controller.dart';
 import '../auth/domain/app_user.dart';
 import '../org/data/org_repository.dart';
@@ -18,6 +17,8 @@ import 'registers_labels.dart';
 import 'registers_repository.dart';
 import '../org/presentation/section_picker.dart';
 import '../../core/maps/location_field.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import '../../core/maps/app_map.dart';
 
 class PolesPage extends ConsumerStatefulWidget {
   const PolesPage({super.key});
@@ -74,6 +75,7 @@ class _PolesPageState extends ConsumerState<PolesPage> {
                       ),
                     for (final p in list)
                       AppListRow(
+                        leading: const IconTile(Icons.electrical_services_rounded, color: AppColors.ruby),
                         title: p.poleNumber,
                         subtitle: [p.feederName, poleTypeLabel(l10n, p.poleType), ?tree?.byId(p.sectionId)?.name].join(' · '),
                         trailing: poleConditionChip(l10n, p.condition),
@@ -211,6 +213,9 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
     }
 
     return Scaffold(
+      bottomNavigationBar: StickyActionBar(children: [
+        AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
+      ]),
       appBar: AppBar(title: Text(_isEdit ? _number.text : l10n.poleNew)),
       body: SafeArea(
         child: Align(
@@ -277,9 +282,7 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
                 AppTextField(label: l10n.poleLandmark, controller: _landmark),
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(label: l10n.poleRemarks, controller: _remarks, maxLines: 3),
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
-              ]),
+]),
             ),
           ),
         ),
@@ -316,32 +319,46 @@ class PoleDetailPage extends ConsumerWidget {
       ),
       body: switch (pole) {
         AsyncData(:final value) => ListView(children: [
-            Container(
-              color: AppColors.canvas,
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Wrap(spacing: AppSpacing.sm, children: [
-                  poleConditionChip(l10n, value.condition),
-                  StatusChip(label: poleTypeLabel(l10n, value.poleType), dense: true),
-                ]),
-                const SizedBox(height: AppSpacing.sm),
-                Text(value.poleNumber, style: AppTypography.title),
-                Text([value.feederName, ?tree?.byId(value.sectionId)?.name].join(' · '), style: AppTypography.caption),
-                if (value.lat != null) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  AppButton.secondary(
-                    label: l10n.openInMaps,
-                    icon: Icons.map_rounded,
-                    onPressed: () => openInMaps(value.lat!, value.lng!),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                FadeSlideIn(
+                  child: DetailHeader(
+                    icon: Icons.electrical_services_rounded,
+                    iconColor: AppColors.ruby,
+                    title: value.poleNumber,
+                    subtitle: [value.feederName, ?tree?.byId(value.sectionId)?.name].join(' · '),
+                    status: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
+                      poleConditionChip(l10n, value.condition),
+                      StatusChip(label: poleTypeLabel(l10n, value.poleType), dense: true),
+                    ]),
+                  ),
+                ),
+                if (value.lat != null && value.lng != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  LocationPreview(
+                    height: 160,
+                    title: value.poleNumber,
+                    points: [
+                      MapPoint(
+                        point: LatLng(value.lat!, value.lng!),
+                        color: AppColors.ruby,
+                        icon: Icons.electrical_services_rounded,
+                        label: value.poleNumber,
+                      ),
+                    ],
                   ),
                 ],
+                InfoGroup(title: l10n.commonDetails, rows: [
+                  InfoRow(l10n.poleTransformer, value.transformerRef, icon: Icons.electric_bolt_rounded),
+                  InfoRow(l10n.poleHeight, value.heightM == null ? null : '${value.heightM} m',
+                      icon: Icons.height_rounded, tabular: true),
+                  InfoRow(l10n.poleLandmark, value.landmark, icon: Icons.signpost_rounded),
+                  InfoRow(l10n.poleRemarks, value.remarks, icon: Icons.notes_rounded),
+                  InfoRow(l10n.commonDate, Fmt.dateTime(value.surveyedAt), icon: Icons.event_rounded),
+                ]),
               ]),
             ),
-            if (value.transformerRef != null) AppListRow(title: value.transformerRef!, subtitle: l10n.poleTransformer),
-            if (value.heightM != null) AppListRow(title: '${value.heightM} m', subtitle: l10n.poleHeight),
-            if (value.landmark != null) AppListRow(title: value.landmark!, subtitle: l10n.poleLandmark),
-            if (value.remarks != null) AppListRow(title: value.remarks!, subtitle: l10n.poleRemarks),
-            AppListRow(title: Fmt.dateTime(value.surveyedAt), subtitle: l10n.commonDate),
             PhotoStrip(owner: (table: 'pole_records', id: value.id)),
             const SizedBox(height: AppSpacing.xxl),
           ]),

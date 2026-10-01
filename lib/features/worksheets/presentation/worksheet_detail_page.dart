@@ -16,6 +16,8 @@ import '../data/worksheet_repository.dart';
 import 'worksheet_labels.dart';
 import 'worksheet_sheets.dart';
 import '../../../core/ui/sheets.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import '../../../core/maps/app_map.dart';
 
 class WorksheetDetailPage extends ConsumerStatefulWidget {
   const WorksheetDetailPage({super.key, required this.id});
@@ -168,43 +170,58 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
         ),
     ];
 
-    Widget fact(String label, String? value) =>
-        value == null || value.isEmpty ? const SizedBox.shrink() : AppListRow(title: value, subtitle: label);
-
-    return ListView(
+    final list = ListView(
       padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
       children: [
-        Container(
-          color: AppColors.canvas,
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
-              worksheetChip(l10n, w.status),
-              StatusChip(label: workTypeLabel(l10n, w.workType), dense: true),
-            ]),
-            const SizedBox(height: AppSpacing.sm),
-            Text(w.title, style: AppTypography.title),
-            Text([?w.sectionName, w.locationText].join(' · '), style: AppTypography.caption),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            FadeSlideIn(
+              child: DetailHeader(
+                icon: workTypeIcon(w.workType),
+                iconColor: AppColors.brandOrangeInk,
+                title: w.title,
+                subtitle: [w.code, ?w.sectionName].join(' · '),
+                status: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: [
+                  worksheetChip(l10n, w.status),
+                  StatusChip(label: workTypeLabel(l10n, w.workType), dense: true),
+                ]),
+              ),
+            ),
             if (w.decisionNote != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text('${l10n.wsDecision}: ${w.decisionNote}', style: AppTypography.label),
+              const SizedBox(height: AppSpacing.lg),
+              NoteBanner(
+                text: '${l10n.wsDecision}: ${w.decisionNote}',
+                icon: w.status == WorksheetStatus.rejected ? Icons.report_rounded : Icons.info_rounded,
+                tone: w.status == WorksheetStatus.rejected ? AppColors.danger : AppColors.info,
+              ),
+            ],
+            InfoGroup(title: l10n.commonDetails, rows: [
+              InfoRow(l10n.wsLocation, w.locationText, icon: Icons.place_rounded),
+              InfoRow(l10n.wsRequestedBy, requester?.fullName, icon: Icons.person_rounded),
+              InfoRow(l10n.wsPlannedDate, w.plannedDate == null ? null : Fmt.date(w.plannedDate),
+                  icon: Icons.event_rounded),
+              InfoRow(l10n.wsPermitBook, w.permitBookNo, icon: Icons.menu_book_rounded, tabular: true),
+              InfoRow(l10n.wsDescription, w.description, icon: Icons.notes_rounded),
+              InfoRow(l10n.wsCompletionNote, w.completionNote, icon: Icons.task_alt_rounded),
+            ]),
+            if (w.lat != null && w.lng != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              LocationPreview(
+                height: 150,
+                title: l10n.wsMapLocation,
+                points: [
+                  MapPoint(
+                    point: LatLng(w.lat!, w.lng!),
+                    color: AppColors.brandOrangeInk,
+                    icon: workTypeIcon(w.workType),
+                    label: w.locationText,
+                  ),
+                ],
+              ),
             ],
           ]),
         ),
-        if (actions.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [for (final a in actions) Padding(padding: const EdgeInsets.only(bottom: AppSpacing.md), child: a)],
-            ),
-          ),
-        fact(l10n.wsRequestedBy, requester?.fullName),
-        fact(l10n.wsPlannedDate, w.plannedDate == null ? null : Fmt.date(w.plannedDate)),
-        fact(l10n.wsPermitBook, w.permitBookNo),
-        fact(l10n.wsDescription, w.description),
-        fact(l10n.wsCompletionNote, w.completionNote),
-        if (w.lat != null) fact('GPS', '${w.lat!.toStringAsFixed(5)}, ${w.lng!.toStringAsFixed(5)}'),
 
         // Permit to work
         SectionHeader(
@@ -268,7 +285,7 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
         else
           for (final p in people.where((p) => crewIds.contains(p.id)))
             AppListRow(
-              leading: const Icon(Icons.engineering_rounded, color: AppColors.inkMute),
+              leading: Avatar(p.fullName),
               title: p.fullName,
               subtitle: p.employeeCode,
             ),
@@ -291,6 +308,7 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
           AsyncData(:final value) when value.isNotEmpty => [
               for (final u in value)
                 AppListRow(
+                  leading: const IconTile(Icons.inventory_2_rounded, color: AppColors.info, size: 36),
                   title: u.materialName,
                   subtitle: [
                     l10n.invIssued(Fmt.qty(u.issued, unit: u.unit)),
@@ -343,5 +361,10 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
             ),
       ],
     );
+
+    return Column(children: [
+      Expanded(child: list),
+      if (actions.isNotEmpty) StickyActionBar(children: actions),
+    ]);
   }
 }
