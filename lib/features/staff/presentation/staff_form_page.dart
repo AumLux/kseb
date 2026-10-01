@@ -11,6 +11,7 @@ import '../../home/home_page.dart' show roleLabel;
 import '../../org/data/org_repository.dart';
 import '../data/staff_repository.dart';
 import 'credentials_sheet.dart';
+import '../../org/presentation/section_picker.dart';
 
 /// Roles the signed-in user may assign (strictly below them; a Director may
 /// create Directors). Mirrors the admin-users function.
@@ -44,6 +45,9 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
   DateTime? _dob;
   bool _busy = false;
   bool _loaded = false;
+
+  /// New accounts get the next free code unless the user opts out.
+  bool _autoCode = true;
   String? _error;
 
   bool get _isEdit => widget.userId != null;
@@ -101,7 +105,7 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
       if (_isEdit) {
         await repo.update(widget.userId!, draft);
       } else {
-        final creds = await repo.create(draft);
+        final creds = await repo.create(draft, autoCode: _autoCode);
         if (!mounted) return;
         setState(() => _busy = false);
         await showCredentialsSheet(context, draft.fullName, creds);
@@ -151,6 +155,14 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                     Text(_error!, style: AppTypography.label.copyWith(color: AppColors.danger)),
                     const SizedBox(height: AppSpacing.lg),
                   ],
+                  if (!_isEdit && _autoCode)
+                    _AutoCodeField(
+                      onCustom: () => setState(() {
+                        _autoCode = false;
+                        _code.text = ref.read(nextEmployeeCodeProvider).value ?? '';
+                      }),
+                    )
+                  else ...[
                   AppTextField(
                     label: l10n.staffEmployeeCode,
                     controller: _code,
@@ -162,6 +174,16 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                         ? null
                         : l10n.staffCodeInvalid,
                   ),
+                  if (!_isEdit)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: AppButton.tertiary(
+                        label: l10n.staffCodeUseAuto,
+                        icon: Icons.auto_awesome_rounded,
+                        onPressed: () => setState(() => _autoCode = true),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.lg),
                   AppTextField(
                     label: l10n.staffFullName,
@@ -183,12 +205,11 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                   ),
                   if (needsSection) ...[
                     const SizedBox(height: AppSpacing.lg),
-                    AppDropdownField<String>(
+                    SectionPickerField(
                       label: l10n.staffSection,
                       required: true,
-                      items: sections.map((s) => s.id).toList(),
+                      allowed: sections,
                       value: _sectionId,
-                      itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                       onChanged: (id) => setState(() {
                         _sectionId = id;
                         _teamId = null;
@@ -243,5 +264,47 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
         ),
       ),
     );
+  }
+}
+
+/// Read-only display of the generated employee code with an opt-out.
+class _AutoCodeField extends ConsumerWidget {
+  const _AutoCodeField({required this.onCustom});
+
+  final VoidCallback onCustom;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final next = ref.watch(nextEmployeeCodeProvider);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(l10n.staffEmployeeCode, style: AppTypography.label),
+      const SizedBox(height: AppSpacing.xs + 2),
+      Container(
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.sm, AppSpacing.md),
+        decoration: BoxDecoration(
+          color: AppColors.primarySoft,
+          borderRadius: AppRadius.smAll,
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+        ),
+        child: Row(children: [
+          const Icon(Icons.badge_rounded, color: AppColors.primaryDeep),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              switch (next) {
+                AsyncData(:final value) => Text(value, style: AppTypography.title.copyWith(
+                    color: AppColors.primaryDeep, fontFeatures: const [FontFeature.tabularFigures()])),
+                AsyncError() => Text('—', style: AppTypography.title),
+                _ => const Skeleton(child: SkeletonBox(width: 96, height: 20)),
+              },
+              const SizedBox(height: AppSpacing.xxs),
+              Text(l10n.staffCodeAutoHelper, style: AppTypography.caption),
+            ]),
+          ),
+          TextButton(onPressed: onCustom, child: Text(l10n.staffCodeUseCustom)),
+        ]),
+      ),
+    ]);
   }
 }

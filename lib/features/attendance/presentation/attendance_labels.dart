@@ -18,13 +18,21 @@ StatusChip attendanceChip(AppLocalizations l10n, AttendanceStatus? s, {bool dens
 
 /// Review flags a supervisor should see before verifying.
 List<StatusChip> attendanceFlags(AppLocalizations l10n, AttendanceDay d) => [
-      if (d.checkInMocked)
+      if (d.checkInMocked || d.checkOutMocked)
         StatusChip(label: l10n.attFlagMocked, tone: StatusTone.danger, icon: Icons.gps_off_rounded, dense: true),
       if (d.outsideGeofence == true)
         StatusChip(
             label: d.checkInDistanceM == null
                 ? l10n.attFlagOutside
                 : '${l10n.attFlagOutside} · ${(d.checkInDistanceM! / 1000).toStringAsFixed(1)} km',
+            tone: StatusTone.warning,
+            icon: Icons.wrong_location_rounded,
+            dense: true),
+      if (d.outsideGeofence != true && d.checkOutOutsideGeofence == true)
+        StatusChip(
+            label: d.checkOutDistanceM == null
+                ? l10n.attFlagOutside
+                : '${l10n.attFlagOutside} · ${(d.checkOutDistanceM! / 1000).toStringAsFixed(1)} km',
             tone: StatusTone.warning,
             icon: Icons.wrong_location_rounded,
             dense: true),

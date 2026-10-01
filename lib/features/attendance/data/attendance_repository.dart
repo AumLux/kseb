@@ -36,6 +36,14 @@ class AttendanceDay {
     this.hasLocation = false,
     this.verifiedAt,
     this.note,
+    this.checkInLat,
+    this.checkInLng,
+    this.checkOutLat,
+    this.checkOutLng,
+    this.checkOutAccuracyM,
+    this.checkOutMocked = false,
+    this.checkOutDistanceM,
+    this.checkOutOutsideGeofence,
   });
 
   final String id;
@@ -53,11 +61,27 @@ class AttendanceDay {
   final DateTime? verifiedAt;
   final String? note;
 
+  // Where the shift started and ended (visible to the person and to anyone
+  // who can see their attendance: supervisor, manager, COO/Director).
+  final double? checkInLat;
+  final double? checkInLng;
+  final double? checkOutLat;
+  final double? checkOutLng;
+  final double? checkOutAccuracyM;
+  final bool checkOutMocked;
+  final int? checkOutDistanceM;
+  final bool? checkOutOutsideGeofence;
+
+  bool get hasCheckOutLocation => checkOutLat != null && checkOutLng != null;
   bool get verified => verifiedAt != null;
 
   /// Something a supervisor should look at before verifying.
   bool get needsReview =>
-      checkInMocked || outsideGeofence == true || (source == 'device' && !hasLocation);
+      checkInMocked ||
+      checkOutMocked ||
+      outsideGeofence == true ||
+      checkOutOutsideGeofence == true ||
+      (source == 'device' && !hasLocation);
 
   Duration? get worked =>
       (checkInAt != null && checkOutAt != null) ? checkOutAt!.difference(checkInAt!) : null;
@@ -77,6 +101,14 @@ class AttendanceDay {
         hasLocation: j['check_in_lat'] != null,
         verifiedAt: _ts(j['verified_at']),
         note: j['note'] as String?,
+        checkInLat: (j['check_in_lat'] as num?)?.toDouble(),
+        checkInLng: (j['check_in_lng'] as num?)?.toDouble(),
+        checkOutLat: (j['check_out_lat'] as num?)?.toDouble(),
+        checkOutLng: (j['check_out_lng'] as num?)?.toDouble(),
+        checkOutAccuracyM: (j['check_out_accuracy_m'] as num?)?.toDouble(),
+        checkOutMocked: j['check_out_mocked'] as bool? ?? false,
+        checkOutDistanceM: j['check_out_distance_m'] as int?,
+        checkOutOutsideGeofence: j['check_out_outside_geofence'] as bool?,
       );
 }
 

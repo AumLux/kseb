@@ -860,5 +860,81 @@
         "type": "String"
       }
     }
-  }
+  },
+  "commonClear": "Clear",
+  "commonSearch": "Search",
+  "orgChooseSection": "Choose section",
+  "orgSearchSections": "Search section, code or place",
+  "orgAllCircles": "All circles",
+  "orgSectionsCount": "{count, plural, =1{1 section} other{{count} sections}}",
+  "@orgSectionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "orgNoSectionsFound": "No matching sections",
+  "staffCodeAutoHelper": "Next free ID — assigned automatically",
+  "staffCodeUseCustom": "Use a custom ID",
+  "staffCodeUseAuto": "Generate automatically",
+  "mapTitle": "Map",
+  "mapExpand": "Open full map",
+  "mapPoint": "Location",
+  "mapOpenExternal": "Directions",
+  "mapMyLocation": "My location",
+  "mapDragHint": "Drag the map to place the pin",
+  "mapMeters": "{meters} m",
+  "@mapMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "mapUseThisLocation": "Use this location",
+  "mapSetOnMap": "Set on map",
+  "mapChangeOnMap": "Change on map",
+  "mapNoLocation": "No location set",
+  "attCheckInPoint": "Check-in",
+  "attCheckOutPoint": "Check-out",
+  "attWhereTitle": "Where you checked in",
+  "attDistanceFromSection": "{meters} m from section office",
+  "@attDistanceFromSection": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "attInsideGeofence": "Inside geofence",
+  "attOutsideGeofence": "Outside geofence",
+  "attMockedLocation": "Mock location detected",
+  "attNoGps": "No GPS",
+  "attAccuracy": "±{meters} m accuracy",
+  "@attAccuracy": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "attViewList": "List",
+  "attViewMap": "Map",
+  "attMapEmpty": "No check-ins with GPS on this day",
+  "photoTakenAt": "Taken {time}",
+  "@photoTakenAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "photoNoLocation": "No GPS location was recorded for this photo",
+  "photoUploading": "Uploading",
+  "photoWaiting": "Waiting",
+  "photoRecovered": "Recovered the photo you took before the app closed",
+  "photoGpsTagged": "GPS tagged",
+  "wsMapLocation": "Worksite location",
+  "poleMapLocation": "Pole location"
 }

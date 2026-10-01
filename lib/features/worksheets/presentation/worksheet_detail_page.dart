@@ -15,6 +15,7 @@ import '../../org/data/org_repository.dart';
 import '../data/worksheet_repository.dart';
 import 'worksheet_labels.dart';
 import 'worksheet_sheets.dart';
+import '../../../core/ui/sheets.dart';
 
 class WorksheetDetailPage extends ConsumerStatefulWidget {
   const WorksheetDetailPage({super.key, required this.id});
@@ -49,36 +50,13 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
     }
   }
 
-  Future<String?> _ask(String title, String label, {bool required = true}) {
-    final controller = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    final l10n = context.l10n;
-    return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Form(
-          key: formKey,
-          child: AppTextField(
-            label: label,
-            controller: controller,
-            required: required,
-            maxLines: 3,
-            validator: required ? (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(label) : null,
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
-          TextButton(
-            onPressed: () {
-              if (formKey.currentState?.validate() ?? false) Navigator.pop(context, controller.text.trim());
-            },
-            child: Text(l10n.commonContinue),
-          ),
-        ],
-      ),
-    ).whenComplete(controller.dispose);
-  }
+  Future<String?> _ask(String title, String label, {bool required = true}) => promptText(
+        context,
+        title: title,
+        label: label,
+        confirmLabel: context.l10n.commonContinue,
+        minLength: required ? 3 : 0,
+      );
 
   @override
   Widget build(BuildContext context) {

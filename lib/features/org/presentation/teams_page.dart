@@ -8,6 +8,7 @@ import '../../auth/application/session_controller.dart';
 import '../../auth/domain/app_user.dart';
 import '../../staff/presentation/staff_form_page.dart' show assignableSections;
 import '../data/org_repository.dart';
+import 'section_picker.dart';
 
 class TeamsPage extends ConsumerWidget {
   const TeamsPage({super.key});
@@ -158,18 +159,16 @@ class _TeamFormState extends ConsumerState<_TeamForm> {
             const SizedBox(height: AppSpacing.lg),
             AppTextField(label: l10n.teamName, controller: _name, required: true),
             const SizedBox(height: AppSpacing.lg),
-            AppDropdownField<String>(
+            SectionPickerField(
               label: l10n.staffSection,
               required: true,
-              items: sections.map((s) => s.id).toList(),
+              allowed: sections,
               value: _sectionId,
-              itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
-              onChanged: widget.team == null
-                  ? (id) => setState(() {
+              enabled: widget.team == null,
+              onChanged: (id) => setState(() {
                         _sectionId = id;
                         _supervisorId = null;
-                      })
-                  : null,
+                      }),
             ),
             const SizedBox(height: AppSpacing.lg),
             AppDropdownField<String?>(

@@ -147,8 +147,18 @@ class StaffRepository {
         return Map<String, dynamic>.from(res.data as Map);
       });
 
-  Future<IssuedCredentials> create(StaffDraft draft) async {
-    final data = await _admin({'action': 'create', ...draft.toJson()});
+  /// Suggested next employee code (AUM0001 style). The server allocates the
+  /// final one when [create] is called with `autoCode`, so races are safe.
+  Future<String> nextEmployeeCode() => _guard(() async => await _client.rpc('next_employee_code') as String);
+
+  Future<IssuedCredentials> create(StaffDraft draft, {bool autoCode = false}) async {
+    final body = draft.toJson();
+    if (autoCode) {
+      body
+        ..remove('employee_code')
+        ..['auto_code'] = true;
+    }
+    final data = await _admin({'action': 'create', ...body});
     return IssuedCredentials(
       userId: data['user_id'] as String,
       loginId: data['login_id'] as String,
@@ -173,3 +183,7 @@ class StaffRepository {
     );
   }
 }
+
+/// Preview of the next employee code for the "Add staff" form.
+final nextEmployeeCodeProvider =
+    FutureProvider.autoDispose<String>((ref) => ref.watch(staffRepositoryProvider).nextEmployeeCode());

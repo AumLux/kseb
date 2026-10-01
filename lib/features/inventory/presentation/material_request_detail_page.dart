@@ -11,6 +11,7 @@ import '../../auth/application/session_controller.dart';
 import '../../org/data/org_repository.dart';
 import '../data/inventory_repository.dart';
 import 'inventory_labels.dart';
+import '../../../core/ui/sheets.dart';
 
 class MaterialRequestDetailPage extends ConsumerStatefulWidget {
   const MaterialRequestDetailPage({super.key, required this.id});
@@ -41,35 +42,14 @@ class _MaterialRequestDetailPageState extends ConsumerState<MaterialRequestDetai
     }
   }
 
-  Future<String?> _reason() {
-    final l10n = context.l10n;
-    final controller = TextEditingController();
-    final key = GlobalKey<FormState>();
-    return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.approvalsReject),
-        content: Form(
-          key: key,
-          child: AppTextField(
-            label: l10n.approvalsRejectReason,
-            controller: controller,
-            required: true,
-            validator: (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(l10n.approvalsRejectReason),
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
-          TextButton(
-            onPressed: () {
-              if (key.currentState?.validate() ?? false) Navigator.pop(context, controller.text.trim());
-            },
-            child: Text(l10n.approvalsReject),
-          ),
-        ],
-      ),
-    ).whenComplete(controller.dispose);
-  }
+  Future<String?> _reason() => promptText(
+        context,
+        title: context.l10n.approvalsReject,
+        label: context.l10n.approvalsRejectReason,
+        confirmLabel: context.l10n.approvalsReject,
+        minLength: 3,
+        destructive: true,
+      );
 
   @override
   Widget build(BuildContext context) {

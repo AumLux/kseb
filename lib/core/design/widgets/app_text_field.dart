@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../l10n/l10n.dart';
 import '../app_tokens.dart';
 
 /// Text field per DESIGN.md › Inputs: label above the field (never
@@ -32,6 +33,7 @@ class AppTextField extends StatelessWidget {
     this.autofillHints,
     this.textCapitalization = TextCapitalization.none,
     this.focusNode,
+    this.autofocus = false,
   });
 
   final String label;
@@ -58,6 +60,7 @@ class AppTextField extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final TextCapitalization textCapitalization;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +87,12 @@ class AppTextField extends StatelessWidget {
           controller: controller,
           initialValue: controller == null ? initialValue : null,
           focusNode: focusNode,
+          autofocus: autofocus,
           validator: validator ??
               (required
                   ? (v) => (v == null || v.trim().isEmpty)
-                      ? '$label is required'
+                      ? (Localizations.of<AppLocalizations>(context, AppLocalizations)?.fieldRequired(label) ??
+                          '$label is required')
                       : null
                   : null),
           onChanged: onChanged,

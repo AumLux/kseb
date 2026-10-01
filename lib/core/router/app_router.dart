@@ -61,16 +61,34 @@ const _publicRoutes = {Routes.splash, Routes.login};
 
 /// Pure redirect policy (unit-tested): where should [location] go given the
 /// session? Returns null to stay.
+///
+/// The intended destination survives the splash and login screens as
+/// `?from=`: a cold start from a notification, or Android restoring the app
+/// after killing it, lands back on that screen instead of Home.
 @visibleForTesting
-String? resolveRedirect(SessionState session, String location) {
+String? resolveRedirect(SessionState session, String location, {String? fullLocation, String? from}) {
+  final target = fullLocation ?? location;
+  String withFrom(String route, String? next) =>
+      next == null ? route : Uri(path: route, queryParameters: {'from': next}).toString();
+  final pending = _safeFrom(from);
   return switch (session) {
-    SessionLoading() => location == Routes.splash ? null : Routes.splash,
-    SessionSignedOut() => location == Routes.login ? null : Routes.login,
+    SessionLoading() => location == Routes.splash ? null : withFrom(Routes.splash, _safeFrom(target)),
+    SessionSignedOut() => location == Routes.login
+        ? null
+        : withFrom(Routes.login, location == Routes.splash ? pending : _safeFrom(target)),
     SessionSignedIn(:final user) when user.mustChangePassword =>
       location == Routes.changePassword ? null : Routes.changePassword,
     SessionSignedIn() =>
-      (_publicRoutes.contains(location) || location == Routes.changePassword) ? Routes.home : null,
+      (_publicRoutes.contains(location) || location == Routes.changePassword) ? (pending ?? Routes.home) : null,
   };
+}
+
+/// Only in-app, non-public paths are honoured (no open redirects).
+String? _safeFrom(String? from) {
+  if (from == null || !from.startsWith('/') || from.startsWith('//')) return null;
+  final path = Uri.tryParse(from)?.path;
+  if (path == null || _publicRoutes.contains(path) || path == Routes.changePassword) return null;
+  return from;
 }
 
 /// Bridges Riverpod session changes to go_router's refresh.
@@ -86,7 +104,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
     initialLocation: Routes.splash,
     refreshListenable: refresh,
-    redirect: (context, state) => resolveRedirect(ref.read(sessionProvider), state.matchedLocation),
+    redirect: (context, state) => resolveRedirect(
+          ref.read(sessionProvider),
+          state.matchedLocation,
+          fullLocation: state.uri.toString(),
+          from: state.uri.queryParameters['from'],
+        ),
+    // With MaterialApp.restorationScopeId, Android brings the user back to
+    // the same screen if it had to kill the app (e.g. while the camera was open).
+    restorationScopeId: 'router',
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(),
       body: EmptyState(
@@ -100,9 +126,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
       GoRoute(path: Routes.changePassword, builder: (_, __) => const ChangePasswordPage()),
       StatefulShellRoute.indexedStack(
+        restorationScopeId: 'shell',
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
-          StatefulShellBranch(routes: [
+          StatefulShellBranch(restorationScopeId: 'branch1', routes: [
             GoRoute(
               path: Routes.home,
               builder: (_, __) => const HomePage(),
@@ -112,14 +139,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               ],
             ),
           ]),
-          StatefulShellBranch(routes: [
+          StatefulShellBranch(restorationScopeId: 'branch2', routes: [
             GoRoute(
               path: Routes.attendance,
               builder: (_, __) => const AttendancePage(),
               routes: [GoRoute(path: 'leave', builder: (_, __) => const LeavePage())],
             ),
           ]),
-          StatefulShellBranch(routes: [
+          StatefulShellBranch(restorationScopeId: 'branch3', routes: [
             GoRoute(
               path: Routes.work,
               builder: (_, __) => const WorksheetsPage(),
@@ -135,7 +162,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ],
             ),
           ]),
-          StatefulShellBranch(routes: [
+          StatefulShellBranch(restorationScopeId: 'branch4', routes: [
             GoRoute(
               path: Routes.more,
               builder: (_, __) => const MorePage(),

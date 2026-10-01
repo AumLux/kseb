@@ -4009,6 +4009,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Worked {duration}'**
   String homeWorked(String duration);
+
+  /// No description provided for @commonClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get commonClear;
+
+  /// No description provided for @commonSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get commonSearch;
+
+  /// No description provided for @orgChooseSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose section'**
+  String get orgChooseSection;
+
+  /// No description provided for @orgSearchSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Search section, code or place'**
+  String get orgSearchSections;
+
+  /// No description provided for @orgAllCircles.
+  ///
+  /// In en, this message translates to:
+  /// **'All circles'**
+  String get orgAllCircles;
+
+  /// No description provided for @orgSectionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 section} other{{count} sections}}'**
+  String orgSectionsCount(int count);
+
+  /// No description provided for @orgNoSectionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching sections'**
+  String get orgNoSectionsFound;
+
+  /// No description provided for @staffCodeAutoHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Next free ID — assigned automatically'**
+  String get staffCodeAutoHelper;
+
+  /// No description provided for @staffCodeUseCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a custom ID'**
+  String get staffCodeUseCustom;
+
+  /// No description provided for @staffCodeUseAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate automatically'**
+  String get staffCodeUseAuto;
+
+  /// No description provided for @mapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get mapTitle;
+
+  /// No description provided for @mapExpand.
+  ///
+  /// In en, this message translates to:
+  /// **'Open full map'**
+  String get mapExpand;
+
+  /// No description provided for @mapPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get mapPoint;
+
+  /// No description provided for @mapOpenExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get mapOpenExternal;
+
+  /// No description provided for @mapMyLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'My location'**
+  String get mapMyLocation;
+
+  /// No description provided for @mapDragHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the map to place the pin'**
+  String get mapDragHint;
+
+  /// No description provided for @mapMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m'**
+  String mapMeters(int meters);
+
+  /// No description provided for @mapUseThisLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this location'**
+  String get mapUseThisLocation;
+
+  /// No description provided for @mapSetOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Set on map'**
+  String get mapSetOnMap;
+
+  /// No description provided for @mapChangeOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Change on map'**
+  String get mapChangeOnMap;
+
+  /// No description provided for @mapNoLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'No location set'**
+  String get mapNoLocation;
+
+  /// No description provided for @attCheckInPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get attCheckInPoint;
+
+  /// No description provided for @attCheckOutPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-out'**
+  String get attCheckOutPoint;
+
+  /// No description provided for @attWhereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where you checked in'**
+  String get attWhereTitle;
+
+  /// No description provided for @attDistanceFromSection.
+  ///
+  /// In en, this message translates to:
+  /// **'{meters} m from section office'**
+  String attDistanceFromSection(int meters);
+
+  /// No description provided for @attInsideGeofence.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside geofence'**
+  String get attInsideGeofence;
+
+  /// No description provided for @attOutsideGeofence.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside geofence'**
+  String get attOutsideGeofence;
+
+  /// No description provided for @attMockedLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock location detected'**
+  String get attMockedLocation;
+
+  /// No description provided for @attNoGps.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPS'**
+  String get attNoGps;
+
+  /// No description provided for @attAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'±{meters} m accuracy'**
+  String attAccuracy(int meters);
+
+  /// No description provided for @attViewList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get attViewList;
+
+  /// No description provided for @attViewMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get attViewMap;
+
+  /// No description provided for @attMapEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No check-ins with GPS on this day'**
+  String get attMapEmpty;
+
+  /// No description provided for @photoTakenAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken {time}'**
+  String photoTakenAt(String time);
+
+  /// No description provided for @photoNoLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPS location was recorded for this photo'**
+  String get photoNoLocation;
+
+  /// No description provided for @photoUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading'**
+  String get photoUploading;
+
+  /// No description provided for @photoWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get photoWaiting;
+
+  /// No description provided for @photoRecovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovered the photo you took before the app closed'**
+  String get photoRecovered;
+
+  /// No description provided for @photoGpsTagged.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS tagged'**
+  String get photoGpsTagged;
+
+  /// No description provided for @wsMapLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Worksite location'**
+  String get wsMapLocation;
+
+  /// No description provided for @poleMapLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pole location'**
+  String get poleMapLocation;
 }
 
 class _AppLocalizationsDelegate

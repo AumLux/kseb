@@ -7,8 +7,6 @@ import '../../core/design/design.dart';
 import '../../core/errors/app_failure.dart';
 import '../../core/format/formatters.dart';
 import '../../core/l10n/l10n.dart';
-import '../../core/location/location_rationale.dart';
-import '../../core/location/location_service.dart';
 import '../../core/media/photo_strip.dart';
 import '../../core/ui/dialogs.dart';
 import '../../core/ui/maps.dart';
@@ -18,6 +16,8 @@ import '../org/data/org_repository.dart';
 import '../staff/presentation/staff_form_page.dart' show assignableSections;
 import 'registers_labels.dart';
 import 'registers_repository.dart';
+import '../org/presentation/section_picker.dart';
+import '../../core/maps/location_field.dart';
 
 class PolesPage extends ConsumerStatefulWidget {
   const PolesPage({super.key});
@@ -117,8 +117,6 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
   String _type = 'psc';
   String _condition = 'good';
   double? _lat, _lng;
-  double? _accuracy;
-  bool _locating = false;
   bool _busy = false;
   bool _loaded = false;
 
@@ -146,23 +144,6 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
     _condition = p.condition;
     _lat = p.lat;
     _lng = p.lng;
-  }
-
-  Future<void> _gps() async {
-    if (!await explainLocationIfNeeded(context, ref) || !mounted) return;
-    setState(() => _locating = true);
-    try {
-      final loc = await ref.read(locationServiceProvider).current();
-      setState(() {
-        _lat = loc.lat;
-        _lng = loc.lng;
-        _accuracy = loc.accuracyM;
-      });
-    } on AppFailure catch (f) {
-      if (mounted) showSnack(context, f.message);
-    } finally {
-      if (mounted) setState(() => _locating = false);
-    }
   }
 
   Map<String, dynamic> get _fields {
@@ -239,22 +220,15 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
             child: Form(
               key: _formKey,
               child: ListView(padding: const EdgeInsets.all(AppSpacing.lg), children: [
-                AppCard(
-                  child: Row(children: [
-                    Icon(Icons.my_location_rounded, color: _lat == null ? AppColors.warning : AppColors.success),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Text(
-                        _lat == null
-                            ? l10n.poleGpsRequired
-                            : _accuracy == null
-                                ? '${_lat!.toStringAsFixed(6)}, ${_lng!.toStringAsFixed(6)}'
-                                : l10n.wsGpsSet(_accuracy!.round()),
-                        style: AppTypography.label,
-                      ),
-                    ),
-                    AppButton.tertiary(label: l10n.wsUseGps, loading: _locating, onPressed: _gps),
-                  ]),
+                LocationField(
+                  label: l10n.poleMapLocation,
+                  lat: _lat,
+                  lng: _lng,
+                  pinIcon: Icons.electrical_services_rounded,
+                  onChanged: (lat, lng, _) => setState(() {
+                    _lat = lat;
+                    _lng = lng;
+                  }),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(
@@ -265,12 +239,11 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
                 ),
                 if (!_isEdit) ...[
                   const SizedBox(height: AppSpacing.lg),
-                  AppDropdownField<String>(
+                  SectionPickerField(
                     label: l10n.staffSection,
                     required: true,
-                    items: sections.map((s) => s.id).toList(),
+                    allowed: sections,
                     value: _sectionId,
-                    itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                     onChanged: (v) => setState(() => _sectionId = v),
                   ),
                 ],

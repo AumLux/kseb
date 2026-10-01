@@ -15,6 +15,8 @@ import '../org/data/org_repository.dart';
 import '../staff/presentation/staff_form_page.dart' show assignableSections;
 import 'registers_labels.dart';
 import 'registers_repository.dart';
+import '../../core/ui/sheets.dart';
+import '../org/presentation/section_picker.dart';
 
 class AssetsPage extends ConsumerStatefulWidget {
   const AssetsPage({super.key});
@@ -242,12 +244,11 @@ class _AssetFormPageState extends ConsumerState<AssetFormPage> {
                 const SizedBox(height: AppSpacing.lg),
                 if (!_isEdit) ...[
                   chips(l10n.assetCategory, assetCategories, _category, (v) => assetCategoryLabel(l10n, v), (v) => _category = v),
-                  AppDropdownField<String>(
+                  SectionPickerField(
                     label: l10n.staffSection,
                     required: true,
-                    items: sections.map((s) => s.id).toList(),
+                    allowed: sections,
                     value: _sectionId,
-                    itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                     onChanged: (v) => setState(() => _sectionId = v),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -328,25 +329,32 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
     String? pick = type == 'assigned' ? a.assignedTo : null;
     String? status = a.status, condition = a.condition;
 
-    if (type == 'scrapped' &&
-        !await confirmAction(context, message: l10n.assetScrapConfirm, confirmLabel: l10n.assetEvScrap, destructive: true)) {
-      return;
+    if (type == 'scrapped') {
+      note.dispose(); // no sheet is shown for scrapping
+      if (!await confirmAction(context, message: l10n.assetScrapConfirm, confirmLabel: l10n.assetEvScrap, destructive: true)) {
+        return;
+      }
     }
     if (!mounted) return;
     final ok = type == 'scrapped' ||
-        (await showDialog<bool>(
-              context: context,
-              builder: (context) => StatefulBuilder(
-                builder: (context, setLocal) => AlertDialog(
-                  title: Text(switch (type) {
+        (await showAppSheet<bool>(
+              context,
+              builder: (context) => DisposeWith(
+                controllers: [note],
+                child: StatefulBuilder(
+                builder: (context, setLocal) => SheetScaffold(
+                  title: switch (type) {
                     'assigned' => l10n.assetEvAssign,
                     'moved' => l10n.assetEvMove,
                     'inspected' => l10n.assetEvInspect,
                     'repaired' => l10n.assetEvRepair,
                     _ => l10n.assetEvStatus,
-                  }),
-                  content: SingleChildScrollView(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  },
+                  primaryLabel: l10n.commonSave,
+                  onPrimary: () => Navigator.pop(context, true),
+                  secondaryLabel: l10n.commonCancel,
+                  onSecondary: () => Navigator.pop(context, false),
+                  children: [
                       if (type == 'assigned')
                         AppDropdownField<String?>(
                           label: l10n.assetAssignedTo,
@@ -356,11 +364,10 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
                           onChanged: (v) => setLocal(() => pick = v),
                         ),
                       if (type == 'moved')
-                        AppDropdownField<String>(
+                        SectionPickerField(
                           label: l10n.staffSection,
-                          items: sections.where((s) => s.id != a.sectionId).map((s) => s.id).toList(),
+                          allowed: sections.where((s) => s.id != a.sectionId).toList(),
                           value: pick,
-                          itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                           onChanged: (v) => setLocal(() => pick = v),
                         ),
                       if (type == 'status_changed')
@@ -381,26 +388,21 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
                         ),
                       const SizedBox(height: AppSpacing.md),
                       AppTextField(label: l10n.assetNote, controller: note, maxLines: 2),
-                    ]),
-                  ),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
-                    TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.commonSave)),
                   ],
                 ),
               ),
+              ),
             ) ??
             false);
-    if (!ok || (type == 'moved' && pick == null)) {
-      note.dispose();
-      return;
-    }
+    // Read now: the sheet disposes `note` once it has closed.
+    final noteText = type == 'scrapped' ? '' : note.text.trim();
+    if (!ok || (type == 'moved' && pick == null)) return;
     setState(() => _busy = true);
     try {
       await ref.read(registersRepositoryProvider).recordEvent(
             a.id,
             type,
-            note: note.text.trim().isEmpty ? null : note.text.trim(),
+            note: noteText.isEmpty ? null : noteText,
             toSectionId: type == 'moved' ? pick : null,
             assignedTo: type == 'assigned' ? pick : null,
             status: type == 'status_changed' ? status : null,
@@ -413,7 +415,6 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
     } catch (e) {
       if (mounted) showSnack(context, failureMessage(l10n, e));
     } finally {
-      note.dispose();
       if (mounted) setState(() => _busy = false);
     }
   }

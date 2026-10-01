@@ -2080,4 +2080,145 @@ class AppLocalizationsMl extends AppLocalizations {
   String homeWorked(String duration) {
     return 'ജോലി ചെയ്തത് $duration';
   }
+
+  @override
+  String get commonClear => 'മായ്ക്കുക';
+
+  @override
+  String get commonSearch => 'തിരയുക';
+
+  @override
+  String get orgChooseSection => 'സെക്ഷൻ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get orgSearchSections => 'സെക്ഷൻ, കോഡ് അല്ലെങ്കിൽ സ്ഥലം തിരയുക';
+
+  @override
+  String get orgAllCircles => 'എല്ലാ സർക്കിളുകളും';
+
+  @override
+  String orgSectionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count സെക്ഷനുകൾ',
+      one: '1 സെക്ഷൻ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orgNoSectionsFound => 'പൊരുത്തപ്പെടുന്ന സെക്ഷനുകളില്ല';
+
+  @override
+  String get staffCodeAutoHelper => 'അടുത്ത ലഭ്യമായ ഐഡി — സ്വയം നൽകുന്നു';
+
+  @override
+  String get staffCodeUseCustom => 'സ്വന്തം ഐഡി ഉപയോഗിക്കുക';
+
+  @override
+  String get staffCodeUseAuto => 'സ്വയം സൃഷ്ടിക്കുക';
+
+  @override
+  String get mapTitle => 'മാപ്പ്';
+
+  @override
+  String get mapExpand => 'മുഴുവൻ മാപ്പ് തുറക്കുക';
+
+  @override
+  String get mapPoint => 'സ്ഥലം';
+
+  @override
+  String get mapOpenExternal => 'വഴി';
+
+  @override
+  String get mapMyLocation => 'എന്റെ സ്ഥലം';
+
+  @override
+  String get mapDragHint => 'പിൻ സ്ഥാപിക്കാൻ മാപ്പ് നീക്കുക';
+
+  @override
+  String mapMeters(int meters) {
+    return '$meters മീ';
+  }
+
+  @override
+  String get mapUseThisLocation => 'ഈ സ്ഥലം ഉപയോഗിക്കുക';
+
+  @override
+  String get mapSetOnMap => 'മാപ്പിൽ സജ്ജമാക്കുക';
+
+  @override
+  String get mapChangeOnMap => 'മാപ്പിൽ മാറ്റുക';
+
+  @override
+  String get mapNoLocation => 'സ്ഥലം നൽകിയിട്ടില്ല';
+
+  @override
+  String get attCheckInPoint => 'ചെക്ക്-ഇൻ';
+
+  @override
+  String get attCheckOutPoint => 'ചെക്ക്-ഔട്ട്';
+
+  @override
+  String get attWhereTitle => 'നിങ്ങൾ ചെക്ക്-ഇൻ ചെയ്ത സ്ഥലം';
+
+  @override
+  String attDistanceFromSection(int meters) {
+    return 'സെക്ഷൻ ഓഫീസിൽ നിന്ന് $meters മീ';
+  }
+
+  @override
+  String get attInsideGeofence => 'ജിയോഫെൻസിനുള്ളിൽ';
+
+  @override
+  String get attOutsideGeofence => 'ജിയോഫെൻസിന് പുറത്ത്';
+
+  @override
+  String get attMockedLocation => 'വ്യാജ ലൊക്കേഷൻ കണ്ടെത്തി';
+
+  @override
+  String get attNoGps => 'ജിപിഎസ് ഇല്ല';
+
+  @override
+  String attAccuracy(int meters) {
+    return '±$meters മീ കൃത്യത';
+  }
+
+  @override
+  String get attViewList => 'പട്ടിക';
+
+  @override
+  String get attViewMap => 'മാപ്പ്';
+
+  @override
+  String get attMapEmpty => 'ഈ ദിവസം ജിപിഎസ് ഉള്ള ചെക്ക്-ഇന്നുകളില്ല';
+
+  @override
+  String photoTakenAt(String time) {
+    return 'എടുത്തത് $time';
+  }
+
+  @override
+  String get photoNoLocation =>
+      'ഈ ഫോട്ടോയ്ക്ക് ജിപിഎസ് ലൊക്കേഷൻ രേഖപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
+  String get photoUploading => 'അപ്‌ലോഡ് ചെയ്യുന്നു';
+
+  @override
+  String get photoWaiting => 'കാത്തിരിക്കുന്നു';
+
+  @override
+  String get photoRecovered =>
+      'ആപ്പ് അടയുന്നതിന് മുമ്പ് എടുത്ത ഫോട്ടോ വീണ്ടെടുത്തു';
+
+  @override
+  String get photoGpsTagged => 'ജിപിഎസ് ടാഗ് ചെയ്തു';
+
+  @override
+  String get wsMapLocation => 'പ്രവൃത്തി സ്ഥലം';
+
+  @override
+  String get poleMapLocation => 'പോസ്റ്റിന്റെ സ്ഥലം';
 }

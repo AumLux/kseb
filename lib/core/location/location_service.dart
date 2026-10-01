@@ -29,9 +29,25 @@ abstract interface class LocationService {
   /// True while the OS permission prompt hasn't been answered yet, i.e. the
   /// next [current] call would show it.
   Future<bool> permissionUndecided();
+
+  /// Asks for permission if it hasn't been decided; true when granted.
+  /// Never throws. Call before opening the camera so the GPS fix can be
+  /// taken while the camera is open (no prompt over the camera).
+  Future<bool> requestPermission();
 }
 
 class GeolocatorLocationService implements LocationService {
+  @override
+  Future<bool> requestPermission() async {
+    try {
+      var p = await Geolocator.checkPermission();
+      if (p == LocationPermission.denied) p = await Geolocator.requestPermission();
+      return p == LocationPermission.whileInUse || p == LocationPermission.always;
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Future<bool> permissionUndecided() async {
     try {

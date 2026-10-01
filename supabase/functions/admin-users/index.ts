@@ -1,7 +1,8 @@
 // admin-users — the only way accounts are created or changed.
 //
 // Actions (POST JSON, caller's access token in Authorization):
-//   create         { employee_code, full_name, role, section_id, team_id?, email?, phone?, dob?, extra_section_ids? }
+//   create         { employee_code | auto_code: true, full_name, role, section_id, team_id?, email?, phone?, dob?, extra_section_ids? }
+//                  auto_code allocates the next AUM0001-style code (ADR-0003), retrying on a race.
 //   update         { user_id, full_name?, role?, section_id?, team_id?, email?, phone?, dob?, extra_section_ids? }
 //   set_status     { user_id, status: "active" | "suspended" | "exited" }
 //   reset_password { user_id }
@@ -35,6 +36,7 @@ export const CREW_LOGIN_DOMAIN = "staff.aumlux.internal";
 
 interface Caller {
   id: string;
+  jwt: string;
   role: Role;
   status: string;
   section_ids: string[];
@@ -108,6 +110,7 @@ async function loadCaller(jwt: string): Promise<Caller> {
   }
   return {
     id: me.id,
+    jwt,
     role,
     status: me.status,
     section_ids: me.section_ids ?? [],
@@ -141,21 +144,52 @@ async function setExtraSections(userId: string, caller: Caller, ids: unknown) {
   }
 }
 
+/** A unique-code clash that a fresh generated code can resolve. */
+class CodeTaken extends Error {}
+
 async function create(caller: Caller, body: Record<string, unknown>) {
   const role = assertRole(body.role);
   assertOutranks(caller, role);
   const sectionId = clean(body.section_id);
   if (role !== "coo" && role !== "director") assertSectionInScope(caller, sectionId);
-  const code = clean(body.employee_code);
   const fullName = clean(body.full_name);
-  if (!code || !/^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$/.test(code)) {
-    throw new HttpError(400, "invalid_code", "Employee code: 2–32 letters, digits, - or _.");
-  }
   if (!fullName) throw new HttpError(400, "invalid_name", "Full name is required.");
+  const email = clean(body.email);
+  const auto = body.auto_code === true;
 
+  // Auto codes: two managers adding staff at the same moment get the same
+  // suggestion; the loser of the race simply takes the next number.
+  for (let attempt = 0; ; attempt++) {
+    const code = auto ? await nextCode(caller) : clean(body.employee_code);
+    if (!code || !/^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$/.test(code)) {
+      throw new HttpError(400, "invalid_code", "Employee code: 2–32 letters, digits, - or _.");
+    }
+    try {
+      return await provision(caller, body, { code, role, sectionId, fullName, email });
+    } catch (e) {
+      if (e instanceof CodeTaken && auto && attempt < 4) continue;
+      if (e instanceof CodeTaken) {
+        throw new HttpError(409, "duplicate", "This employee code is already in use.");
+      }
+      throw e;
+    }
+  }
+}
+
+async function nextCode(caller: Caller): Promise<string> {
+  const { data, error } = await callerClient(caller.jwt).rpc("next_employee_code");
+  if (error || typeof data !== "string") throw error ?? new Error("next_employee_code failed");
+  return data;
+}
+
+async function provision(
+  caller: Caller,
+  body: Record<string, unknown>,
+  p: { code: string; role: Role; sectionId: string | null; fullName: string; email: string | null },
+) {
+  const { code, role, sectionId, fullName, email } = p;
   const admin = adminClient();
   const password = tempPassword();
-  const email = clean(body.email);
   const { data: created, error: authError } = await admin.auth.admin.createUser({
     email: loginEmail(code, email),
     password,
@@ -164,8 +198,14 @@ async function create(caller: Caller, body: Record<string, unknown>) {
   });
   if (authError || !created.user) {
     const msg = authError?.message ?? "";
+    // Without an email the login is derived from the code, so a clash on it is
+    // a code clash. Two simultaneous creates of the same login surface from
+    // GoTrue as a generic "Database error creating new user" (unique violation).
+    if (!email && /already.*registered|exists|database error creating new user/i.test(msg)) {
+      throw new CodeTaken();
+    }
     if (/already.*registered|exists/i.test(msg)) {
-      throw new HttpError(409, "duplicate_login", "An account with this employee code or email already exists.");
+      throw new HttpError(409, "duplicate_login", "An account with this email already exists.");
     }
     throw authError ?? new Error("createUser failed");
   }
@@ -188,7 +228,8 @@ async function create(caller: Caller, body: Record<string, unknown>) {
     // Compensate: never leave a login without a profile.
     await admin.auth.admin.deleteUser(userId);
     if (profileError.code === "23505") {
-      throw new HttpError(409, "duplicate", "Employee code, phone or email is already in use.");
+      if (/employee_code/.test(`${profileError.message} ${profileError.details ?? ""}`)) throw new CodeTaken();
+      throw new HttpError(409, "duplicate", "Phone or email is already in use.");
     }
     throw profileError;
   }

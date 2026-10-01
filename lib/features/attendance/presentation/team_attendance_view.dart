@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../core/design/design.dart';
 import '../../../core/format/formatters.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/maps/app_map.dart';
 import '../../../core/ui/dialogs.dart';
+import '../../../core/ui/sheets.dart';
+import '../../org/data/org_repository.dart';
 import '../data/attendance_repository.dart';
 import 'attendance_labels.dart';
+import 'attendance_location.dart';
+import 'my_attendance_view.dart' show showAttendanceDaySheet;
 
+/// Supervisor/manager view of a day: who is in, where they checked in (map),
+/// what needs review, bulk verification.
 class TeamAttendanceView extends ConsumerStatefulWidget {
   const TeamAttendanceView({super.key});
 
@@ -20,6 +29,7 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
   DateTime _date = Ist.today();
   final Set<String> _selected = {};
   bool _verifying = false;
+  bool _map = false;
 
   void _shift(int days) => setState(() {
         _date = _date.add(Duration(days: days));
@@ -58,12 +68,26 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
   }
 
   Future<void> _edit(TeamDayRow row) async {
-    final saved = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => _MarkSheet(row: row, date: _date),
-    );
+    final saved = await showAppSheet<bool>(context, builder: (_) => _MarkSheet(row: row, date: _date));
     if (saved == true) ref.invalidate(teamDayProvider(_date));
+  }
+
+  /// Person's day: map of check-in/out + an action to mark or correct it.
+  void _open(TeamDayRow row) {
+    final l10n = context.l10n;
+    final d = row.day;
+    if (d == null) {
+      _edit(row);
+      return;
+    }
+    showAttendanceDaySheet(
+      context,
+      d,
+      fence: sectionFence(ref.read(orgTreeProvider).value, row.member.sectionId),
+      title: row.member.fullName,
+      actionLabel: l10n.attCorrect,
+      onAction: () => _edit(row),
+    );
   }
 
   @override
@@ -71,39 +95,62 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
     final l10n = context.l10n;
     final rows = ref.watch(teamDayProvider(_date));
     final isToday = _date == Ist.today();
+    final loc = MaterialLocalizations.of(context);
 
     return Column(
       children: [
-        Material(
-          color: AppColors.canvas,
-          child: Row(
-            children: [
-              IconButton(
-                tooltip: MaterialLocalizations.of(context).previousPageTooltip,
-                icon: const Icon(Icons.chevron_left_rounded),
-                onPressed: _date.isAfter(Ist.today().subtract(const Duration(days: 31))) ? () => _shift(-1) : null,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
+          child: Row(children: [
+            // Date switcher pill.
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.canvasSoft,
+                borderRadius: AppRadius.pillAll,
+                border: Border.all(color: AppColors.hairline),
               ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: _pickDate,
-                  icon: const Icon(Icons.calendar_today_rounded, size: AppSizes.iconSm),
-                  label: Text(MaterialLocalizations.of(context).formatMediumDate(_date)),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(
+                  tooltip: loc.previousPageTooltip,
+                  visualDensity: VisualDensity.compact,
+                  icon: const Icon(Icons.chevron_left_rounded),
+                  onPressed: _date.isAfter(Ist.today().subtract(const Duration(days: 31))) ? () => _shift(-1) : null,
                 ),
-              ),
-              IconButton(
-                tooltip: MaterialLocalizations.of(context).nextPageTooltip,
-                icon: const Icon(Icons.chevron_right_rounded),
-                onPressed: isToday ? null : () => _shift(1),
-              ),
-            ],
-          ),
+                InkWell(
+                  onTap: _pickDate,
+                  borderRadius: AppRadius.pillAll,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                    child: Text(isToday ? l10n.homeTodayTitle : loc.formatMediumDate(_date),
+                        style: AppTypography.label.copyWith(fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                IconButton(
+                  tooltip: loc.nextPageTooltip,
+                  visualDensity: VisualDensity.compact,
+                  icon: const Icon(Icons.chevron_right_rounded),
+                  onPressed: isToday ? null : () => _shift(1),
+                ),
+              ]),
+            ),
+            const Spacer(),
+            SegmentedButton<bool>(
+              showSelectedIcon: false,
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+              segments: [
+                ButtonSegment(value: false, icon: const Icon(Icons.view_list_rounded, size: 18), tooltip: l10n.attViewList),
+                ButtonSegment(value: true, icon: const Icon(Icons.map_rounded, size: 18), tooltip: l10n.attViewMap),
+              ],
+              selected: {_map},
+              onSelectionChanged: (s) => setState(() => _map = s.first),
+            ),
+          ]),
         ),
-        const Divider(),
         Expanded(
           child: switch (rows) {
             AsyncData(:final value) => value.isEmpty
                 ? EmptyState(icon: Icons.groups_rounded, title: l10n.attTeamEmpty)
-                : _list(context, value),
+                : (_map ? _TeamMap(rows: value, onOpen: _open) : _list(context, value)),
             AsyncError(:final error) => ErrorState(
                 title: l10n.commonSomethingWrong,
                 message: failureMessage(l10n, error),
@@ -113,20 +160,29 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
             _ => const LoadingView(),
           },
         ),
-        if (_selected.isNotEmpty)
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: AppButton(
-                label: l10n.attVerifySelected(_selected.length),
-                icon: Icons.verified_rounded,
-                expand: true,
-                loading: _verifying,
-                onPressed: _verify,
-              ),
-            ),
-          ),
+        AnimatedSize(
+          duration: AppMotion.base,
+          curve: AppMotion.curve,
+          child: _selected.isEmpty
+              ? const SizedBox(width: double.infinity)
+              : SafeArea(
+                  top: false,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.canvas,
+                      border: Border(top: BorderSide(color: AppColors.hairline)),
+                    ),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: AppButton(
+                      label: l10n.attVerifySelected(_selected.length),
+                      icon: Icons.verified_rounded,
+                      expand: true,
+                      loading: _verifying,
+                      onPressed: _verify,
+                    ),
+                  ),
+                ),
+        ),
       ],
     );
   }
@@ -142,8 +198,12 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
       child: LazyListView(
         header: [
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Text(l10n.attSummaryLine(present, absent, unmarked), style: AppTypography.label),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.md),
+            child: StatStrip(items: [
+              StatItem(label: l10n.attStatusPresent, value: '$present', color: AppColors.success),
+              StatItem(label: l10n.attStatusAbsent, value: '$absent', color: absent > 0 ? AppColors.danger : null),
+              StatItem(label: l10n.attNotMarked, value: '$unmarked', color: unmarked > 0 ? AppColors.warning : null),
+            ]),
           ),
         ],
         itemCount: rows.length,
@@ -155,13 +215,160 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
             onSelected: r.day == null || r.day!.verified
                 ? null
                 : (v) => setState(() => v ? _selected.add(r.day!.id) : _selected.remove(r.day!.id)),
-            onTap: () => _edit(r),
+            onTap: () => _open(r),
           );
         },
         footer: const [SizedBox(height: AppSpacing.xxl)],
       ),
     );
   }
+}
+
+/// Everyone's check-in on one map, coloured by review state, with the
+/// geofences of their sections.
+class _TeamMap extends ConsumerWidget {
+  const _TeamMap({required this.rows, required this.onOpen});
+
+  final List<TeamDayRow> rows;
+  final ValueChanged<TeamDayRow> onOpen;
+
+  static Color _colorFor(AttendanceDay d) => (d.checkInMocked || d.checkOutMocked)
+      ? AppColors.danger
+      : (d.outsideGeofence == true || d.checkOutOutsideGeofence == true)
+          ? AppColors.warning
+          : AppColors.success;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final tree = ref.watch(orgTreeProvider).value;
+    final located = rows.where((r) => r.day?.checkInLat != null).toList();
+    if (located.isEmpty) {
+      return EmptyState(icon: Icons.location_searching_rounded, title: l10n.attMapEmpty);
+    }
+    final fences = {
+      for (final r in located)
+        if (sectionFence(tree, r.member.sectionId) case final f?) r.member.sectionId: f,
+    }.values.toList();
+    final points = [for (final r in located) LatLng(r.day!.checkInLat!, r.day!.checkInLng!)];
+
+    return Stack(children: [
+      AppMap(
+        center: points.first,
+        zoom: 15,
+        fitPoints: [...points, for (final f in fences) f.$1],
+        layers: [
+          CircleLayer(circles: [for (final f in fences) geofenceCircle(f.$1, f.$2)]),
+          MarkerLayer(markers: [
+            for (final r in located)
+              Marker(
+                point: LatLng(r.day!.checkInLat!, r.day!.checkInLng!),
+                width: 120,
+                height: 64,
+                alignment: Alignment.topCenter,
+                child: GestureDetector(
+                  onTap: () => onOpen(r),
+                  child: _PersonPin(name: r.member.fullName, color: _colorFor(r.day!), time: Fmt.time(r.day!.checkInAt)),
+                ),
+              ),
+          ]),
+        ],
+      ),
+      Positioned(
+        left: AppSpacing.md,
+        top: AppSpacing.md,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.canvas,
+            borderRadius: AppRadius.mdAll,
+            boxShadow: AppShadows.level2,
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            _Legend(color: AppColors.success, label: l10n.attInsideGeofence),
+            _Legend(color: AppColors.warning, label: l10n.attOutsideGeofence),
+            _Legend(color: AppColors.danger, label: l10n.attMockedLocation),
+          ]),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _PersonPin extends StatelessWidget {
+  const _PersonPin({required this.name, required this.color, required this.time});
+
+  final String name;
+  final Color color;
+  final String time;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: '$name $time',
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
+            decoration: BoxDecoration(
+              color: AppColors.canvas,
+              borderRadius: AppRadius.pillAll,
+              border: Border.all(color: color, width: 2),
+              boxShadow: AppShadows.level2,
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Avatar(name, size: 24),
+              const SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: Text(
+                  name.split(' ').first,
+                  style: AppTypography.caption.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600, fontSize: 11.5),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ]),
+          ),
+          CustomPaint(size: const Size(12, 8), painter: _Tail(color)),
+        ]),
+      );
+}
+
+class _Tail extends CustomPainter {
+  const _Tail(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, 0)
+        ..lineTo(size.width, 0)
+        ..lineTo(size.width / 2, size.height)
+        ..close(),
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_Tail old) => old.color != color;
+}
+
+class _Legend extends StatelessWidget {
+  const _Legend({required this.color, required this.label});
+
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          const SizedBox(width: AppSpacing.sm),
+          Text(label, style: AppTypography.caption.copyWith(color: AppColors.inkSecondary, fontSize: 12)),
+        ]),
+      );
 }
 
 class _TeamRow extends StatelessWidget {
@@ -186,26 +393,39 @@ class _TeamRow extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minHeight: AppSizes.listRowMinHeight),
-          padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.sm, AppSpacing.lg, AppSpacing.sm),
-          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.hairline))),
+          constraints: const BoxConstraints(minHeight: AppSizes.listRowMinHeight + 8),
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.sm, AppSpacing.md),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFEEF1F5)))),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Checkbox(value: selected, onChanged: onSelected == null ? null : (v) => onSelected!(v ?? false)),
+              Avatar(row.member.fullName),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(row.member.fullName, style: AppTypography.bodyStrong),
+                    Row(children: [
+                      Expanded(
+                        child: Text(row.member.fullName,
+                            style: AppTypography.bodyStrong, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      attendanceChip(l10n, d?.status, dense: true),
+                    ]),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text([row.member.employeeCode, ?times].join(' · '), style: AppTypography.caption),
                     if (flags.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.xs),
+                      const SizedBox(height: AppSpacing.xs + 2),
                       Wrap(spacing: AppSpacing.xs, runSpacing: AppSpacing.xs, children: flags),
                     ],
                   ],
                 ),
               ),
-              attendanceChip(l10n, d?.status),
+              if (onSelected != null || selected)
+                Checkbox(value: selected, onChanged: onSelected == null ? null : (v) => onSelected!(v ?? false))
+              else
+                const SizedBox(width: AppSpacing.sm),
             ],
           ),
         ),
@@ -289,54 +509,45 @@ class _MarkSheetState extends ConsumerState<_MarkSheet> {
           ),
         );
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Form(
+      key: _formKey,
+      child: SheetScaffold(
+        title: isCorrection ? l10n.attCorrect : l10n.attMark,
+        subtitle: '${widget.row.member.fullName} · ${MaterialLocalizations.of(context).formatMediumDate(widget.date)}',
+        primaryLabel: l10n.commonSave,
+        busy: _busy,
+        onPrimary: _save,
+        children: [
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: [
-              Text(isCorrection ? l10n.attCorrect : l10n.attMark, style: AppTypography.subtitle),
-              Text('${widget.row.member.fullName} · ${MaterialLocalizations.of(context).formatMediumDate(widget.date)}',
-                  style: AppTypography.caption),
-              const SizedBox(height: AppSpacing.lg),
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: [
-                  for (final s in AttendanceStatus.values.where((s) => s != AttendanceStatus.holiday))
-                    ChoiceChip(
-                      label: Text(attendanceStatusLabel(l10n, s)),
-                      selected: _status == s,
-                      onSelected: (_) => setState(() => _status = s),
-                    ),
-                ],
-              ),
-              if (isCorrection && _status == AttendanceStatus.present) ...[
-                const SizedBox(height: AppSpacing.lg),
-                Row(children: [
-                  timeField(l10n.attCheckedIn, _in, (t) => setState(() => _in = t)),
-                  const SizedBox(width: AppSpacing.md),
-                  timeField(l10n.attCheckedOut, _out, (t) => setState(() => _out = t)),
-                ]),
-              ],
-              const SizedBox(height: AppSpacing.lg),
-              AppTextField(
-                label: l10n.attReason,
-                hint: l10n.attReasonHint,
-                controller: _reason,
-                required: true,
-                maxLines: 2,
-                validator: (v) => (v?.trim().length ?? 0) >= 5 ? null : l10n.attReasonTooShort,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(label: l10n.commonSave, loading: _busy, expand: true, onPressed: _save),
+              for (final s in AttendanceStatus.values.where((s) => s != AttendanceStatus.holiday))
+                ChoiceChip(
+                  label: Text(attendanceStatusLabel(l10n, s)),
+                  selected: _status == s,
+                  onSelected: (_) => setState(() => _status = s),
+                ),
             ],
           ),
-        ),
+          if (isCorrection && _status == AttendanceStatus.present) ...[
+            const SizedBox(height: AppSpacing.lg),
+            Row(children: [
+              timeField(l10n.attCheckedIn, _in, (t) => setState(() => _in = t)),
+              const SizedBox(width: AppSpacing.md),
+              timeField(l10n.attCheckedOut, _out, (t) => setState(() => _out = t)),
+            ]),
+          ],
+          const SizedBox(height: AppSpacing.lg),
+          AppTextField(
+            label: l10n.attReason,
+            hint: l10n.attReasonHint,
+            controller: _reason,
+            required: true,
+            maxLines: 2,
+            validator: (v) => (v?.trim().length ?? 0) >= 5 ? null : l10n.attReasonTooShort,
+          ),
+        ],
       ),
     );
   }

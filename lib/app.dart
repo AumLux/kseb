@@ -50,6 +50,7 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
 
     return MaterialApp.router(
       title: 'AumLux',
+      restorationScopeId: 'app',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       locale: locale,

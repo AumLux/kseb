@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,6 +25,8 @@ class Attachment {
     required this.createdAt,
     this.fileName,
     this.capturedAt,
+    this.lat,
+    this.lng,
   });
 
   final String id;
@@ -34,7 +38,10 @@ class Attachment {
   final DateTime createdAt;
   final String? fileName;
   final DateTime? capturedAt;
+  final double? lat;
+  final double? lng;
 
+  bool get hasLocation => lat != null && lng != null;
   bool get isImage => mimeType.startsWith('image/');
 
   factory Attachment.fromJson(Map<String, dynamic> j) => Attachment(
@@ -47,6 +54,8 @@ class Attachment {
         createdAt: DateTime.parse(j['created_at'] as String).toLocal(),
         fileName: j['file_name'] as String?,
         capturedAt: j['captured_at'] == null ? null : DateTime.parse(j['captured_at'] as String).toLocal(),
+        lat: (j['lat'] as num?)?.toDouble(),
+        lng: (j['lng'] as num?)?.toDouble(),
       );
 }
 
@@ -85,6 +94,16 @@ final pendingUploadsProvider = Provider.family<int, AttachmentOwner>((ref, owner
       .length;
 });
 
+/// Local files of photos still waiting to upload, newest last (shown as
+/// thumbnails so a photo never "disappears" while offline).
+final pendingPhotoPathsProvider = Provider.family<List<String>, AttachmentOwner>((ref, owner) {
+  final prefix = '${owner.table}/${owner.id}/';
+  return [
+    for (final o in ref.watch(outboxProvider.select((s) => s.ops)))
+      if (o.kind == OutboxKind.upload && o.name.startsWith(prefix) && !o.failed && o.filePath != null) o.filePath!,
+  ];
+});
+
 final attachmentServiceProvider = Provider<AttachmentService>(AttachmentService.new);
 
 class AttachmentService {
@@ -95,13 +114,46 @@ class AttachmentService {
 
   /// Photos are downscaled by the picker (≈1600px, JPEG q70 → ~200–400 KB)
   /// to fit the free storage tier.
-  static Future<XFile?> pickPhoto(ImageSource source) => ImagePicker().pickImage(
+  ///
+  /// Android may kill the app while the camera is open (memory pressure).
+  /// The owner is remembered first so [recoverLostPhotos] can attach the
+  /// photo when the app comes back.
+  Future<XFile?> pickPhoto(ImageSource source, AttachmentOwner owner) async {
+    final prefs = _ref.read(sharedPreferencesProvider);
+    await prefs.setString(pendingPickKey, jsonEncode({'table': owner.table, 'id': owner.id}));
+    try {
+      return await ImagePicker().pickImage(
         source: source,
         maxWidth: 1600,
         maxHeight: 1600,
         imageQuality: 70,
         requestFullMetadata: false,
       );
+    } finally {
+      await prefs.remove(pendingPickKey);
+    }
+  }
+
+  static const pendingPickKey = 'aumlux.pendingPhotoPick';
+
+  /// Attaches photos that were taken while Android had killed the app.
+  /// Returns how many were recovered (Android only; 0 elsewhere).
+  Future<int> recoverLostPhotos() async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return 0;
+    final prefs = _ref.read(sharedPreferencesProvider);
+    final raw = prefs.getString(pendingPickKey);
+    if (raw == null) return 0;
+    await prefs.remove(pendingPickKey);
+    final lost = await ImagePicker().retrieveLostData();
+    final files = lost.files ?? [?lost.file];
+    if (lost.isEmpty || files.isEmpty) return 0;
+    final o = jsonDecode(raw) as Map<String, dynamic>;
+    final owner = (table: o['table'] as String, id: o['id'] as String);
+    for (final f in files) {
+      await attach(owner: owner, file: f);
+    }
+    return files.length;
+  }
 
   /// Attaches [file] to the record. On phones it is queued (works offline,
   /// survives restarts); on the web it uploads immediately. Returns true if

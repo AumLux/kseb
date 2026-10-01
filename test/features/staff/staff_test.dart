@@ -13,10 +13,16 @@ import 'package:kseb/features/staff/presentation/staff_form_page.dart';
 
 import '../../helpers/fake_auth.dart';
 
-OrgUnit _section(String id, String name) =>
-    OrgUnit(id: id, level: OrgLevel.section, code: id.toUpperCase(), name: name, parentId: 'sd');
+OrgUnit _unit(String id, OrgLevel level, String name, String? parent) =>
+    OrgUnit(id: id, level: level, code: id.toUpperCase(), name: name, parentId: parent);
 
-final _tree = OrgTree([_section('s1', 'Kaloor'), _section('s2', 'Aluva')]);
+final _tree = OrgTree([
+  _unit('c1', OrgLevel.circle, 'Ernakulam Circle', null),
+  _unit('d1', OrgLevel.division, 'Ernakulam Division', 'c1'),
+  _unit('sd', OrgLevel.subdivision, 'Kaloor Sub-division', 'd1'),
+  _unit('s1', OrgLevel.section, 'Kaloor', 'sd'),
+  _unit('s2', OrgLevel.section, 'Aluva', 'sd'),
+]);
 
 AppUser _manager() => AppUser.fromJson(const {
       'id': 'm1',
@@ -31,9 +37,13 @@ AppUser _manager() => AppUser.fromJson(const {
 
 class _FakeStaffRepo implements StaffRepository {
   StaffDraft? created;
+  bool? autoCode;
   @override
-  Future<IssuedCredentials> create(StaffDraft draft) async {
+  Future<String> nextEmployeeCode() async => 'AUM0201';
+  @override
+  Future<IssuedCredentials> create(StaffDraft draft, {bool autoCode = false}) async {
     created = draft;
+    this.autoCode = autoCode;
     return const IssuedCredentials(userId: 'new', loginId: 'AUM0201', tempPassword: 'Tmp4x9Kq2z');
   }
 
@@ -127,8 +137,8 @@ void main() {
     nav.push(MaterialPageRoute<void>(builder: (_) => const StaffFormPage()));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'AUM0201');
-    await tester.enterText(find.byType(TextFormField).at(1), 'Biju Paul');
+    expect(find.text('AUM0201'), findsOneWidget, reason: 'the next free employee ID is generated');
+    await tester.enterText(find.byType(TextFormField).at(0), 'Biju Paul');
 
     await tester.tap(find.byType(DropdownButtonFormField<AppRole>));
     await tester.pumpAndSettle();
@@ -136,8 +146,11 @@ void main() {
     await tester.tap(find.text('Staff').last);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    // Hierarchy picker: single-choice levels are skipped, so the manager lands
+    // straight on their sub-division's sections.
+    await tester.tap(find.text('Choose section'));
     await tester.pumpAndSettle();
+    expect(find.text('Kaloor Sub-division'), findsWidgets, reason: 'breadcrumb shows where we are');
     expect(find.text('Aluva'), findsNothing, reason: 'out-of-scope section is not offered');
     await tester.tap(find.text('Kaloor').last);
     await tester.pumpAndSettle();
@@ -145,12 +158,61 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await tester.pumpAndSettle();
 
-    expect(staffRepo.created?.employeeCode, 'AUM0201');
+    expect(staffRepo.autoCode, isTrue, reason: 'the server allocates the final code');
     expect(staffRepo.created?.sectionId, 's1');
     expect(staffRepo.created?.role, AppRole.staff);
     expect(find.text('Tmp4x9Kq2z'), findsOneWidget);
     await tester.tap(find.text('Done'));
     await tester.pumpAndSettle();
     expect(find.text('list'), findsOneWidget, reason: 'form closes after the credentials are shown');
+  });
+
+  testWidgets('a custom employee ID can still be used instead of the generated one', (tester) async {
+    tester.view
+      ..physicalSize = const Size(800, 1800)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final staffRepo = _FakeStaffRepo();
+    final authRepo = FakeAuthRepository(profile: _manager());
+    addTearDown(authRepo.dispose);
+    final container = ProviderContainer(overrides: [
+      authRepositoryProvider.overrideWithValue(authRepo),
+      onlineProvider.overrideWith((ref) => Stream.value(true)),
+      staffRepositoryProvider.overrideWithValue(staffRepo),
+      orgTreeProvider.overrideWith((ref) async => _tree),
+      teamsProvider.overrideWith((ref) async => const <Team>[]),
+      staffListProvider.overrideWith((ref) async => const []),
+    ]);
+    addTearDown(container.dispose);
+    await container.read(sessionProvider.notifier).signIn('AUM0100', 'abc12345');
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: AppTheme.light(),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: const StaffFormPage(),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Use a custom ID'));
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(TextFormField, 'AUM0201'), findsOneWidget, reason: 'prefilled with the suggestion');
+    await tester.enterText(find.byType(TextFormField).at(0), 'LEG-77');
+    await tester.enterText(find.byType(TextFormField).at(1), 'Old Timer');
+    await tester.tap(find.byType(DropdownButtonFormField<AppRole>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Staff').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Choose section'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kaloor').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    expect(staffRepo.autoCode, isFalse);
+    expect(staffRepo.created?.employeeCode, 'LEG-77');
   });
 }

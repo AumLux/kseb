@@ -12,6 +12,7 @@ import '../../org/data/org_repository.dart';
 import '../data/inventory_repository.dart';
 import 'inventory_labels.dart';
 import 'stock_register_export.dart';
+import '../../../core/ui/sheets.dart';
 
 class InventoryPage extends ConsumerWidget {
   const InventoryPage({super.key});
@@ -208,12 +209,18 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
         .toList();
     String? to = stores.isEmpty ? null : stores.first.id;
     final qty = TextEditingController();
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setLocal) => AlertDialog(
-          title: Text(l10n.invTransfer),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
+    final ok = await showAppSheet<bool>(
+      context,
+      builder: (context) => DisposeWith(
+        controllers: [qty],
+        child: StatefulBuilder(
+        builder: (context, setLocal) => SheetScaffold(
+          title: l10n.invTransfer,
+          primaryLabel: l10n.invTransfer,
+          onPrimary: () => Navigator.pop(context, true),
+          secondaryLabel: l10n.commonCancel,
+          onSecondary: () => Navigator.pop(context, false),
+          children: [
             AppDropdownField<String>(
               label: l10n.invToStore,
               items: stores.map((s) => s.id).toList(),
@@ -227,16 +234,12 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
               controller: qty,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
-          ]),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
-            TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.invTransfer)),
           ],
         ),
       ),
+      ),
     );
-    final n = num.tryParse(qty.text);
-    qty.dispose();
+    final n = num.tryParse(qty.text); // read now: the sheet disposes `qty`
     if (ok != true || to == null || n == null || n <= 0) return;
     await _run(() => ref.read(inventoryRepositoryProvider).transfer(widget.line.materialId, widget.line.storeId, to!, n));
   }

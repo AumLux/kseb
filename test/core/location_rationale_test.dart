@@ -10,6 +10,8 @@ class _Gps implements LocationService {
   _Gps(this.undecided);
   final bool undecided;
   @override
+  Future<bool> requestPermission() async => true;
+  @override
   Future<bool> permissionUndecided() async => undecided;
   @override
   Future<CapturedLocation> current() => throw UnimplementedError();

@@ -7,6 +7,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/dialogs.dart';
 import '../../auth/application/session_controller.dart';
 import '../data/attendance_repository.dart';
+import '../../../core/ui/sheets.dart';
 
 /// Holiday calendar. COO/Director maintain state-wide holidays; managers
 /// can add holidays for their own section (RLS enforces both).
@@ -26,14 +27,22 @@ class _HolidaysPageState extends ConsumerState<HolidaysPage> {
     final name = TextEditingController();
     DateTime date = DateTime(_year, Ist.today().month, Ist.today().day);
     final formKey = GlobalKey<FormState>();
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setLocal) => AlertDialog(
-          title: Text(l10n.holidaysAdd),
-          content: Form(
-            key: formKey,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
+    final saved = await showAppSheet<bool>(
+      context,
+      builder: (context) => DisposeWith(
+        controllers: [name],
+        child: StatefulBuilder(
+        builder: (context, setLocal) => Form(
+          key: formKey,
+          child: SheetScaffold(
+            title: l10n.holidaysAdd,
+            primaryLabel: l10n.commonSave,
+            onPrimary: () {
+              if (formKey.currentState?.validate() ?? false) Navigator.pop(context, true);
+            },
+            secondaryLabel: l10n.commonCancel,
+            onSecondary: () => Navigator.pop(context, false),
+            children: [
               AppTextField(label: l10n.holidaysName, controller: name, required: true),
               const SizedBox(height: AppSpacing.md),
               AppTextField(
@@ -48,25 +57,18 @@ class _HolidaysPageState extends ConsumerState<HolidaysPage> {
                   if (d != null) setLocal(() => date = d);
                 },
               ),
-            ]),
+            ],
           ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
-            TextButton(
-              onPressed: () {
-                if (formKey.currentState?.validate() ?? false) Navigator.pop(context, true);
-              },
-              child: Text(l10n.commonSave),
-            ),
-          ],
         ),
       ),
+      ),
     );
+    final holidayName = name.text; // read now: the sheet disposes `name` once it is gone
     if (saved == true) {
       try {
         await ref.read(attendanceRepositoryProvider).addHoliday(
               date,
-              name.text,
+              holidayName,
               sectionId: me.role.isExecutive ? null : me.sectionId,
             );
         ref.invalidate(holidaysProvider(_year));
@@ -74,7 +76,6 @@ class _HolidaysPageState extends ConsumerState<HolidaysPage> {
         if (mounted) showSnack(context, failureMessage(l10n, e));
       }
     }
-    name.dispose();
   }
 
   Future<void> _delete(Holiday h) async {

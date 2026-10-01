@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../core/design/design.dart';
 import '../../../core/errors/app_failure.dart';
@@ -10,12 +11,16 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/location/location_rationale.dart';
 import '../../../core/location/location_service.dart';
 import '../../../core/ui/dialogs.dart';
+import '../../../core/ui/sheets.dart';
+import '../../auth/application/session_controller.dart';
+import '../../org/data/org_repository.dart';
 import '../application/capture_controller.dart';
 import '../data/attendance_repository.dart';
 import 'attendance_labels.dart';
+import 'attendance_location.dart';
 
-/// The crew-facing attendance screen: one big action, today's status,
-/// this month at a glance.
+/// The crew-facing attendance screen: one big action, today's status and
+/// where it was recorded, this month at a glance.
 class MyAttendanceView extends ConsumerStatefulWidget {
   const MyAttendanceView({super.key});
 
@@ -62,17 +67,19 @@ class _MyAttendanceViewState extends ConsumerState<MyAttendanceView> {
         case CaptureOutcome.queued:
           showSnack(context, l10n.attQueued);
         case CaptureOutcome.rejected:
-          await showDialog<void>(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text(result.message ?? l10n.commonSomethingWrong),
-              actions: [
-                TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonClose)),
-              ],
+          await showAppSheet<void>(
+            context,
+            builder: (context) => SheetScaffold(
+              title: l10n.commonSomethingWrong,
+              primaryLabel: l10n.commonClose,
+              onPrimary: () => Navigator.pop(context),
+              children: [Text(result.message ?? l10n.commonSomethingWrong, style: AppTypography.body)],
             ),
           );
       }
-      ref.invalidate(myMonthProvider(_month));
+      ref
+        ..invalidate(myTodayProvider)
+        ..invalidate(myMonthProvider(_month));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -81,19 +88,22 @@ class _MyAttendanceViewState extends ConsumerState<MyAttendanceView> {
   Future<bool> _askWithoutLocation(AppFailure f) async {
     final l10n = context.l10n;
     final canOpenSettings = f.code == 'location_denied_forever' || f.code == 'location_off';
-    final choice = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.attNoLocationTitle),
-        content: Text('${f.message}\n\n${l10n.attNoLocationNote}'),
-        actions: [
-          if (canOpenSettings)
-            TextButton(onPressed: () => Navigator.pop(context, 'settings'), child: Text(l10n.attOpenSettings)),
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'continue'),
-            child: Text(l10n.attNoLocationContinue),
-          ),
+    final choice = await showAppSheet<String>(
+      context,
+      builder: (context) => SheetScaffold(
+        title: l10n.attNoLocationTitle,
+        primaryLabel: l10n.attNoLocationContinue,
+        onPrimary: () => Navigator.pop(context, 'continue'),
+        secondaryLabel: canOpenSettings ? l10n.attOpenSettings : l10n.commonCancel,
+        onSecondary: () => Navigator.pop(context, canOpenSettings ? 'settings' : null),
+        children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const IconTile(Icons.location_off_rounded, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: Text(f.message, style: AppTypography.body)),
+          ]),
+          const SizedBox(height: AppSpacing.md),
+          Text(l10n.attNoLocationNote, style: AppTypography.caption),
         ],
       ),
     );
@@ -107,60 +117,60 @@ class _MyAttendanceViewState extends ConsumerState<MyAttendanceView> {
     final today = ref.watch(myTodayProvider);
     final pending = ref.watch(pendingCapturesProvider);
     final month = ref.watch(myMonthProvider(_month));
+    final me = ref.watch(currentUserProvider);
+    final fence = sectionFence(ref.watch(orgTreeProvider).value, me?.sectionId);
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(myTodayProvider);
-        ref.invalidate(myMonthProvider(_month));
+        ref
+          ..invalidate(myTodayProvider)
+          ..invalidate(myMonthProvider(_month));
       },
       child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.xxl),
         children: [
-          _TodayCard(
-            day: today.value,
-            pending: pending,
-            loading: today.isLoading && !today.hasValue,
-            busy: _busy,
-            locating: _locating,
-            onCapture: _capture,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
-            padding: EdgeInsets.zero,
-            child: AppListRow(
-              leading: const Icon(Icons.beach_access_rounded, color: AppColors.inkMute),
-              title: l10n.leaveMine,
-              showDivider: false,
-              onTap: () => context.push('/attendance/leave'),
+          FadeSlideIn(
+            child: _TodayCard(
+              day: today.value,
+              fence: fence,
+              pending: pending,
+              loading: today.isLoading && !today.hasValue,
+              busy: _busy,
+              locating: _locating,
+              onCapture: _capture,
             ),
           ),
-          SectionHeader(
-            l10n.attThisMonth,
-            action: Row(mainAxisSize: MainAxisSize.min, children: [
-              IconButton(
-                tooltip: MaterialLocalizations.of(context).previousMonthTooltip,
-                icon: const Icon(Icons.chevron_left_rounded),
-                onPressed: () => setState(() => _month = DateTime(_month.year, _month.month - 1)),
+          const SizedBox(height: AppSpacing.md),
+          FadeSlideIn(
+            index: 1,
+            child: AppCard(
+              padding: EdgeInsets.zero,
+              child: AppListRow(
+                leading: const IconTile(Icons.beach_access_rounded, color: AppColors.info),
+                title: l10n.leaveMine,
+                showDivider: false,
+                onTap: () => context.push('/attendance/leave'),
               ),
-              Text(_monthLabel(context, _month), style: AppTypography.label),
-              IconButton(
-                tooltip: MaterialLocalizations.of(context).nextMonthTooltip,
-                icon: const Icon(Icons.chevron_right_rounded),
-                onPressed: _month.isBefore(Ist.monthStart(Ist.today()))
-                    ? () => setState(() => _month = DateTime(_month.year, _month.month + 1))
-                    : null,
-              ),
-            ]),
+            ),
           ),
+          const SizedBox(height: AppSpacing.xl),
+          Row(children: [
+            Expanded(child: Text(l10n.attThisMonth, style: AppTypography.subtitle)),
+            _MonthSwitcher(
+              month: _month,
+              onChanged: (m) => setState(() => _month = m),
+            ),
+          ]),
+          const SizedBox(height: AppSpacing.md),
           switch (month) {
-            AsyncData(:final value) => _MonthBody(days: value),
+            AsyncData(:final value) => _MonthBody(days: value, fence: fence),
             AsyncError(:final error) => ErrorState(
                 title: l10n.commonSomethingWrong,
                 message: failureMessage(l10n, error),
                 retryLabel: l10n.commonRetry,
                 onRetry: () => ref.invalidate(myMonthProvider(_month)),
               ),
-            _ => const Padding(padding: EdgeInsets.all(AppSpacing.xxl), child: LoadingView()),
+            _ => const SizedBox(height: 280, child: LoadingView()),
           },
         ],
       ),
@@ -168,12 +178,45 @@ class _MyAttendanceViewState extends ConsumerState<MyAttendanceView> {
   }
 }
 
-String _monthLabel(BuildContext context, DateTime month) =>
-    MaterialLocalizations.of(context).formatMonthYear(month);
+class _MonthSwitcher extends StatelessWidget {
+  const _MonthSwitcher({required this.month, required this.onChanged});
+
+  final DateTime month;
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = MaterialLocalizations.of(context);
+    final canNext = month.isBefore(Ist.monthStart(Ist.today()));
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.canvasSoft,
+        borderRadius: AppRadius.pillAll,
+        border: Border.all(color: AppColors.hairline),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        IconButton(
+          tooltip: loc.previousMonthTooltip,
+          visualDensity: VisualDensity.compact,
+          icon: const Icon(Icons.chevron_left_rounded),
+          onPressed: () => onChanged(DateTime(month.year, month.month - 1)),
+        ),
+        Text(loc.formatMonthYear(month), style: AppTypography.label.copyWith(fontWeight: FontWeight.w600)),
+        IconButton(
+          tooltip: loc.nextMonthTooltip,
+          visualDensity: VisualDensity.compact,
+          icon: const Icon(Icons.chevron_right_rounded),
+          onPressed: canNext ? () => onChanged(DateTime(month.year, month.month + 1)) : null,
+        ),
+      ]),
+    );
+  }
+}
 
 class _TodayCard extends StatelessWidget {
   const _TodayCard({
     required this.day,
+    required this.fence,
     required this.pending,
     required this.loading,
     required this.busy,
@@ -182,6 +225,7 @@ class _TodayCard extends StatelessWidget {
   });
 
   final AttendanceDay? day;
+  final (LatLng, int)? fence;
   final List<PendingCapture> pending;
   final bool loading;
   final bool busy;
@@ -196,6 +240,7 @@ class _TodayCard extends StatelessWidget {
     final checkOut = day?.checkOutAt ?? pendingAt(CaptureKind.checkOut);
     final hasPending = pending.isNotEmpty;
     final onLeave = day?.status == AttendanceStatus.leave;
+    final onDuty = checkIn != null && checkOut == null;
 
     final (label, kind) = switch ((checkIn, checkOut)) {
       (null, _) => (l10n.attCheckIn, CaptureKind.checkIn),
@@ -204,17 +249,18 @@ class _TodayCard extends StatelessWidget {
     };
 
     return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(AppSpacing.lg + 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
               Expanded(
-                child: Text(
-                  MaterialLocalizations.of(context).formatFullDate(Ist.today()),
-                  style: AppTypography.subtitle,
-                ),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(l10n.homeTodayTitle.toUpperCase(), style: AppTypography.overline),
+                  const SizedBox(height: AppSpacing.xxs),
+                  Text(MaterialLocalizations.of(context).formatFullDate(Ist.today()), style: AppTypography.subtitle),
+                ]),
               ),
               if (hasPending)
                 StatusChip.fromDomain('pending_sync', label: l10n.attPendingSync)
@@ -223,29 +269,58 @@ class _TodayCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(child: _Stamp(label: l10n.attCheckedIn, time: checkIn)),
-              Expanded(child: _Stamp(label: l10n.attCheckedOut, time: checkOut)),
-            ],
+          IntrinsicHeight(
+            child: Row(children: [
+              Expanded(
+                child: _Stamp(icon: Icons.login_rounded, color: AppColors.success, label: l10n.attCheckedIn, time: checkIn),
+              ),
+              const VerticalDivider(width: AppSpacing.xl),
+              Expanded(
+                child: _Stamp(icon: Icons.logout_rounded, color: AppColors.primaryDeep, label: l10n.attCheckedOut, time: checkOut),
+              ),
+            ]),
           ),
-          if (checkIn != null && checkOut != null) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(l10n.attWorked(Fmt.duration(checkOut.difference(checkIn))), style: AppTypography.caption),
+          if (checkIn != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: StatusChip(
+                label: onDuty
+                    ? l10n.homeOnDuty(Fmt.duration(DateTime.now().difference(checkIn)))
+                    : l10n.attWorked(Fmt.duration(checkOut!.difference(checkIn))),
+                tone: onDuty ? StatusTone.success : StatusTone.neutral,
+                icon: onDuty ? Icons.bolt_rounded : Icons.timelapse_rounded,
+              ),
+            ),
           ],
-          if (day != null && attendanceFlags(l10n, day!).isNotEmpty) ...[
+          if (day != null && day!.checkInLat != null) ...[
+            const SizedBox(height: AppSpacing.lg),
+            AttendanceLocation(day: day!, fence: fence),
+          ] else if (day != null && attendanceFlags(l10n, day!).isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
             Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: attendanceFlags(l10n, day!)),
           ],
-          const SizedBox(height: AppSpacing.xl),
-          if (locating)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: Text(l10n.attLocating, textAlign: TextAlign.center, style: AppTypography.caption),
-            ),
+          const SizedBox(height: AppSpacing.lg + 4),
+          AnimatedSize(
+            duration: AppMotion.base,
+            child: locating
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      const SizedBox.square(dimension: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(l10n.attLocating, style: AppTypography.caption),
+                    ]),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
           AppButton(
             label: label,
-            icon: kind == CaptureKind.checkOut ? Icons.logout_rounded : Icons.login_rounded,
+            icon: switch (kind) {
+              CaptureKind.checkOut => Icons.logout_rounded,
+              CaptureKind.checkIn => Icons.fingerprint_rounded,
+              null => Icons.task_alt_rounded,
+            },
             expand: true,
             loading: busy,
             onPressed: (loading || kind == null || onLeave) ? null : () => onCapture(kind),
@@ -257,26 +332,35 @@ class _TodayCard extends StatelessWidget {
 }
 
 class _Stamp extends StatelessWidget {
-  const _Stamp({required this.label, required this.time});
+  const _Stamp({required this.icon, required this.color, required this.label, required this.time});
 
+  final IconData icon;
+  final Color color;
   final String label;
   final DateTime? time;
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTypography.caption),
-          const SizedBox(height: AppSpacing.xxs),
-          Text(time == null ? '—' : Fmt.time(time), style: AppTypography.kpi.copyWith(fontSize: 24)),
-        ],
-      );
+  Widget build(BuildContext context) => Row(children: [
+        IconTile(icon, color: color, size: 36),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: AppTypography.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(time == null ? '—' : Fmt.time(time), style: AppTypography.kpi.copyWith(fontSize: 24)),
+            ),
+          ]),
+        ),
+      ]);
 }
 
 class _MonthBody extends StatelessWidget {
-  const _MonthBody({required this.days});
+  const _MonthBody({required this.days, required this.fence});
 
   final List<AttendanceDay> days;
+  final (LatLng, int)? fence;
 
   @override
   Widget build(BuildContext context) {
@@ -289,19 +373,16 @@ class _MonthBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(children: [
-          Expanded(child: KpiCard(label: l10n.attDaysPresent, value: Fmt.qty(present))),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(child: KpiCard(label: l10n.attHoursWorked, value: Fmt.qty(worked.inHours))),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(child: KpiCard(label: l10n.attLeaveDays, value: Fmt.qty(leave))),
+        StatStrip(items: [
+          StatItem(label: l10n.attDaysPresent, value: Fmt.qty(present), color: AppColors.success),
+          StatItem(label: l10n.attHoursWorked, value: Fmt.qty(worked.inHours)),
+          StatItem(label: l10n.attLeaveDays, value: Fmt.qty(leave)),
         ]),
-        SectionHeader(l10n.attHistory),
+        const SizedBox(height: AppSpacing.xl),
+        Text(l10n.attHistory, style: AppTypography.subtitle),
+        const SizedBox(height: AppSpacing.md),
         if (days.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Text(l10n.attNoRecords, textAlign: TextAlign.center, style: AppTypography.caption),
-          )
+          SizedBox(height: 220, child: EmptyState(icon: Icons.event_note_rounded, title: l10n.attNoRecords))
         else
           AppCard(
             padding: EdgeInsets.zero,
@@ -309,13 +390,17 @@ class _MonthBody extends StatelessWidget {
               children: [
                 for (final (i, d) in days.reversed.indexed)
                   AppListRow(
-                    title: MaterialLocalizations.of(context).formatMediumDate(d.workDate),
-                    subtitle: d.checkInAt == null
-                        ? null
-                        : '${Fmt.time(d.checkInAt)} – ${d.checkOutAt == null ? '…' : Fmt.time(d.checkOutAt)}'
-                            '${d.worked == null ? '' : ' · ${Fmt.duration(d.worked)}'}',
-                    trailing: attendanceChip(l10n, d.status),
+                    leading: DateBlock(d.workDate, highlight: Ist.iso(d.workDate) == Ist.iso(Ist.today())),
+                    title: d.checkInAt == null
+                        ? attendanceStatusLabel(l10n, d.status)
+                        : '${Fmt.time(d.checkInAt)} – ${d.checkOutAt == null ? '…' : Fmt.time(d.checkOutAt)}',
+                    subtitle: [
+                      if (d.worked != null) Fmt.duration(d.worked),
+                      if (d.checkInDistanceM != null) l10n.attDistanceFromSection(d.checkInDistanceM!),
+                    ].join(' · ').nullIfEmpty,
+                    trailing: attendanceChip(l10n, d.status, dense: true),
                     showDivider: i < days.length - 1,
+                    onTap: () => showAttendanceDaySheet(context, d, fence: fence),
                   ),
               ],
             ),
@@ -323,4 +408,58 @@ class _MonthBody extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Details of one attendance day: times, flags and the check-in/out map.
+///
+/// [actionLabel] adds a primary action (e.g. "Correct record" for a
+/// supervisor); it runs after the sheet closes.
+Future<void> showAttendanceDaySheet(
+  BuildContext context,
+  AttendanceDay d, {
+  (LatLng, int)? fence,
+  String? title,
+  String? actionLabel,
+  VoidCallback? onAction,
+}) {
+  final l10n = context.l10n;
+  return showAppSheet<void>(
+    context,
+    builder: (context) => SheetScaffold(
+      primaryLabel: actionLabel,
+      onPrimary: () {
+        Navigator.pop(context);
+        onAction?.call();
+      },
+      title: title ?? MaterialLocalizations.of(context).formatFullDate(d.workDate),
+      subtitle: [
+        attendanceStatusLabel(l10n, d.status),
+        if (d.checkInAt != null) '${Fmt.time(d.checkInAt)} – ${d.checkOutAt == null ? '…' : Fmt.time(d.checkOutAt)}',
+        if (d.worked != null) Fmt.duration(d.worked),
+      ].join(' · '),
+      children: [
+        if (attendanceFlags(l10n, d).isNotEmpty) ...[
+          Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.xs, children: attendanceFlags(l10n, d)),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+        if (d.checkInLat != null || d.hasCheckOutLocation)
+          AttendanceLocation(day: d, fence: fence, mapHeight: 200)
+        else
+          Row(children: [
+            const IconTile(Icons.location_off_rounded, color: AppColors.inkMute, size: 36),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: Text(l10n.attNoGps, style: AppTypography.caption)),
+          ]),
+        if (d.note != null && d.note!.trim().isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.lg),
+          Text(d.note!, style: AppTypography.body),
+        ],
+        const SizedBox(height: AppSpacing.xl),
+      ],
+    ),
+  );
+}
+
+extension on String {
+  String? get nullIfEmpty => isEmpty ? null : this;
 }

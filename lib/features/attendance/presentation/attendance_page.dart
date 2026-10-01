@@ -14,6 +14,7 @@ import '../application/muster_export.dart';
 import '../data/attendance_repository.dart';
 import 'my_attendance_view.dart';
 import 'team_attendance_view.dart';
+import '../../org/presentation/section_picker.dart';
 
 class AttendancePage extends ConsumerStatefulWidget {
   const AttendancePage({super.key});
@@ -132,11 +133,10 @@ class _MusterSheetState extends ConsumerState<_MusterSheet> {
             ),
             if (sections.length > 1) ...[
               const SizedBox(height: AppSpacing.lg),
-              AppDropdownField<String?>(
+              SectionPickerField(
                 label: l10n.staffSection,
-                items: [null, ...sections.map((s) => s.id)],
+                allowed: sections,
                 value: _sectionId,
-                itemLabel: (id) => id == null ? l10n.attSelectSection : sections.firstWhere((s) => s.id == id).name,
                 onChanged: (id) => setState(() => _sectionId = id),
               ),
             ],

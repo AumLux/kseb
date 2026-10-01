@@ -2071,4 +2071,144 @@ class AppLocalizationsEn extends AppLocalizations {
   String homeWorked(String duration) {
     return 'Worked $duration';
   }
+
+  @override
+  String get commonClear => 'Clear';
+
+  @override
+  String get commonSearch => 'Search';
+
+  @override
+  String get orgChooseSection => 'Choose section';
+
+  @override
+  String get orgSearchSections => 'Search section, code or place';
+
+  @override
+  String get orgAllCircles => 'All circles';
+
+  @override
+  String orgSectionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sections',
+      one: '1 section',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orgNoSectionsFound => 'No matching sections';
+
+  @override
+  String get staffCodeAutoHelper => 'Next free ID — assigned automatically';
+
+  @override
+  String get staffCodeUseCustom => 'Use a custom ID';
+
+  @override
+  String get staffCodeUseAuto => 'Generate automatically';
+
+  @override
+  String get mapTitle => 'Map';
+
+  @override
+  String get mapExpand => 'Open full map';
+
+  @override
+  String get mapPoint => 'Location';
+
+  @override
+  String get mapOpenExternal => 'Directions';
+
+  @override
+  String get mapMyLocation => 'My location';
+
+  @override
+  String get mapDragHint => 'Drag the map to place the pin';
+
+  @override
+  String mapMeters(int meters) {
+    return '$meters m';
+  }
+
+  @override
+  String get mapUseThisLocation => 'Use this location';
+
+  @override
+  String get mapSetOnMap => 'Set on map';
+
+  @override
+  String get mapChangeOnMap => 'Change on map';
+
+  @override
+  String get mapNoLocation => 'No location set';
+
+  @override
+  String get attCheckInPoint => 'Check-in';
+
+  @override
+  String get attCheckOutPoint => 'Check-out';
+
+  @override
+  String get attWhereTitle => 'Where you checked in';
+
+  @override
+  String attDistanceFromSection(int meters) {
+    return '$meters m from section office';
+  }
+
+  @override
+  String get attInsideGeofence => 'Inside geofence';
+
+  @override
+  String get attOutsideGeofence => 'Outside geofence';
+
+  @override
+  String get attMockedLocation => 'Mock location detected';
+
+  @override
+  String get attNoGps => 'No GPS';
+
+  @override
+  String attAccuracy(int meters) {
+    return '±$meters m accuracy';
+  }
+
+  @override
+  String get attViewList => 'List';
+
+  @override
+  String get attViewMap => 'Map';
+
+  @override
+  String get attMapEmpty => 'No check-ins with GPS on this day';
+
+  @override
+  String photoTakenAt(String time) {
+    return 'Taken $time';
+  }
+
+  @override
+  String get photoNoLocation => 'No GPS location was recorded for this photo';
+
+  @override
+  String get photoUploading => 'Uploading';
+
+  @override
+  String get photoWaiting => 'Waiting';
+
+  @override
+  String get photoRecovered =>
+      'Recovered the photo you took before the app closed';
+
+  @override
+  String get photoGpsTagged => 'GPS tagged';
+
+  @override
+  String get wsMapLocation => 'Worksite location';
+
+  @override
+  String get poleMapLocation => 'Pole location';
 }

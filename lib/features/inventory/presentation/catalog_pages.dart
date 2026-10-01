@@ -10,6 +10,8 @@ import '../../auth/application/session_controller.dart';
 import '../../org/data/org_repository.dart';
 import '../../staff/presentation/staff_form_page.dart' show assignableSections;
 import '../data/inventory_repository.dart';
+import '../../../core/ui/sheets.dart';
+import '../../org/presentation/section_picker.dart';
 
 /// Material catalogue (managers+). Codes are permanent once created.
 class CatalogPage extends ConsumerWidget {
@@ -167,38 +169,40 @@ class StoresPage extends ConsumerWidget {
     Future<void> add() async {
       final name = TextEditingController();
       String? sectionId = sections.length == 1 ? sections.single.id : null;
-      final ok = await showDialog<bool>(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setLocal) => AlertDialog(
-            title: Text(l10n.invAddStore),
-            content: Column(mainAxisSize: MainAxisSize.min, children: [
-              AppDropdownField<String>(
+      final ok = await showAppSheet<bool>(
+        context,
+        builder: (context) => DisposeWith(
+          controllers: [name],
+          child: StatefulBuilder(
+          builder: (context, setLocal) => SheetScaffold(
+            title: l10n.invAddStore,
+            primaryLabel: l10n.commonSave,
+            onPrimary: () => Navigator.pop(context, true),
+            secondaryLabel: l10n.commonCancel,
+            onSecondary: () => Navigator.pop(context, false),
+            children: [
+              SectionPickerField(
                 label: l10n.staffSection,
-                items: sections.map((s) => s.id).toList(),
+                allowed: sections,
                 value: sectionId,
-                itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                 onChanged: (v) => setLocal(() => sectionId = v),
               ),
               const SizedBox(height: AppSpacing.md),
               AppTextField(label: l10n.invStoreName, controller: name),
-            ]),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
-              TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.commonSave)),
             ],
           ),
         ),
+        ),
       );
-      if (ok == true && sectionId != null && name.text.trim().length > 1) {
+      final storeName = name.text.trim(); // read now: the sheet disposes `name`
+      if (ok == true && sectionId != null && storeName.length > 1) {
         try {
-          await ref.read(inventoryRepositoryProvider).addStore(sectionId!, name.text);
+          await ref.read(inventoryRepositoryProvider).addStore(sectionId!, storeName);
           ref.invalidate(storesProvider);
         } catch (e) {
           if (context.mounted) showSnack(context, failureMessage(l10n, e));
         }
       }
-      name.dispose();
     }
 
     return Scaffold(

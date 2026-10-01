@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/design/design.dart';
-import '../../../core/errors/app_failure.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/l10n/l10n.dart';
-import '../../../core/location/location_rationale.dart';
-import '../../../core/location/location_service.dart';
 import '../../../core/ui/dialogs.dart';
 import '../../auth/application/session_controller.dart';
 import '../../org/data/org_repository.dart';
 import '../../staff/presentation/staff_form_page.dart' show assignableSections;
 import '../data/worksheet_repository.dart';
 import 'worksheet_labels.dart';
+import '../../org/presentation/section_picker.dart';
+import '../../../core/maps/location_field.dart';
 
 class WorksheetFormPage extends ConsumerStatefulWidget {
   const WorksheetFormPage({super.key, this.worksheetId});
@@ -33,9 +32,7 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
   WorkType _type = WorkType.maintenance;
   String? _sectionId;
   DateTime? _planned;
-  CapturedLocation? _gps;
   double? _lat, _lng;
-  bool _locating = false;
   String? _busy;
   bool _loaded = false;
 
@@ -61,23 +58,6 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
     _planned = w.plannedDate;
     _lat = w.lat;
     _lng = w.lng;
-  }
-
-  Future<void> _useGps() async {
-    if (!await explainLocationIfNeeded(context, ref) || !mounted) return;
-    setState(() => _locating = true);
-    try {
-      final loc = await ref.read(locationServiceProvider).current();
-      setState(() {
-        _gps = loc;
-        _lat = loc.lat;
-        _lng = loc.lng;
-      });
-    } on AppFailure catch (f) {
-      if (mounted) showSnack(context, f.message);
-    } finally {
-      if (mounted) setState(() => _locating = false);
-    }
   }
 
   WorksheetDraft get _draft => WorksheetDraft(
@@ -159,12 +139,11 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
                     validator: (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(l10n.wsJobTitle),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  AppDropdownField<String>(
+                  SectionPickerField(
                     label: l10n.staffSection,
                     required: true,
-                    items: sections.map((s) => s.id).toList(),
+                    allowed: sections,
                     value: _sectionId,
-                    itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
                     onChanged: (id) => setState(() => _sectionId = id),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -175,22 +154,15 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
                     textCapitalization: TextCapitalization.sentences,
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: _lat != null
-                        ? StatusChip(
-                            label: _gps == null
-                                ? '${_lat!.toStringAsFixed(5)}, ${_lng!.toStringAsFixed(5)}'
-                                : l10n.wsGpsSet(_gps!.accuracyM.round()),
-                            tone: StatusTone.success,
-                            icon: Icons.my_location_rounded,
-                          )
-                        : AppButton.tertiary(
-                            label: l10n.wsUseGps,
-                            icon: Icons.my_location_rounded,
-                            loading: _locating,
-                            onPressed: _useGps,
-                          ),
+                  LocationField(
+                    label: l10n.wsMapLocation,
+                    lat: _lat,
+                    lng: _lng,
+                    pinIcon: Icons.handyman_rounded,
+                    onChanged: (lat, lng, _) => setState(() {
+                      _lat = lat;
+                      _lng = lng;
+                    }),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   AppTextField(label: l10n.wsPermitBook, controller: _permitBook),

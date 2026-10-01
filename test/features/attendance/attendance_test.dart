@@ -9,6 +9,8 @@ import 'package:kseb/core/format/ist.dart';
 import 'package:kseb/core/l10n/l10n.dart';
 import 'package:kseb/core/location/location_service.dart';
 import 'package:kseb/core/outbox/outbox.dart';
+import 'package:kseb/features/auth/application/session_controller.dart';
+import 'package:kseb/features/org/data/org_repository.dart';
 import 'package:kseb/features/attendance/application/capture_controller.dart';
 import 'package:kseb/features/attendance/application/muster_export.dart';
 import 'package:kseb/features/attendance/data/attendance_repository.dart';
@@ -37,6 +39,8 @@ class _Gps implements LocationService {
   _Gps({this.failure});
   final AppFailure? failure;
   @override
+  Future<bool> requestPermission() async => true;
+  @override
   Future<bool> permissionUndecided() async => false;
   @override
   Future<CapturedLocation> current() async {
@@ -53,6 +57,8 @@ ProviderContainer _container(_Executor exec, {LocationService? gps}) {
     locationServiceProvider.overrideWithValue(gps ?? _Gps()),
     myTodayProvider.overrideWith((ref) async => null),
     myMonthProvider.overrideWith((ref, month) async => const []),
+    orgTreeProvider.overrideWith((ref) async => const OrgTree([])),
+    currentUserProvider.overrideWithValue(null),
   ]);
   c.listen(outboxProvider, (_, __) {});
   return c;

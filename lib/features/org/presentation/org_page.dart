@@ -7,6 +7,9 @@ import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/dialogs.dart';
 import '../../auth/application/session_controller.dart';
 import '../data/org_repository.dart';
+import 'package:latlong2/latlong.dart' show LatLng;
+import '../../../core/maps/app_map.dart';
+import '../../../core/maps/location_picker_page.dart';
 
 String orgLevelLabel(AppLocalizations l10n, OrgLevel level) => switch (level) {
       OrgLevel.circle => l10n.orgCircle,
@@ -230,6 +233,27 @@ class _UnitFormState extends ConsumerState<_UnitForm> {
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(label: l10n.orgAddress, controller: _address),
                 const SizedBox(height: AppSpacing.lg),
+                _SectionLocation(
+                  lat: double.tryParse(_lat.text.trim()),
+                  lng: double.tryParse(_lng.text.trim()),
+                  radiusM: int.tryParse(_radius.text) ?? 300,
+                  onPick: () async {
+                    final picked = await pickLocation(
+                      context,
+                      title: _name.text.trim().isEmpty ? l10n.orgSectionOffice : _name.text.trim(),
+                      lat: double.tryParse(_lat.text.trim()),
+                      lng: double.tryParse(_lng.text.trim()),
+                      radiusM: int.tryParse(_radius.text) ?? 300,
+                    );
+                    if (picked == null) return;
+                    setState(() {
+                      _lat.text = picked.lat.toStringAsFixed(6);
+                      _lng.text = picked.lng.toStringAsFixed(6);
+                      _radius.text = '${picked.radiusM ?? 300}';
+                    });
+                  },
+                ),
+                const SizedBox(height: AppSpacing.lg),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -273,5 +297,54 @@ class _UnitFormState extends ConsumerState<_UnitForm> {
         ),
       ),
     );
+  }
+}
+
+/// Map preview of a section's office and geofence, with "Set on map".
+class _SectionLocation extends StatelessWidget {
+  const _SectionLocation({required this.lat, required this.lng, required this.radiusM, required this.onPick});
+
+  final double? lat;
+  final double? lng;
+  final int radiusM;
+  final VoidCallback onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final has = lat != null && lng != null && lat!.abs() <= 90 && lng!.abs() <= 180;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Text(l10n.orgGeofence, style: AppTypography.label),
+      const SizedBox(height: AppSpacing.xs + 2),
+      if (has)
+        LocationPreview(
+          height: 160,
+          title: l10n.orgSectionOffice,
+          fence: (LatLng(lat!, lng!), radiusM),
+          points: [MapPoint(point: LatLng(lat!, lng!), color: AppColors.primary, icon: Icons.location_city_rounded)],
+        )
+      else
+        Container(
+          height: 96,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.canvasSoft,
+            borderRadius: AppRadius.lgAll,
+            border: Border.all(color: AppColors.hairline),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.location_off_rounded, color: AppColors.inkMute),
+            const SizedBox(width: AppSpacing.sm),
+            Text(l10n.mapNoLocation, style: AppTypography.caption),
+          ]),
+        ),
+      const SizedBox(height: AppSpacing.sm),
+      AppButton.secondary(
+        label: has ? l10n.mapChangeOnMap : l10n.mapSetOnMap,
+        icon: Icons.map_rounded,
+        expand: true,
+        onPressed: onPick,
+      ),
+    ]);
   }
 }

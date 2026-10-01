@@ -100,21 +100,26 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (fg, bg) = colorsFor(tone);
-    final style = Theme.of(context).textTheme.labelMedium?.copyWith(color: fg);
+    final style = AppTypography.label.copyWith(
+      color: fg,
+      fontSize: dense ? 11.5 : 12.5,
+      fontWeight: FontWeight.w600,
+      height: 1.25,
+    );
     return Semantics(
-      label: 'Status: $label',
+      label: label,
       excludeSemantics: true,
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: dense ? AppSpacing.sm : AppSpacing.sm + 2,
-          vertical: dense ? 2 : AppSpacing.xs,
+          vertical: dense ? 3 : AppSpacing.xs + 1,
         ),
         decoration: BoxDecoration(color: bg, borderRadius: AppRadius.pillAll),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: AppSizes.iconSm, color: fg),
+              Icon(icon, size: dense ? 12 : 14, color: fg),
               const SizedBox(width: AppSpacing.xs),
             ],
             Flexible(

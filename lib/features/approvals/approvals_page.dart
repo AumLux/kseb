@@ -9,6 +9,7 @@ import '../../core/l10n/l10n.dart';
 import '../../core/supabase/providers.dart';
 import '../../core/ui/dialogs.dart';
 import '../home/dashboard_repository.dart';
+import '../../core/ui/sheets.dart';
 
 /// One row of `my_approvals()`: something the caller can decide now.
 class ApprovalItem {
@@ -89,36 +90,14 @@ class ApprovalsPage extends ConsumerWidget {
       ..invalidate(dashboardProvider);
   }
 
-  Future<String?> _askReason(BuildContext context) {
-    final l10n = context.l10n;
-    final controller = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.approvalsReject),
-        content: Form(
-          key: formKey,
-          child: AppTextField(
-            label: l10n.approvalsRejectReason,
-            controller: controller,
-            required: true,
-            maxLines: 2,
-            validator: (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(l10n.approvalsRejectReason),
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
-          TextButton(
-            onPressed: () {
-              if (formKey.currentState?.validate() ?? false) Navigator.pop(context, controller.text.trim());
-            },
-            child: Text(l10n.approvalsReject),
-          ),
-        ],
-      ),
-    ).whenComplete(controller.dispose);
-  }
+  Future<String?> _askReason(BuildContext context) => promptText(
+        context,
+        title: context.l10n.approvalsReject,
+        label: context.l10n.approvalsRejectReason,
+        confirmLabel: context.l10n.approvalsReject,
+        minLength: 3,
+        destructive: true,
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
