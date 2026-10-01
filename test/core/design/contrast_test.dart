@@ -38,6 +38,11 @@ void main() {
       'on-dark on brand-dark': (AppColors.onDark, AppColors.brandDark),
       'on-dark on danger': (AppColors.onDark, AppColors.danger),
       'on-dark on ink (snackbar)': (AppColors.onDark, AppColors.ink),
+      'on-primary on primary-press': (AppColors.onPrimary, AppColors.primaryPress),
+      'primary-ink on canvas-soft': (AppColors.primaryInk, AppColors.canvasSoft),
+      'brand-orange-ink on canvas': (AppColors.brandOrangeInk, AppColors.canvas),
+      'ink on cream (mesh)': (AppColors.ink, AppColors.cream),
+      'ink on lavender (mesh)': (AppColors.ink, AppColors.lavender),
     };
 
     textPairs.forEach((name, pair) {
@@ -56,9 +61,9 @@ void main() {
           greaterThanOrEqualTo(3.0));
     });
 
-    test('white on brand orange fails, so on-primary is never white', () {
-      expect(contrast(Colors.white, AppColors.primary), lessThan(3.0));
-      expect(AppColors.onPrimary, isNot(Colors.white));
+    test('white on brand orange fails, so orange is never a text background', () {
+      expect(contrast(Colors.white, AppColors.brandOrange), lessThan(3.0));
+      expect(AppColors.primary, isNot(AppColors.brandOrange));
     });
   });
 }

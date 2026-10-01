@@ -76,9 +76,10 @@ class _AssetsPageState extends ConsumerState<AssetsPage> {
                 if (list.isEmpty) return EmptyState(icon: Icons.devices_other_rounded, title: l10n.assetEmpty);
                 return RefreshIndicator(
                   onRefresh: () => ref.refresh(assetsProvider.future),
-                  child: ListView(padding: const EdgeInsets.only(bottom: 96), children: [
-                    for (final a in list)
-                      AppListRow(
+                  child: LazyListView(padding: const EdgeInsets.only(bottom: 96), itemCount: list.length,
+                    itemBuilder: (context, i) {
+                      final a = list[i];
+                      return AppListRow(
                         title: '${a.tag} · ${a.name}',
                         subtitle: [
                           assetCategoryLabel(l10n, a.category),
@@ -87,8 +88,8 @@ class _AssetsPageState extends ConsumerState<AssetsPage> {
                         ].join(' · '),
                         trailing: assetStatusChip(l10n, a.status),
                         onTap: () => context.push('/more/assets/${a.id}'),
-                      ),
-                  ]),
+                      );
+                    }),
                 );
               }(),
             AsyncError(:final error) => ErrorState(

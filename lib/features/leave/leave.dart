@@ -157,11 +157,12 @@ class LeavePage extends ConsumerWidget {
       body: switch (leave) {
         AsyncData(:final value) => value.isEmpty
             ? EmptyState(icon: Icons.beach_access_rounded, title: l10n.leaveEmpty)
-            : ListView(
+            : LazyListView(
                 padding: const EdgeInsets.only(bottom: 96),
-                children: [
-                  for (final r in value)
-                    AppListRow(
+                itemCount: value.length,
+                  itemBuilder: (context, i) {
+                    final r = value[i];
+                    return AppListRow(
                       title: '${leaveTypeLabel(l10n, r.type)} · ${l10n.leaveDays(r.days)}',
                       subtitle: [
                         '${MaterialLocalizations.of(context).formatMediumDate(r.from)} – '
@@ -189,8 +190,8 @@ class LeavePage extends ConsumerWidget {
                               ),
                             ])
                           : StatusChip.fromDomain(r.status, label: requestStatusLabel(l10n, r.status)),
-                    ),
-                ],
+                    );
+                  },
               ),
         AsyncError(:final error) => ErrorState(
             title: l10n.commonSomethingWrong,

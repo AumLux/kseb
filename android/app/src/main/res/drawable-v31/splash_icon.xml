@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ splash: the brand disc, then the pylon draws itself
+     (legs rise, crossarm and bar sweep in, insulators pop). The system masks
+     this 108-unit square to a circle of 2/3 its size; the glyph fits inside. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            <path android:pathData="M0,0h108v108h-108z">
+                <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:type="linear"
+                        android:startX="18"
+                        android:startY="18"
+                        android:endX="90"
+                        android:endY="90">
+                        <item android:offset="0" android:color="#FFFF6B35" />
+                        <item android:offset="0.55" android:color="#FFEA2261" />
+                        <item android:offset="1" android:color="#FF533AFD" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+            <path
+                android:name="legLeft"
+                android:pathData="M38,78 L54,31"
+                android:strokeColor="#FFFFFFFF"
+                android:strokeWidth="7.5"
+                android:strokeLineCap="round"
+                android:trimPathEnd="0" />
+            <path
+                android:name="legRight"
+                android:pathData="M70,78 L54,31"
+                android:strokeColor="#FFFFFFFF"
+                android:strokeWidth="7.5"
+                android:strokeLineCap="round"
+                android:trimPathEnd="0" />
+            <path
+                android:name="arm"
+                android:pathData="M54,45 L33,45 M54,45 L75,45"
+                android:strokeColor="#FFFFFFFF"
+                android:strokeWidth="6"
+                android:strokeLineCap="round"
+                android:trimPathEnd="0" />
+            <path
+                android:name="bar"
+                android:pathData="M54,62 L44.2,62 M54,62 L63.8,62"
+                android:strokeColor="#FFFFFFFF"
+                android:strokeWidth="6"
+                android:strokeLineCap="round"
+                android:trimPathEnd="0" />
+            <group
+                android:name="dots"
+                android:pivotX="54"
+                android:pivotY="53"
+                android:scaleX="0"
+                android:scaleY="0">
+                <path
+                    android:pathData="M29.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0M71.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0"
+                    android:fillColor="#FFFFFFFF" />
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <target android:name="legLeft">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="320"
+                android:interpolator="@android:interpolator/decelerate_cubic"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+    <target android:name="legRight">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="320"
+                android:interpolator="@android:interpolator/decelerate_cubic"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+    <target android:name="arm">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="220"
+                android:interpolator="@android:interpolator/decelerate_cubic"
+                android:propertyName="trimPathEnd"
+                android:startOffset="260"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+    <target android:name="bar">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="200"
+                android:interpolator="@android:interpolator/decelerate_cubic"
+                android:propertyName="trimPathEnd"
+                android:startOffset="380"
+                android:valueFrom="0"
+                android:valueTo="1" />
+        </aapt:attr>
+    </target>
+    <target android:name="dots">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/overshoot"
+                    android:propertyName="scaleX"
+                    android:startOffset="500"
+                    android:valueFrom="0"
+                    android:valueTo="1" />
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/overshoot"
+                    android:propertyName="scaleY"
+                    android:startOffset="500"
+                    android:valueFrom="0"
+                    android:valueTo="1" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

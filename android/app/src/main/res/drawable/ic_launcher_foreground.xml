@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AumLux pylon "A" (matches BrandMarkPainter; fits the 66dp safe zone). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M38,78 L54,31 L70,78"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="7.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M33,45 L75,45 M44.2,62 L63.8,62"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M29.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0M71.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0"
+        android:fillColor="#FFFFFFFF" />
+</vector>

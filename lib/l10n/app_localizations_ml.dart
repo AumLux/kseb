@@ -2067,4 +2067,17 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get updateButton => 'അപ്ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക';
+
+  @override
+  String get homeShortcuts => 'കുറുക്കുവഴികൾ';
+
+  @override
+  String homeOnDuty(String duration) {
+    return 'ഡ്യൂട്ടിയിൽ · $duration';
+  }
+
+  @override
+  String homeWorked(String duration) {
+    return 'ജോലി ചെയ്തത് $duration';
+  }
 }

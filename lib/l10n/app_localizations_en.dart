@@ -2058,4 +2058,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateButton => 'Download update';
+
+  @override
+  String get homeShortcuts => 'Shortcuts';
+
+  @override
+  String homeOnDuty(String duration) {
+    return 'On duty · $duration';
+  }
+
+  @override
+  String homeWorked(String duration) {
+    return 'Worked $duration';
+  }
 }

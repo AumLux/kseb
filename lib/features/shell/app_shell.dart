@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,10 +14,10 @@ class AppShell extends ConsumerWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  void _go(int index) => navigationShell.goBranch(
-        index,
-        initialLocation: index == navigationShell.currentIndex,
-      );
+  void _go(int index) {
+    if (index != navigationShell.currentIndex) HapticFeedback.selectionClick();
+    navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,9 +25,9 @@ class AppShell extends ConsumerWidget {
     final online = ref.watch(onlineProvider).value ?? true;
     final destinations = [
       (Icons.home_outlined, Icons.home_rounded, l10n.navHome),
-      (Icons.how_to_reg_outlined, Icons.how_to_reg_rounded, l10n.navAttendance),
-      (Icons.assignment_outlined, Icons.assignment_rounded, l10n.navWork),
-      (Icons.menu_rounded, Icons.menu_rounded, l10n.navMore),
+      (Icons.fingerprint_rounded, Icons.fingerprint_rounded, l10n.navAttendance),
+      (Icons.handyman_outlined, Icons.handyman_rounded, l10n.navWork),
+      (Icons.grid_view_outlined, Icons.grid_view_rounded, l10n.navMore),
     ];
 
     final body = Column(
@@ -66,13 +67,17 @@ class AppShell extends ConsumerWidget {
       }
       return Scaffold(
         body: body,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: _go,
-          destinations: [
-            for (final (icon, selected, label) in destinations)
-              NavigationDestination(icon: Icon(icon), selectedIcon: Icon(selected), label: label),
-          ],
+        bottomNavigationBar: DecoratedBox(
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.hairline))),
+          child: NavigationBar(
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _go,
+            animationDuration: AppMotion.base,
+            destinations: [
+              for (final (icon, selected, label) in destinations)
+                NavigationDestination(icon: Icon(icon), selectedIcon: Icon(selected), label: label),
+            ],
+          ),
         ),
       );
     });

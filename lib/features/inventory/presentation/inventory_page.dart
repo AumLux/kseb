@@ -144,11 +144,12 @@ class _StockTabState extends ConsumerState<_StockTab> {
     }
     return RefreshIndicator(
       onRefresh: () => ref.refresh(stockProvider.future),
-      child: ListView(
+      child: LazyListView(
         padding: const EdgeInsets.only(bottom: 96),
-        children: [
-          for (final s in lines)
-            AppListRow(
+        itemCount: lines.length,
+          itemBuilder: (context, i) {
+            final s = lines[i];
+            return AppListRow(
               title: s.materialName,
               subtitle: '${s.materialCode} · ${s.storeName}',
               trailing: Column(
@@ -164,8 +165,8 @@ class _StockTabState extends ConsumerState<_StockTab> {
                 isScrollControlled: true,
                 builder: (_) => _StockLineSheet(line: s),
               ),
-            ),
-        ],
+            );
+          },
       ),
     );
   }
@@ -300,9 +301,10 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
               child: switch (ledger) {
                 AsyncData(:final value) when value.isEmpty =>
                   Center(child: Text(l10n.invLedgerEmpty, style: AppTypography.caption)),
-                AsyncData(:final value) => ListView(children: [
-                    for (final e in value)
-                      AppListRow(
+                AsyncData(:final value) => LazyListView(itemCount: value.length,
+                    itemBuilder: (context, i) {
+                      final e = value[i];
+                      return AppListRow(
                         title: txnLabel(l10n, e.txnType),
                         subtitle: [Fmt.dateTime(e.createdAt), ?e.note].join(' · '),
                         trailing: Text(
@@ -310,8 +312,8 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
                           style: AppTypography.bodyTabular
                               .copyWith(color: e.qtyDelta > 0 ? AppColors.success : AppColors.danger),
                         ),
-                      ),
-                  ]),
+                      );
+                    }),
                 AsyncError(:final error) => ErrorState(title: failureMessage(l10n, error)),
                 _ => const LoadingView(),
               },
@@ -451,15 +453,16 @@ class _RequestsTabState extends ConsumerState<_RequestsTab> {
               if (list.isEmpty) return EmptyState(icon: Icons.receipt_long_outlined, title: l10n.invRequestsEmpty);
               return RefreshIndicator(
                 onRefresh: () => ref.refresh(materialRequestsProvider.future),
-                child: ListView(padding: const EdgeInsets.only(bottom: 96), children: [
-                  for (final r in list)
-                    AppListRow(
+                child: LazyListView(padding: const EdgeInsets.only(bottom: 96), itemCount: list.length,
+                  itemBuilder: (context, i) {
+                    final r = list[i];
+                    return AppListRow(
                       title: '${requestTypeLabel(l10n, r.type)} · ${r.materialName}',
                       subtitle: [r.code, Fmt.qty(r.quantity, unit: r.unit), r.storeName].join(' · '),
                       trailing: requestChip(l10n, r.status),
                       onTap: () => context.push('/more/inventory/requests/${r.id}'),
-                    ),
-                ]),
+                    );
+                  }),
               );
             }(),
           AsyncError(:final error) => ErrorState(

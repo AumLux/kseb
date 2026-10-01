@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_tokens.dart';
+import '../motion/motion.dart';
 
 enum AppButtonVariant { primary, secondary, tertiary, danger }
 
@@ -58,14 +59,16 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveOnPressed = loading ? null : onPressed;
+    // While loading the button keeps its enabled colours (so the spinner is
+    // visible) but swallows taps, which still prevents double submits.
+    final effectiveOnPressed = loading ? (onPressed == null ? null : _ignore) : onPressed;
     final spinnerColor = switch (variant) {
       AppButtonVariant.primary => AppColors.onPrimary,
       AppButtonVariant.danger => AppColors.onDark,
       _ => AppColors.ink,
     };
 
-    final Widget child = loading
+    final Widget content = loading
         ? SizedBox.square(
             dimension: 20,
             child: CircularProgressIndicator(
@@ -85,6 +88,10 @@ class AppButton extends StatelessWidget {
               ),
             ],
           );
+    final child = AnimatedSwitcher(
+      duration: AppMotion.fast,
+      child: KeyedSubtree(key: ValueKey(loading), child: content),
+    );
 
     final Widget button = switch (variant) {
       AppButtonVariant.primary =>
@@ -98,18 +105,26 @@ class AppButton extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.danger,
             foregroundColor: AppColors.onDark,
-            minimumSize: const Size(64, AppSizes.minTouchTarget),
+            minimumSize: const Size(64, AppSizes.primaryActionHeight),
           ),
           child: child,
         ),
     };
 
+    final animated = PressScale(
+      enabled: !loading && onPressed != null,
+      scale: variant == AppButtonVariant.tertiary ? 0.95 : 0.97,
+      child: button,
+    );
+
     return Semantics(
       button: true,
-      enabled: effectiveOnPressed != null,
+      enabled: !loading && onPressed != null,
       label: loading ? '$label, in progress' : null,
       excludeSemantics: loading,
-      child: expand ? SizedBox(width: double.infinity, child: button) : button,
+      child: expand ? SizedBox(width: double.infinity, child: animated) : animated,
     );
   }
 }
+
+void _ignore() {}

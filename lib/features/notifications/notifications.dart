@@ -120,20 +120,22 @@ class NotificationsPage extends ConsumerWidget {
           EmptyState(icon: Icons.notifications_none_rounded, title: l10n.notifEmpty),
         AsyncData(:final value) => RefreshIndicator(
             onRefresh: () => ref.refresh(notificationsProvider.future),
-            child: ListView(children: [
-              for (final n in value)
-                AppListRow(
+            child: LazyListView(
+              itemCount: value.length,
+              itemBuilder: (context, i) {
+                final n = value[i];
+                return AppListRow(
                   selected: n.unread,
-                  leading: Icon(
-                    n.unread ? Icons.circle : Icons.circle_outlined,
-                    size: 10,
-                    color: n.unread ? AppColors.primaryInk : AppColors.inkDisabled,
+                  leading: IconTile(
+                    n.unread ? Icons.notifications_active_rounded : Icons.notifications_none_rounded,
+                    color: n.unread ? AppColors.primaryDeep : AppColors.inkMute,
                   ),
                   title: n.title,
                   subtitle: [?n.body, Fmt.dateTime(n.createdAt)].join('\n'),
                   onTap: () => _open(context, ref, n),
-                ),
-            ]),
+                );
+              },
+            ),
           ),
         AsyncError(:final error) => ErrorState(
             title: l10n.commonSomethingWrong,

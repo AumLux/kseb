@@ -2,16 +2,24 @@
 version: 1.0
 name: AumLux-design-system
 basis: "Stripe DESIGN.md (getdesign.md/stripe) — structure, type rhythm, hairlines, tabular numerics, pill actions — re-keyed to the AumLux orange accent and hardened for outdoor field use."
-description: "A calm, white-canvas operations UI for a KSEB electrical contractor. Deep navy ink (#0d253d) carries all text; AumLux orange (#FF6B35) is the single brand accent used for one primary action per screen, active states and brand moments. Surfaces are white and cool off-white separated by 1px hairlines. Every number that represents money, quantity, count or time uses tabular figures. Controls are large (48dp minimum) and high-contrast because the primary users are line crews working in direct sunlight with gloves."
+description: "A calm, white-canvas operations UI for a KSEB electrical contractor. Deep navy ink (#0d253d) carries all text; Stripe indigo (#533afd) is the action colour (one filled pill per screen, active states, links); AumLux orange (#FF6B35) is the brand accent, living in the logo and the gradient mesh. Surfaces are white and cool off-white separated by 1px hairlines. Every number that represents money, quantity, count or time uses tabular figures. Controls are large (48dp minimum) and high-contrast because the primary users are line crews working in direct sunlight with gloves."
 
 colors:
   # Brand
-  primary: "#FF6B35"            # fills only (buttons, active nav, progress). Never text on white.
-  on-primary: "#0d253d"         # text/icons on primary fill (5.49:1). White on orange FAILS (2.84:1).
-  primary-press: "#E64A19"
-  primary-soft: "#ffe9df"       # tinted backgrounds, selected rows, soft tags
-  primary-ink: "#B93D10"        # orange used AS TEXT/ICON/FOCUS on white (5.62:1)
-  brand-dark: "#1c1e54"         # splash, featured KPI card, inverse surfaces
+  primary: "#533afd"            # indigo: filled CTAs, active nav, selection, links
+  on-primary: "#ffffff"         # white on indigo = 6.19:1
+  primary-press: "#2e2b8c"
+  primary-deep: "#4434d4"
+  primary-soft: "#eeebff"       # nav indicator, selected rows, soft tags
+  primary-ink: "#4434d4"        # indigo AS TEXT/ICON on white (7.1:1)
+  brand-dark: "#1c1e54"         # featured KPI card, inverse surfaces
+  # Brand accents: logo, gradient mesh, highlights. Never body text or a button fill.
+  brand-orange: "#FF6B35"
+  brand-orange-ink: "#B93D10"   # orange as text/icon on white (5.62:1)
+  ruby: "#ea2261"
+  magenta: "#f96bee"
+  lavender: "#b9b9f9"
+  cream: "#f5e9d4"
   # Ink
   ink: "#0d253d"                # body + headings (15.57:1 on white)
   ink-secondary: "#273951"      # secondary text (11.73:1)
@@ -24,7 +32,7 @@ colors:
   canvas-sunken: "#eef2f7"      # pressed rows, skeletons
   hairline: "#e3e8ee"           # decorative dividers, card borders
   border-input: "#7f8ea6"       # input / checkbox / radio outlines (3.32:1, meets WCAG 1.4.11)
-  focus-ring: "#B93D10"
+  focus-ring: "#533afd"
   scrim: "#0d253d99"
   # Semantic (fg = text/icon, bg = tint). Every fg/bg pair ≥ 4.5:1.
   success: "#137a3f"
@@ -110,10 +118,11 @@ AumLux is the operations system for a contractor that builds and repairs KSEB di
 | **Supervisor / Manager** | Site and section office, phone and occasionally web | Fast scanning of lists, approve and reject in two taps, clear status |
 | **COO / Director / Office** | Desk, web, long sessions | Dense tables, tabular money, filters, exports, KPI overview |
 
-The language borrows **Stripe's** structure: white canvas, deep navy ink instead of black, 1px hairlines instead of heavy shadows, tabular figures wherever numbers matter, and pill-shaped actions. The accent is **AumLux orange**. Stripe's thin-weight editorial type is deliberately **toned down**. Weight 300 is reserved for large display numbers, and all reading text is 400 or heavier, because thin type disappears in sunlight.
+The language borrows **Stripe's** structure: white canvas, deep navy ink instead of black, 1px hairlines instead of heavy shadows, tabular figures wherever numbers matter, and pill-shaped actions. Actions are **Stripe indigo**; **AumLux orange** is the brand accent (logo, gradient mesh). Layout and density take cues from **Groww** (hero card, round shortcuts, big thin numbers) and **Notion** (icon-tile rows, calm white pages). Stripe's thin type is used for display sizes only (≥ 26px); all reading text is 400 or heavier, because thin type disappears in sunlight.
 
 **Key characteristics**
-- One filled orange pill per screen: the primary action. Everything else is secondary, tertiary or a list row.
+- One filled indigo pill per screen: the primary action. Everything else is secondary, tertiary or a list row.
+- The gradient mesh (cream → orange → lavender → indigo → ruby) washes the top of Home and Sign-in; content floats over it on white cards.
 - Navy ink `#0d253d` for text; never pure black.
 - Hairline-first separation (`#e3e8ee`); shadows only on floating layers.
 - Tabular numbers (`tnum`) for every amount, quantity, count, date column and time.
@@ -122,11 +131,10 @@ The language borrows **Stripe's** structure: white canvas, deep navy ink instead
 
 ## Colors
 
-### The orange rule (accessibility-critical)
-`#FF6B35` on white is **2.84:1**, which fails WCAG for text and for UI boundaries. Therefore:
-- **Fills:** orange background with **navy text** (`on-primary #0d253d`, 5.49:1). Never white text on orange.
-- **Orange as text, icon, link or focus ring:** use `primary-ink #B93D10` (5.62:1 on white).
-- **Tints:** `primary-soft #ffe9df` behind navy text (13.3:1) for selected rows, tags and highlights.
+### Primary and accent (accessibility-critical)
+- **Indigo `#533afd`** carries actions: filled buttons (white text, 6.19:1), active nav, checkboxes, focus rings. As text or icons use `primary-ink #4434d4` (7.1:1).
+- **AumLux orange `#FF6B35`** is the brand accent. White on orange is **2.84:1**, so orange is never a button fill or a text background. As text, use `brand-orange-ink #B93D10` (5.62:1).
+- **Gradient mesh:** blobs are kept pale enough that ink text over them stays ≥ 7:1 (`test/core/design/contrast_test.dart`).
 
 ### Ink
 | Token | Hex | On white | Use |
@@ -164,10 +172,10 @@ The language borrows **Stripe's** structure: white canvas, deep navy ink instead
 
 | Token | Size / Weight / LH | Use |
 |---|---|---|
-| display | 32 / 300 / 1.15 | Splash, the single hero number on a dashboard |
-| headline | 24 / 400 / 1.2 | Screen titles on large layouts |
-| title | 20 / 500 / 1.3 | App bar, sheet titles |
-| subtitle | 17 / 500 / 1.35 | Card titles, section headers |
+| display | 34 / 300 / 1.1, tnum | Home greeting name, sign-in title, hero numbers |
+| headline | 26 / 300 / 1.15 | Large screen titles |
+| title | 20 / 600 / 1.25 | App bar, sheet and dialog titles |
+| subtitle | 17 / 600 / 1.3 | Card titles, section headers |
 | body | 15 / 400 / 1.45 | Default text |
 | body-strong | 15 / 600 | Emphasis inside body, row primary text |
 | body-tabular | 15 / 500, `tnum` | Money, quantities, counts, times in rows and tables |
@@ -264,15 +272,34 @@ Pill, label typography, fg on bg from the semantic table, a leading 16dp icon (c
 
 Material Symbols Rounded at a 24dp default (20dp in dense tables, 48dp in empty states). The icon colour follows its text colour. Domain icons: `bolt` (brand), `electrical_services` (pole), `transform` / `power` (transformer), `inventory_2` (materials), `assignment` (worksheet), `fingerprint` / `how_to_reg` (attendance), `request_quote` (bills), `account_balance` (deposits/GST), `gavel` (tenders), `health_and_safety` (permit/safety).
 
+## Brand mark
+
+An "A" drawn as a transmission pylon: two legs, a crossarm with insulators, and a lattice bar. It sits in white on the orange → ruby → indigo tile. One geometry, in a 108-unit square (the adaptive-icon canvas), feeds every output:
+
+- **In app:** `BrandMarkPainter` (`lib/core/design/widgets/brand_mark.dart`).
+- **Android vectors:** `ic_launcher_*` (adaptive and themed icon), `splash_logo`, and the Android 12+ animated `splash_icon`, where the pylon draws itself.
+- **PNGs:** legacy mipmaps, web, maskable and favicon, rendered from the painter with `flutter test tools/brand/render_icons_test.dart`.
+
 ## Motion
 
-Page transitions are a 200ms fade-through. Sheets slide up over 280ms with easeOutCubic. Button press scales to 0.98 over 120ms. No celebratory animation in operational flows. (The birthday confetti is removed; a subtle greeting line replaces it.)
+The goal is snappy, not showy. The UI answers the finger within one frame, and nothing blocks input.
+
+| Pattern | Spec |
+|---|---|
+| Page transition | The incoming page rises 3% and fades in: 260ms in, 200ms out, emphasized-decelerate. Only one layer moves and nothing is scaled. |
+| Press | `PressScale`: 0.97 (0.93 for shortcuts) over 90ms, springs back with easeOutBack. Selection haptic on tap. |
+| Entrance | `FadeSlideIn`: 12px rise and fade, 320ms, staggered 40ms per item (capped at 6). Timer-free. |
+| Loading | `Skeleton` rows shaped like the content, with a single pulse. No spinners for lists. |
+| Splash | The native pylon draws itself in 700ms; the Flutter splash continues the same drawing. |
+| Reduced motion | Every animation honours the OS setting (`reduceMotion(context)`). |
+
+Lists with data must use `LazyListView` or `ListView.builder`, never `ListView(children: [for ...])`.
 
 ## Do / Don't
 
 | Do | Don't |
 |---|---|
-| Use one orange primary per screen | Put white text on orange |
+| Use one indigo primary per screen | Put white text on orange, or use orange as a button |
 | Use navy ink for text | Use pure black or grey-on-grey text |
 | Use tabular figures for all numbers | Mix proportional digits in columns |
 | Use hairlines to separate | Stack shadows or use gradients in product UI |

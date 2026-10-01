@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../core/design/design.dart';
 import '../../../core/l10n/l10n.dart';
 import '../data/worksheet_repository.dart';
@@ -6,6 +8,12 @@ String workTypeLabel(AppLocalizations l10n, WorkType t) => switch (t) {
       WorkType.project => l10n.wsTypeProject,
       WorkType.maintenance => l10n.wsTypeMaintenance,
       WorkType.calamity => l10n.wsTypeCalamity,
+    };
+
+IconData workTypeIcon(WorkType t) => switch (t) {
+      WorkType.project => Icons.construction_rounded,
+      WorkType.maintenance => Icons.handyman_rounded,
+      WorkType.calamity => Icons.thunderstorm_rounded,
     };
 
 String worksheetStatusLabel(AppLocalizations l10n, WorksheetStatus s) => switch (s) {

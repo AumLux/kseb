@@ -843,5 +843,22 @@
   "locRationaleBody": "Your location is recorded only at the moment you check in or out, or capture a site photo or pole. It is never tracked in the background.",
   "updateTitle": "Update required",
   "updateBody": "This version of AumLux is no longer supported. Install the latest version to continue — your saved data is kept.",
-  "updateButton": "Download update"
+  "updateButton": "Download update",
+  "homeShortcuts": "Shortcuts",
+  "homeOnDuty": "On duty · {duration}",
+  "@homeOnDuty": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWorked": "Worked {duration}",
+  "@homeWorked": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  }
 }

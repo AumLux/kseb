@@ -40,6 +40,12 @@ class _IdleGuardState extends ConsumerState<IdleGuard> {
   }
 
   @override
+  void didUpdateWidget(IdleGuard old) {
+    super.didUpdateWidget(old);
+    if (old.timeoutMinutes != widget.timeoutMinutes) _service.stop(); // _sync restarts it
+  }
+
+  @override
   void dispose() {
     _service.dispose();
     super.dispose();

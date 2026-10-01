@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Static AumLux mark (rounded brand tile + pylon) for the pre-Android-12
+     launch screen. Same geometry as BrandMarkPainter. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M26,0h56a26,26 0,0 1,26 26v56a26,26 0,0 1,-26 26h-56a26,26 0,0 1,-26 -26v-56a26,26 0,0 1,26 -26z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108">
+                <item android:offset="0" android:color="#FFFF6B35" />
+                <item android:offset="0.55" android:color="#FFEA2261" />
+                <item android:offset="1" android:color="#FF533AFD" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M38,78 L54,31 L70,78"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="7.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M33,45 L75,45 M44.2,62 L63.8,62"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M29.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0M71.4,53a3.6,3.6 0,1 0,7.2 0a3.6,3.6 0,1 0,-7.2 0"
+        android:fillColor="#FFFFFFFF" />
+</vector>

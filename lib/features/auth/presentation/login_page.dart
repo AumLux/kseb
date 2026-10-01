@@ -64,12 +64,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       _error = null;
     });
     try {
-      await ref.read(sessionProvider.notifier).signIn(_identifier.text, _password.text);
+      await ref
+          .read(sessionProvider.notifier)
+          .signIn(_identifier.text, _password.text);
       _limiter.reset();
     } catch (e) {
       final failure = AppFailure.from(e);
       if (failure.code == 'invalid_credentials') _limiter.recordFailure();
-      if (mounted) setState(() => _error = failureMessage(context.l10n, failure));
+      if (mounted) {
+        setState(() => _error = failureMessage(context.l10n, failure));
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -81,7 +85,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       context: context,
       builder: (context) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            0,
+            AppSpacing.xl,
+            AppSpacing.xl,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,77 +120,131 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       backgroundColor: AppColors.canvas,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: AutofillGroup(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Align(alignment: Alignment.centerLeft, child: BrandMark()),
-                      const SizedBox(height: AppSpacing.xl),
-                      Text(l10n.loginTitle, style: AppTypography.headline),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(l10n.loginSubtitle,
-                          style: AppTypography.body.copyWith(color: AppColors.inkMute)),
-                      const SizedBox(height: AppSpacing.xxl),
-                      if (message != null) ...[
-                        _ErrorBanner(message: message),
-                        const SizedBox(height: AppSpacing.lg),
-                      ],
-                      AppTextField(
-                        label: l10n.loginIdentifierLabel,
-                        hint: l10n.loginIdentifierHint,
-                        controller: _identifier,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.username],
-                        inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? l10n.loginIdentifierRequired : null,
+      body: Stack(
+        children: [
+          // Brand mesh washes the top of the screen; the form floats over white.
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 360,
+            child: GradientMesh(),
+          ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: AutofillGroup(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const FadeSlideIn(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: BrandMark(size: 60),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xxl),
+                          FadeSlideIn(
+                            index: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l10n.loginTitle,
+                                  style: AppTypography.display,
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                Text(
+                                  l10n.loginSubtitle,
+                                  style: AppTypography.body.copyWith(
+                                    color: AppColors.inkSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xxl),
+                          AnimatedSize(
+                            duration: AppMotion.base,
+                            curve: AppMotion.curve,
+                            alignment: Alignment.topCenter,
+                            child: message == null
+                                ? const SizedBox(width: double.infinity)
+                                : Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: AppSpacing.lg,
+                                    ),
+                                    child: _ErrorBanner(message: message),
+                                  ),
+                          ),
+                          AppTextField(
+                            label: l10n.loginIdentifierLabel,
+                            hint: l10n.loginIdentifierHint,
+                            controller: _identifier,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [AutofillHints.username],
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            ],
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? l10n.loginIdentifierRequired
+                                : null,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          AppTextField(
+                            label: l10n.loginPasswordLabel,
+                            controller: _password,
+                            obscureText: _obscure,
+                            textInputAction: TextInputAction.done,
+                            autofillHints: const [AutofillHints.password],
+                            onFieldSubmitted: (_) => _submit(),
+                            validator: (v) => (v == null || v.isEmpty)
+                                ? l10n.loginPasswordRequired
+                                : null,
+                            suffix: IconButton(
+                              tooltip: _obscure
+                                  ? l10n.loginShowPassword
+                                  : l10n.loginHidePassword,
+                              icon: Icon(
+                                _obscure
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
+                              onPressed: () =>
+                                  setState(() => _obscure = !_obscure),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+                          AppButton(
+                            label: cooling
+                                ? l10n.loginCooldown(_limiter.remainingSeconds)
+                                : l10n.loginSubmit,
+                            loading: _busy,
+                            expand: true,
+                            onPressed: cooling ? null : _submit,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Center(
+                            child: AppButton.tertiary(
+                              label: l10n.loginForgot,
+                              onPressed: _showForgot,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: AppSpacing.lg),
-                      AppTextField(
-                        label: l10n.loginPasswordLabel,
-                        controller: _password,
-                        obscureText: _obscure,
-                        textInputAction: TextInputAction.done,
-                        autofillHints: const [AutofillHints.password],
-                        onFieldSubmitted: (_) => _submit(),
-                        validator: (v) => (v == null || v.isEmpty) ? l10n.loginPasswordRequired : null,
-                        suffix: IconButton(
-                          tooltip: _obscure ? l10n.loginShowPassword : l10n.loginHidePassword,
-                          icon: Icon(_obscure
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined),
-                          onPressed: () => setState(() => _obscure = !_obscure),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      AppButton(
-                        label: cooling
-                            ? l10n.loginCooldown(_limiter.remainingSeconds)
-                            : l10n.loginSubmit,
-                        loading: _busy,
-                        expand: true,
-                        onPressed: cooling ? null : _submit,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Center(
-                        child: AppButton.tertiary(label: l10n.loginForgot, onPressed: _showForgot),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -198,14 +261,25 @@ class _ErrorBanner extends StatelessWidget {
       liveRegion: true,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: const BoxDecoration(color: AppColors.dangerBg, borderRadius: AppRadius.mdAll),
+        decoration: BoxDecoration(
+          color: AppColors.dangerBg,
+          borderRadius: AppRadius.mdAll,
+          border: Border.all(color: AppColors.danger.withValues(alpha: 0.2)),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: AppSizes.iconMd),
+            const Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.danger,
+              size: AppSizes.iconMd,
+            ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: Text(message, style: AppTypography.label.copyWith(color: AppColors.danger)),
+              child: Text(
+                message,
+                style: AppTypography.label.copyWith(color: AppColors.danger),
+              ),
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_tokens.dart';
+import '../motion/motion.dart';
 import 'app_button.dart';
 
 /// Empty list / no-data state (DESIGN.md › Components › empty-state).
@@ -23,7 +24,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => _StateView(
         icon: icon,
-        iconColor: AppColors.inkMute,
+        iconColor: AppColors.primaryDeep,
         title: title,
         message: message,
         actionLabel: actionLabel,
@@ -58,7 +59,9 @@ class ErrorState extends StatelessWidget {
       );
 }
 
-/// Centered spinner with optional caption, for first loads.
+/// First-load placeholder. Without a [message] it shows skeleton rows in
+/// the shape of a list (feels faster than a spinner); with one, a spinner
+/// and the caption (for long operations the user should read about).
 class LoadingView extends StatelessWidget {
   const LoadingView({super.key, this.message});
 
@@ -66,18 +69,45 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          if (message != null) ...[
+    if (message != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox.square(dimension: 28, child: CircularProgressIndicator(strokeWidth: 2.6)),
             const SizedBox(height: AppSpacing.lg),
             Text(message!, style: AppTypography.caption),
           ],
-        ],
-      ),
-    );
+        ),
+      );
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      final rows = constraints.hasBoundedHeight ? (constraints.maxHeight / 72).floor().clamp(1, 8) : 4;
+      return ClipRect(
+        child: Skeleton(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < rows; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+                  child: Row(children: [
+                    const SkeletonBox(width: 40, height: 40, radius: 12),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        FractionallySizedBox(widthFactor: i.isEven ? 0.7 : 0.55, child: const SkeletonBox(height: 14)),
+                        const SizedBox(height: AppSpacing.sm),
+                        FractionallySizedBox(widthFactor: i.isEven ? 0.4 : 0.5, child: const SkeletonBox(height: 11)),
+                      ]),
+                    ),
+                  ]),
+                ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }
 
@@ -108,10 +138,22 @@ class _StateView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: AppSizes.iconEmpty, color: iconColor),
-              const SizedBox(height: AppSpacing.lg),
-              Text(title,
-                  style: AppTypography.subtitle, textAlign: TextAlign.center),
+              FadeSlideIn(
+                child: Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [
+                      iconColor.withValues(alpha: 0.14),
+                      iconColor.withValues(alpha: 0.04),
+                    ]),
+                  ),
+                  child: Icon(icon, size: 40, color: iconColor),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              Text(title, style: AppTypography.title, textAlign: TextAlign.center),
               if (message != null) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Text(

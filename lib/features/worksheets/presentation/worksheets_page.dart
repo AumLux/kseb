@@ -108,28 +108,32 @@ class _List extends StatelessWidget {
     }
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: ListView(
+      child: LazyListView(
         padding: const EdgeInsets.only(bottom: 96),
-        children: [
+        header: [
           for (final t in pendingTitles)
             AppListRow(
-              leading: const Icon(Icons.cloud_upload_outlined, color: AppColors.info),
+              leading: const IconTile(Icons.cloud_upload_outlined, color: AppColors.info),
               title: t,
               trailing: StatusChip.fromDomain('pending_sync', label: l10n.attPendingSync),
             ),
-          for (final w in worksheets)
-            AppListRow(
-              title: w.title,
-              subtitle: [
-                w.code,
-                workTypeLabel(l10n, w.workType),
-                ?w.sectionName,
-                Fmt.date(w.plannedDate ?? w.createdAt),
-              ].join(' · '),
-              trailing: worksheetChip(l10n, w.status),
-              onTap: () => context.push('/work/${w.id}'),
-            ),
         ],
+        itemCount: worksheets.length,
+        itemBuilder: (context, i) {
+          final w = worksheets[i];
+          return AppListRow(
+            leading: IconTile(workTypeIcon(w.workType), color: AppColors.brandOrangeInk),
+            title: w.title,
+            subtitle: [
+              w.code,
+              workTypeLabel(l10n, w.workType),
+              ?w.sectionName,
+              Fmt.date(w.plannedDate ?? w.createdAt),
+            ].join(' · '),
+            trailing: worksheetChip(l10n, w.status),
+            onTap: () => context.push('/work/${w.id}'),
+          );
+        },
       ),
     );
   }

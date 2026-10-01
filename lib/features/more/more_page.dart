@@ -112,60 +112,60 @@ class MorePage extends ConsumerWidget {
           if (user.role.atLeast(AppRole.supervisor)) ...[
             SectionHeader(l10n.adminSection),
             AppListRow(
-              leading: const Icon(Icons.groups_rounded, color: AppColors.inkMute),
+              leading: const IconTile(Icons.groups_rounded, size: 36),
               title: user.role.atLeast(AppRole.manager) ? l10n.staffTitle : l10n.staffMyTeam,
               onTap: () => context.go(Routes.staff),
             ),
             if (user.role.atLeast(AppRole.manager))
               AppListRow(
-                leading: const Icon(Icons.groups_2_rounded, color: AppColors.inkMute),
+                leading: const IconTile(Icons.groups_2_rounded, size: 36),
                 title: l10n.teamsTitle,
                 onTap: () => context.go(Routes.teams),
               ),
             if (user.role.atLeast(AppRole.manager))
               AppListRow(
-                leading: const Icon(Icons.event_rounded, color: AppColors.inkMute),
+                leading: const IconTile(Icons.event_rounded, size: 36),
                 title: l10n.holidaysTitle,
                 onTap: () => context.go(Routes.holidays),
               ),
             if (user.role.isExecutive)
               AppListRow(
-                leading: const Icon(Icons.account_tree_rounded, color: AppColors.inkMute),
+                leading: const IconTile(Icons.account_tree_rounded, size: 36),
                 title: l10n.orgTitle,
                 onTap: () => context.go(Routes.org),
               ),
           ],
           if (user.role.atLeast(AppRole.manager))
             AppListRow(
-              leading: const Icon(Icons.gavel_rounded, color: AppColors.inkMute),
+              leading: const IconTile(Icons.gavel_rounded, size: 36),
               title: l10n.comTitle,
               onTap: () => context.go(Routes.commercial),
             ),
           SectionHeader(l10n.regSection),
           AppListRow(
-            leading: const Icon(Icons.inventory_2_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.inventory_2_rounded, size: 36),
             title: l10n.invTitle,
             onTap: () => context.go(Routes.inventory),
           ),
           AppListRow(
-            leading: const Icon(Icons.electrical_services_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.electrical_services_rounded, size: 36),
             title: l10n.poleTitle,
             onTap: () => context.go(Routes.poles),
           ),
           AppListRow(
-            leading: const Icon(Icons.devices_other_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.devices_other_rounded, size: 36),
             title: l10n.assetTitle,
             onTap: () => context.go(Routes.assets),
           ),
           SectionHeader(l10n.moreTitle),
           if (FeatureFlags.enableBonusModule)
             AppListRow(
-              leading: const Icon(Icons.card_giftcard_rounded, color: AppColors.inkMute),
+              leading: const IconTile(Icons.card_giftcard_rounded, size: 36),
               title: l10n.bonusTitle,
               onTap: () => context.go(Routes.bonus),
             ),
           AppListRow(
-            leading: const Icon(Icons.sync_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.sync_rounded, size: 36),
             title: l10n.moreSyncQueue,
             subtitle: outbox.ops.isEmpty
                 ? l10n.moreSyncQueueEmpty
@@ -176,25 +176,25 @@ class MorePage extends ConsumerWidget {
             onTap: () => context.go(Routes.syncQueue),
           ),
           AppListRow(
-            leading: const Icon(Icons.translate_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.translate_rounded, size: 36),
             title: l10n.moreLanguage,
             subtitle: locale.languageCode == 'ml' ? l10n.languageMalayalam : l10n.languageEnglish,
             onTap: () => _pickLanguage(context, ref),
           ),
           AppListRow(
-            leading: const Icon(Icons.password_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.password_rounded, size: 36),
             title: l10n.moreChangePassword,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => const ChangePasswordPage(voluntary: true)),
             ),
           ),
           AppListRow(
-            leading: const Icon(Icons.info_outline_rounded, color: AppColors.inkMute),
+            leading: const IconTile(Icons.info_outline_rounded, size: 36),
             title: l10n.moreAbout,
             onTap: () => _about(context),
           ),
           AppListRow(
-            leading: const Icon(Icons.logout_rounded, color: AppColors.danger),
+            leading: const IconTile(Icons.logout_rounded, color: AppColors.danger, size: 36),
             title: l10n.moreSignOut,
             showDivider: false,
             onTap: () => _confirmSignOut(context, ref, outbox.ops.length),

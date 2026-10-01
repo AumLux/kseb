@@ -3991,6 +3991,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download update'**
   String get updateButton;
+
+  /// No description provided for @homeShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get homeShortcuts;
+
+  /// No description provided for @homeOnDuty.
+  ///
+  /// In en, this message translates to:
+  /// **'On duty · {duration}'**
+  String homeOnDuty(String duration);
+
+  /// No description provided for @homeWorked.
+  ///
+  /// In en, this message translates to:
+  /// **'Worked {duration}'**
+  String homeWorked(String duration);
 }
 
 class _AppLocalizationsDelegate

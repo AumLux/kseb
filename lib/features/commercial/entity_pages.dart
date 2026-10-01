@@ -144,17 +144,18 @@ class _EntityListPageState extends ConsumerState<EntityListPage> {
             AsyncData() when filtered.isEmpty => EmptyState(icon: _e.icon, title: l10n.comEmpty),
             AsyncData() => RefreshIndicator(
                 onRefresh: () => ref.refresh(entityRowsProvider(_e.key).future),
-                child: ListView(padding: const EdgeInsets.only(bottom: 96), children: [
-                  for (final r in filtered)
-                    AppListRow(
+                child: LazyListView(padding: const EdgeInsets.only(bottom: 96), itemCount: filtered.length,
+                  itemBuilder: (context, i) {
+                    final r = filtered[i];
+                    return AppListRow(
                       title: _e.display(r).isEmpty
                           ? formatField(l10n, _e.fields.first, r[_e.fields.first.key])
                           : _e.display(r),
                       subtitle: _secondary(l10n, _e, r, refs),
                       trailing: _statusChip(l10n, _e, r),
                       onTap: () => context.push('/more/commercial/${_e.key}/${r['id']}'),
-                    ),
-                ]),
+                    );
+                  }),
               ),
             AsyncError(:final error) => ErrorState(
                 title: l10n.commonSomethingWrong,

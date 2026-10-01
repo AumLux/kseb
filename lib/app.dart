@@ -11,7 +11,6 @@ import 'core/router/app_router.dart';
 import 'core/session/idle_guard.dart';
 import 'core/settings/app_settings.dart';
 import 'core/settings/update_required_page.dart';
-import 'core/design/motion/page_transitions.dart';
 
 class AumluxApp extends ConsumerStatefulWidget {
   const AumluxApp({super.key});
@@ -61,17 +60,11 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: AppTheme.light(locale: locale).copyWith(
-        pageTransitionsTheme: const PageTransitionsTheme(builders: {
-          TargetPlatform.android: AppPageTransition(),
-          TargetPlatform.iOS: AppPageTransition(),
-        }),
-      ),
+      theme: AppTheme.light(locale: locale),
       builder: (context, child) {
         if (ref.watch(updateRequiredProvider)) return const UpdateRequiredPage();
         final minutes = ref.watch(appSettingsProvider).value?.idleTimeoutMinutes ?? 15;
         return IdleGuard(
-          key: ValueKey(minutes),
           timeoutMinutes: minutes,
           child: child ?? const SizedBox.shrink(),
         );

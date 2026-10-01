@@ -139,23 +139,26 @@ class _TeamAttendanceViewState extends ConsumerState<TeamAttendanceView> {
 
     return RefreshIndicator(
       onRefresh: () => ref.refresh(teamDayProvider(_date).future),
-      child: ListView(
-        children: [
+      child: LazyListView(
+        header: [
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Text(l10n.attSummaryLine(present, absent, unmarked), style: AppTypography.label),
           ),
-          for (final r in rows)
-            _TeamRow(
-              row: r,
-              selected: _selected.contains(r.day?.id),
-              onSelected: r.day == null || r.day!.verified
-                  ? null
-                  : (v) => setState(() => v ? _selected.add(r.day!.id) : _selected.remove(r.day!.id)),
-              onTap: () => _edit(r),
-            ),
-          const SizedBox(height: AppSpacing.xxl),
         ],
+        itemCount: rows.length,
+        itemBuilder: (context, i) {
+          final r = rows[i];
+          return _TeamRow(
+            row: r,
+            selected: _selected.contains(r.day?.id),
+            onSelected: r.day == null || r.day!.verified
+                ? null
+                : (v) => setState(() => v ? _selected.add(r.day!.id) : _selected.remove(r.day!.id)),
+            onTap: () => _edit(r),
+          );
+        },
+        footer: const [SizedBox(height: AppSpacing.xxl)],
       ),
     );
   }

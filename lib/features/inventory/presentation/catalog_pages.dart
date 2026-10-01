@@ -33,14 +33,15 @@ class CatalogPage extends ConsumerWidget {
         label: Text(l10n.invAddMaterial),
       ),
       body: switch (catalog) {
-        AsyncData(:final value) => ListView(padding: const EdgeInsets.only(bottom: 96), children: [
-            for (final m in value)
-              AppListRow(
+        AsyncData(:final value) => LazyListView(padding: const EdgeInsets.only(bottom: 96), itemCount: value.length,
+            itemBuilder: (context, i) {
+              final m = value[i];
+              return AppListRow(
                 title: m.name,
                 subtitle: '${m.code} · ${m.category} · ${l10n.invReorderAt(Fmt.qty(m.reorderLevel, unit: m.unit))}',
                 onTap: () => edit(m),
-              ),
-          ]),
+              );
+            }),
         AsyncError(:final error) => ErrorState(title: failureMessage(l10n, error), onRetry: () => ref.invalidate(catalogProvider)),
         _ => const LoadingView(),
       },
@@ -208,14 +209,15 @@ class StoresPage extends ConsumerWidget {
         label: Text(l10n.invAddStore),
       ),
       body: switch (stores) {
-        AsyncData(:final value) => ListView(children: [
-            for (final s in value)
-              AppListRow(
+        AsyncData(:final value) => LazyListView(itemCount: value.length,
+            itemBuilder: (context, i) {
+              final s = value[i];
+              return AppListRow(
                 leading: const Icon(Icons.warehouse_rounded, color: AppColors.inkMute),
                 title: s.name,
                 subtitle: tree?.byId(s.sectionId)?.name,
-              ),
-          ]),
+              );
+            }),
         AsyncError(:final error) => ErrorState(title: failureMessage(l10n, error), onRetry: () => ref.invalidate(storesProvider)),
         _ => const LoadingView(),
       },

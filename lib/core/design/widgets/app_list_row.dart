@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_tokens.dart';
 
@@ -29,7 +30,14 @@ class AppListRow extends StatelessWidget {
     return Material(
       color: selected ? AppColors.primarySoft : AppColors.canvas,
       child: InkWell(
-        onTap: onTap,
+        onTap: onTap == null
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                onTap!();
+              },
+        highlightColor: AppColors.ink.withValues(alpha: 0.04),
+        splashColor: AppColors.primary.withValues(alpha: 0.06),
         child: Container(
           constraints:
               const BoxConstraints(minHeight: AppSizes.listRowMinHeight),
@@ -39,7 +47,7 @@ class AppListRow extends StatelessWidget {
           ),
           decoration: showDivider
               ? const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: AppColors.hairline)),
+                  border: Border(bottom: BorderSide(color: Color(0xFFEEF1F5))),
                 )
               : null,
           child: Row(
@@ -77,7 +85,7 @@ class AppListRow extends StatelessWidget {
               ] else if (onTap != null) ...[
                 const SizedBox(width: AppSpacing.sm),
                 const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.inkMute),
+                    color: AppColors.inkDisabled),
               ],
             ],
           ),
