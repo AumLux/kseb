@@ -52,7 +52,7 @@ void main() {
       expect(find.text('Sign in to continue'), findsOneWidget);
     });
 
-    testWidgets('renders SIGN IN button', (tester) async {
+    testWidgets('renders Sign In button', (tester) async {
       await tester.pumpWidget(
         createTestApp(
           LoginScreen(authService: createTestAuthService()),
@@ -60,7 +60,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('SIGN IN'), findsOneWidget);
+      expect(find.text('Sign In'), findsOneWidget);
     });
 
     testWidgets('renders footer links', (tester) async {

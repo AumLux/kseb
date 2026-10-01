@@ -104,8 +104,8 @@ void main() {
     });
 
     // ── Configurable Strings ──────────────────────────────────────
-    test('appName is KSEB', () {
-      expect(AnimationConstants.appName, 'KSEB');
+    test('appName is AumLux', () {
+      expect(AnimationConstants.appName, 'AumLux');
     });
 
     // ── Relationships ─────────────────────────────────────────────

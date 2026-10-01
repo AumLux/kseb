@@ -6,7 +6,8 @@ void main() {
   late String rules;
 
   setUpAll(() {
-    rules = File('firestore.rules').readAsStringSync();
+    // Normalise CRLF so the contract checks pass on Windows checkouts too.
+    rules = File('firestore.rules').readAsStringSync().replaceAll('\r\n', '\n');
   });
 
   group('Firestore rules approval safeguards', () {
