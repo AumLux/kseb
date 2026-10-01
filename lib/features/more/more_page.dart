@@ -136,6 +136,11 @@ class MorePage extends ConsumerWidget {
             SectionHeader(l10n.moreTitle),
           ],
           AppListRow(
+            leading: const Icon(Icons.inventory_2_rounded, color: AppColors.inkMute),
+            title: l10n.invTitle,
+            onTap: () => context.go(Routes.inventory),
+          ),
+          AppListRow(
             leading: const Icon(Icons.sync_rounded, color: AppColors.inkMute),
             title: l10n.moreSyncQueue,
             subtitle: outbox.ops.isEmpty

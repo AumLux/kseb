@@ -10,6 +10,7 @@ import '../../../core/ui/dialogs.dart';
 import '../../approvals/approvals_page.dart' show approvalsProvider;
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/app_user.dart';
+import '../../inventory/data/inventory_repository.dart';
 import '../../org/data/org_repository.dart';
 import '../data/worksheet_repository.dart';
 import 'worksheet_labels.dart';
@@ -293,6 +294,40 @@ class _WorksheetDetailPageState extends ConsumerState<WorksheetDetailPage> {
               title: p.fullName,
               subtitle: p.employeeCode,
             ),
+
+        // Materials issued/returned against this job
+        SectionHeader(
+          l10n.invMaterialsUsed,
+          action: !w.closed && (w.status == WorksheetStatus.approved || w.status == WorksheetStatus.inProgress)
+              ? AppButton.tertiary(
+                  label: l10n.invRequestForJob,
+                  icon: Icons.add_shopping_cart_rounded,
+                  onPressed: () async {
+                    await context.push('/more/inventory/new?worksheet=${w.id}');
+                    ref.invalidate(worksheetUsageProvider(w.id));
+                  },
+                )
+              : null,
+        ),
+        ...switch (ref.watch(worksheetUsageProvider(w.id))) {
+          AsyncData(:final value) when value.isNotEmpty => [
+              for (final u in value)
+                AppListRow(
+                  title: u.materialName,
+                  subtitle: [
+                    l10n.invIssued(Fmt.qty(u.issued, unit: u.unit)),
+                    if (u.returned > 0) l10n.invReturned(Fmt.qty(u.returned, unit: u.unit)),
+                  ].join(' · '),
+                  trailing: Text(Fmt.qty(u.netConsumed, unit: u.unit), style: AppTypography.bodyTabular),
+                ),
+            ],
+          _ => [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Text(l10n.invMaterialsUsedEmpty, style: AppTypography.caption),
+              ),
+            ],
+        },
 
         PhotoStrip(owner: (table: 'worksheets', id: w.id), canAdd: !w.closed),
 
