@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kseb/components/common/app_error_state.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
-  setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
-
   group('AppErrorState', () {
     testWidgets('renders error icon and message', (tester) async {
       await tester.pumpWidget(createTestApp(
