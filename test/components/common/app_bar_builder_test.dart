@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kseb/components/common/app_bar_builder.dart';
 import 'package:kseb/utils/app_colors.dart';
 import 'package:kseb/utils/app_typography.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
-  setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
-
   group('buildAppBar', () {
     testWidgets('renders with correct background and foreground colors',
         (tester) async {

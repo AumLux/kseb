@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kseb/components/common/app_scaffold.dart';
 import 'package:kseb/utils/app_colors.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
-  setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
-
   group('AppPageWrapper', () {
     testWidgets('renders child content', (tester) async {
       await tester.pumpWidget(createTestApp(

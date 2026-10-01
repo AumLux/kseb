@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kseb/components/common/app_text_field.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
-  setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
-
   group('AppTextField', () {
     testWidgets('renders with label text', (tester) async {
       await tester.pumpWidget(createTestApp(
