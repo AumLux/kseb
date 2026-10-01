@@ -121,6 +121,12 @@ class MorePage extends ConsumerWidget {
                 title: l10n.teamsTitle,
                 onTap: () => context.go(Routes.teams),
               ),
+            if (user.role.atLeast(AppRole.manager))
+              AppListRow(
+                leading: const Icon(Icons.event_rounded, color: AppColors.inkMute),
+                title: l10n.holidaysTitle,
+                onTap: () => context.go(Routes.holidays),
+              ),
             if (user.role.isExecutive)
               AppListRow(
                 leading: const Icon(Icons.account_tree_rounded, color: AppColors.inkMute),

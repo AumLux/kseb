@@ -248,5 +248,161 @@
       }
     }
   },
-  "orgNoLocation": "Location not set"
+  "orgNoLocation": "Location not set",
+  "exportTitle": "Your file is ready",
+  "exportOpen": "Open",
+  "exportShare": "Share",
+  "exportCancelled": "Export cancelled.",
+  "exportNoApp": "No app found to open this file.",
+  "attMe": "Me",
+  "attTeam": "Team",
+  "attCheckIn": "Check in",
+  "attCheckOut": "Check out",
+  "attCheckedIn": "Checked in",
+  "attCheckedOut": "Checked out",
+  "attDoneForDay": "Day complete",
+  "attWorked": "Worked {duration}",
+  "@attWorked": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "attLocating": "Getting your location…",
+  "attSynced": "Attendance recorded",
+  "attQueued": "Saved on your phone. It will sync when you're back online.",
+  "attPendingSync": "Waiting to sync",
+  "attNoLocationTitle": "Location unavailable",
+  "attNoLocationContinue": "Record without location",
+  "attNoLocationNote": "Your supervisor will see that this entry has no location.",
+  "attOpenSettings": "Open settings",
+  "attThisMonth": "This month",
+  "attDaysPresent": "Days present",
+  "attHoursWorked": "Hours worked",
+  "attLeaveDays": "Leave days",
+  "attHistory": "History",
+  "attNoRecords": "No attendance yet this month",
+  "attStatusPresent": "Present",
+  "attStatusAbsent": "Absent",
+  "attStatusLeave": "Leave",
+  "attStatusHalfDay": "Half day",
+  "attStatusHoliday": "Holiday",
+  "attNotMarked": "Not marked",
+  "attFlagOutside": "Outside area",
+  "attFlagMocked": "Mock location",
+  "attFlagNoLocation": "No location",
+  "attVerified": "Verified",
+  "attVerifySelected": "Verify {count}",
+  "@attVerifySelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attVerifiedCount": "{count} verified",
+  "@attVerifiedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attMark": "Mark attendance",
+  "attCorrect": "Correct record",
+  "attReason": "Reason",
+  "attReasonHint": "e.g. Worked at substation, phone had no signal",
+  "attReasonTooShort": "Give a reason (at least 5 characters)",
+  "attTeamEmpty": "No one reports to you yet",
+  "attSummaryLine": "{present} present · {absent} absent · {unmarked} not marked",
+  "@attSummaryLine": {
+    "placeholders": {
+      "present": {
+        "type": "int"
+      },
+      "absent": {
+        "type": "int"
+      },
+      "unmarked": {
+        "type": "int"
+      }
+    }
+  },
+  "attExportMuster": "Muster roll",
+  "attMusterTitle": "Muster roll — {month}",
+  "@attMusterTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "attExportPdf": "Download PDF",
+  "attExportXlsx": "Download Excel",
+  "attSelectSection": "All my sections",
+  "leaveTitle": "Leave",
+  "leaveMine": "My leave",
+  "leaveRequest": "Request leave",
+  "leaveFrom": "From",
+  "leaveTo": "To",
+  "leaveType": "Type",
+  "leaveTypeCasual": "Casual",
+  "leaveTypeSick": "Sick",
+  "leaveTypeEarned": "Earned",
+  "leaveTypeUnpaid": "Unpaid",
+  "leaveTypeOther": "Other",
+  "leaveReason": "Reason",
+  "leaveSubmit": "Send request",
+  "leaveSent": "Leave request sent",
+  "leaveEmpty": "No leave requests",
+  "leaveCancel": "Cancel request",
+  "leaveDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@leaveDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveDateOrder": "End date can't be before start date",
+  "statusPending": "Pending",
+  "statusApproved": "Approved",
+  "statusRejected": "Rejected",
+  "statusCancelled": "Cancelled",
+  "approvalsTitle": "Approvals",
+  "approvalsEmpty": "Nothing waiting for you",
+  "approvalsEmptyHint": "Requests from your team appear here.",
+  "approvalsApprove": "Approve",
+  "approvalsReject": "Reject",
+  "approvalsRejectReason": "Reason for rejecting",
+  "approvalsDone": "Done",
+  "approvalsKindLeave": "Leave",
+  "approvalsKindWorksheet": "Worksheet",
+  "approvalsKindMaterial": "Material",
+  "approvalsKindBonus": "Bonus",
+  "approvalsOpen": "Open",
+  "holidaysTitle": "Holidays",
+  "holidaysAdd": "Add holiday",
+  "holidaysName": "Holiday name",
+  "holidaysDate": "Date",
+  "holidaysEmpty": "No holidays added for {year}",
+  "@holidaysEmpty": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "holidaysNote": "Add lunar-calendar holidays (Vishu, Onam, Eid, Deepavali…) each year from the Kerala Government notification.",
+  "holidaysDeleteConfirm": "Remove {name}?",
+  "@holidaysDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commonDelete": "Remove",
+  "commonDate": "Date"
 }
