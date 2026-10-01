@@ -18,8 +18,10 @@ import '../../features/org/presentation/teams_page.dart';
 import '../../features/staff/presentation/staff_detail_page.dart';
 import '../../features/staff/presentation/staff_form_page.dart';
 import '../../features/staff/presentation/staff_list_page.dart';
+import '../../features/worksheets/presentation/worksheet_detail_page.dart';
+import '../../features/worksheets/presentation/worksheet_form_page.dart';
+import '../../features/worksheets/presentation/worksheets_page.dart';
 import '../../features/shell/app_shell.dart';
-import '../../features/shell/coming_soon_page.dart';
 import '../design/design.dart';
 import '../l10n/l10n.dart';
 
@@ -102,7 +104,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: Routes.work,
-              builder: (_, __) => const ComingSoonPage(titleKey: ComingSoonTitle.work),
+              builder: (_, __) => const WorksheetsPage(),
+              routes: [
+                GoRoute(path: 'new', builder: (_, __) => const WorksheetFormPage()),
+                GoRoute(
+                  path: ':id',
+                  builder: (_, s) => WorksheetDetailPage(id: s.pathParameters['id']!),
+                  routes: [
+                    GoRoute(path: 'edit', builder: (_, s) => WorksheetFormPage(worksheetId: s.pathParameters['id'])),
+                  ],
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [

@@ -86,7 +86,7 @@ security definer
 set search_path = ''
 as $$
   select 'worksheet', w.id, w.code, w.title, w.requested_by, p.full_name,
-         coalesce(w.submitted_at, w.created_at), null::text, '/worksheets/' || w.id
+         coalesce(w.submitted_at, w.created_at), null::text, '/work/' || w.id
   from public.worksheets w join public.profiles p on p.id = w.requested_by
   where w.status = 'submitted' and private.can_approve_for(w.requested_by)
   union all
