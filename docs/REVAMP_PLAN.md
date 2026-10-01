@@ -206,11 +206,12 @@ The work happens on branch `revamp/prod-ready`, created from `releases`. Each ph
 8. **Field registers.** Polevar and Asset Details.
 9. **Commercial.** Tenders (org-wide), EMD/SD/BG with expiry alerts, work orders, bills with ageing, Dispatch/Letter, GST, View Details search, the COO/Director KPI dashboard, and Downloads rewired.
 10. **Notifications and bonus.** Notification inbox, FCM push on approval events, and the bonus ledger behind `ENABLE_BONUS_MODULE`.
-11. **Bootstrap (no migration).** `tools/bootstrap/` creates the first Director through the Admin API, and `supabase/seed.sql` provides the sample org hierarchy, Kerala holidays and the material catalogue. Firestore and Firebase Storage are decommissioned once production is live on Supabase.
+11. **Bootstrap (no migration).** *Delivered inside Phase 2 (bootstrap script + seed) and Phase 12 (Firestore rules and packages removed), so there is no separate branch.* `tools/bootstrap/` creates the first Director through the Admin API, and `supabase/seed.sql` provides the sample org hierarchy, Kerala holidays and the material catalogue. Firestore and Firebase Storage are decommissioned once production is live on Supabase.
 12. **Release hardening.**
     - Android: real `applicationId` `com.aumlux.app`, release keystore through GitHub secrets, `key.properties` gitignored, R8, versioning from tags.
     - Web: `SUPABASE_URL` and `SUPABASE_ANON_KEY` passed via `--dart-define` per environment, with staging and prod projects wired into the existing `deploy-aumlux.yml`.
     - Minimum-version force-update check, privacy and permission rationale screens, and `docs/RUNBOOK.md` (backups, restore, storage quota, rotating keys).
+    - *As built:* the build number is `1000 + CI run number`, not a git tag. Each staging push builds both a staging and a production site, and `releases` promotes the production one. Crash reports go to a self-hosted `client_errors` table instead of Crashlytics (no extra service). The runbook lives in `docs/BACKEND.md`.
 13. **Final PR** from `revamp/prod-ready` into `releases`, after staging validation. `gh` isn't installed locally, so I'll either install it with your OK or push the branch and give you the compare URL.
 
 **Backlog (documented, not built):** Asset QR labels and scanning, phone OTP login, a fully offline-first sync engine, iOS and desktop builds.
