@@ -5,6 +5,7 @@ import '../../../core/design/design.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/location/location_rationale.dart';
 import '../../../core/location/location_service.dart';
 import '../../../core/ui/dialogs.dart';
 import '../../auth/application/session_controller.dart';
@@ -63,6 +64,7 @@ class _WorksheetFormPageState extends ConsumerState<WorksheetFormPage> {
   }
 
   Future<void> _useGps() async {
+    if (!await explainLocationIfNeeded(context, ref) || !mounted) return;
     setState(() => _locating = true);
     try {
       final loc = await ref.read(locationServiceProvider).current();
