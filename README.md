@@ -16,7 +16,7 @@ flutter run                                   # staging backend
 flutter run --dart-define=AUMLUX_ENV=production
 ```
 
-For the local backend (Docker + Supabase CLI), see [docs/BACKEND.md](docs/BACKEND.md#local-development).
+To test against a local backend with a demo account for every role, see [docs/LOCAL_TESTING.md](docs/LOCAL_TESTING.md).
 
 ## Documentation
 
