@@ -1119,4 +1119,248 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get incStatusClosed => 'Closed';
+
+  @override
+  String get invTitle => 'Inventory';
+
+  @override
+  String get invStock => 'Stock';
+
+  @override
+  String get invRequests => 'Requests';
+
+  @override
+  String get invSearch => 'Search material or code';
+
+  @override
+  String get invAllStores => 'All stores';
+
+  @override
+  String get invLowOnly => 'Low stock only';
+
+  @override
+  String get invOnHand => 'On hand';
+
+  @override
+  String invReorderAt(String qty) {
+    return 'Reorder at $qty';
+  }
+
+  @override
+  String get invLow => 'Low';
+
+  @override
+  String get invNoStock => 'No stock recorded yet';
+
+  @override
+  String get invNoStockHint =>
+      'Stock appears after the first approved receipt.';
+
+  @override
+  String get invNewRequest => 'New request';
+
+  @override
+  String get invReqIssue => 'Issue (take from store)';
+
+  @override
+  String get invReqReturn => 'Return (unused to store)';
+
+  @override
+  String get invReqReceipt => 'Receipt (new stock in)';
+
+  @override
+  String get invTypeIssue => 'Issue';
+
+  @override
+  String get invTypeReturn => 'Return';
+
+  @override
+  String get invTypeReceipt => 'Receipt';
+
+  @override
+  String get invStore => 'Store';
+
+  @override
+  String get invMaterial => 'Material';
+
+  @override
+  String get invQuantity => 'Quantity';
+
+  @override
+  String get invQtyInvalid => 'Enter a quantity above zero';
+
+  @override
+  String invAvailable(String qty) {
+    return 'Available: $qty';
+  }
+
+  @override
+  String get invUnitPrice => 'Unit price (₹)';
+
+  @override
+  String get invSupplier => 'Supplier';
+
+  @override
+  String get invInvoice => 'Invoice / DC no.';
+
+  @override
+  String get invWorksheet => 'For worksheet';
+
+  @override
+  String get invNoWorksheet => 'Not linked to a worksheet';
+
+  @override
+  String get invPurpose => 'Purpose';
+
+  @override
+  String get invPriority => 'Priority';
+
+  @override
+  String get invPriorityLow => 'Low';
+
+  @override
+  String get invPriorityMedium => 'Medium';
+
+  @override
+  String get invPriorityHigh => 'High';
+
+  @override
+  String get invPriorityCritical => 'Critical';
+
+  @override
+  String get invRequiredBy => 'Required by';
+
+  @override
+  String get invSubmit => 'Send request';
+
+  @override
+  String get invRequestSent => 'Request sent for approval';
+
+  @override
+  String get invRequestsEmpty => 'No material requests';
+
+  @override
+  String get invMineFilter => 'Mine';
+
+  @override
+  String get invToDecide => 'To decide';
+
+  @override
+  String get invAllFilter => 'All';
+
+  @override
+  String get invRequestDetail => 'Material request';
+
+  @override
+  String get invRequestedBy => 'Requested by';
+
+  @override
+  String get invDecidedBy => 'Decided by';
+
+  @override
+  String get invCancelRequest => 'Cancel request';
+
+  @override
+  String get invCancelConfirm => 'Cancel this request?';
+
+  @override
+  String get invLedger => 'Stock movements';
+
+  @override
+  String get invLedgerEmpty => 'No movements yet';
+
+  @override
+  String get invAdjust => 'Adjust stock';
+
+  @override
+  String get invAdjustHelp =>
+      'Use a positive number to add, negative to remove (physical count correction).';
+
+  @override
+  String get invScrap => 'Record as scrap';
+
+  @override
+  String get invTransfer => 'Transfer';
+
+  @override
+  String get invFromStore => 'From store';
+
+  @override
+  String get invToStore => 'To store';
+
+  @override
+  String get invCatalog => 'Material catalogue';
+
+  @override
+  String get invAddMaterial => 'Add material';
+
+  @override
+  String get invCode => 'Code';
+
+  @override
+  String get invName => 'Name';
+
+  @override
+  String get invCategory => 'Category';
+
+  @override
+  String get invUnit => 'Unit';
+
+  @override
+  String get invHsn => 'HSN code';
+
+  @override
+  String get invReorderLevel => 'Reorder level';
+
+  @override
+  String get invStores => 'Stores';
+
+  @override
+  String get invAddStore => 'Add store';
+
+  @override
+  String get invStoreName => 'Store name';
+
+  @override
+  String get invMaterialsUsed => 'Materials';
+
+  @override
+  String get invMaterialsUsedEmpty => 'No materials issued for this job yet';
+
+  @override
+  String invIssued(String qty) {
+    return 'Issued $qty';
+  }
+
+  @override
+  String invReturned(String qty) {
+    return 'Returned $qty';
+  }
+
+  @override
+  String get invRequestForJob => 'Request material';
+
+  @override
+  String get invExportRegister => 'Stock register';
+
+  @override
+  String get invTxnReceipt => 'Receipt';
+
+  @override
+  String get invTxnIssue => 'Issue';
+
+  @override
+  String get invTxnReturn => 'Return';
+
+  @override
+  String get invTxnAdjustment => 'Adjustment';
+
+  @override
+  String get invTxnTransferIn => 'Transfer in';
+
+  @override
+  String get invTxnTransferOut => 'Transfer out';
+
+  @override
+  String get invTxnScrap => 'Scrap';
 }
