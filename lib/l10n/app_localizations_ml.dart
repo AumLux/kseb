@@ -550,4 +550,312 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get orgNoLocation => 'സ്ഥാനം നൽകിയിട്ടില്ല';
+
+  @override
+  String get exportTitle => 'ഫയൽ തയ്യാറാണ്';
+
+  @override
+  String get exportOpen => 'തുറക്കുക';
+
+  @override
+  String get exportShare => 'പങ്കിടുക';
+
+  @override
+  String get exportCancelled => 'എക്സ്പോർട്ട് റദ്ദാക്കി.';
+
+  @override
+  String get exportNoApp => 'ഈ ഫയൽ തുറക്കാൻ ആപ്പ് ഇല്ല.';
+
+  @override
+  String get attMe => 'ഞാൻ';
+
+  @override
+  String get attTeam => 'ടീം';
+
+  @override
+  String get attCheckIn => 'ചെക്ക് ഇൻ';
+
+  @override
+  String get attCheckOut => 'ചെക്ക് ഔട്ട്';
+
+  @override
+  String get attCheckedIn => 'ചെക്ക് ഇൻ ചെയ്തു';
+
+  @override
+  String get attCheckedOut => 'ചെക്ക് ഔട്ട് ചെയ്തു';
+
+  @override
+  String get attDoneForDay => 'ഇന്നത്തെ ജോലി പൂർത്തിയായി';
+
+  @override
+  String attWorked(String duration) {
+    return '$duration ജോലി ചെയ്തു';
+  }
+
+  @override
+  String get attLocating => 'സ്ഥാനം കണ്ടെത്തുന്നു…';
+
+  @override
+  String get attSynced => 'ഹാജർ രേഖപ്പെടുത്തി';
+
+  @override
+  String get attQueued =>
+      'ഫോണിൽ സേവ് ചെയ്തു. നെറ്റ്‌വർക്ക് തിരിച്ചെത്തുമ്പോൾ സിങ്ക് ആകും.';
+
+  @override
+  String get attPendingSync => 'സിങ്ക് ചെയ്യാൻ കാത്തിരിക്കുന്നു';
+
+  @override
+  String get attNoLocationTitle => 'സ്ഥാനം ലഭ്യമല്ല';
+
+  @override
+  String get attNoLocationContinue => 'സ്ഥാനമില്ലാതെ രേഖപ്പെടുത്തുക';
+
+  @override
+  String get attNoLocationNote =>
+      'ഈ എൻട്രിയിൽ സ്ഥാനമില്ലെന്ന് സൂപ്പർവൈസർക്ക് കാണാം.';
+
+  @override
+  String get attOpenSettings => 'സെറ്റിംഗ്സ് തുറക്കുക';
+
+  @override
+  String get attThisMonth => 'ഈ മാസം';
+
+  @override
+  String get attDaysPresent => 'ഹാജരായ ദിവസങ്ങൾ';
+
+  @override
+  String get attHoursWorked => 'ജോലി ചെയ്ത മണിക്കൂർ';
+
+  @override
+  String get attLeaveDays => 'അവധി ദിവസങ്ങൾ';
+
+  @override
+  String get attHistory => 'ചരിത്രം';
+
+  @override
+  String get attNoRecords => 'ഈ മാസം ഇതുവരെ ഹാജർ ഇല്ല';
+
+  @override
+  String get attStatusPresent => 'ഹാജർ';
+
+  @override
+  String get attStatusAbsent => 'ഹാജരില്ല';
+
+  @override
+  String get attStatusLeave => 'അവധി';
+
+  @override
+  String get attStatusHalfDay => 'അര ദിവസം';
+
+  @override
+  String get attStatusHoliday => 'പൊതു അവധി';
+
+  @override
+  String get attNotMarked => 'രേഖപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
+  String get attFlagOutside => 'പരിധിക്ക് പുറത്ത്';
+
+  @override
+  String get attFlagMocked => 'വ്യാജ സ്ഥാനം';
+
+  @override
+  String get attFlagNoLocation => 'സ്ഥാനമില്ല';
+
+  @override
+  String get attVerified => 'പരിശോധിച്ചു';
+
+  @override
+  String attVerifySelected(int count) {
+    return '$count പരിശോധിക്കുക';
+  }
+
+  @override
+  String attVerifiedCount(int count) {
+    return '$count പരിശോധിച്ചു';
+  }
+
+  @override
+  String get attMark => 'ഹാജർ രേഖപ്പെടുത്തുക';
+
+  @override
+  String get attCorrect => 'രേഖ തിരുത്തുക';
+
+  @override
+  String get attReason => 'കാരണം';
+
+  @override
+  String get attReasonHint =>
+      'ഉദാ. സബ്‌സ്റ്റേഷനിൽ ജോലി, ഫോണിൽ സിഗ്നൽ ഇല്ലായിരുന്നു';
+
+  @override
+  String get attReasonTooShort => 'കാരണം നൽകുക (കുറഞ്ഞത് 5 അക്ഷരങ്ങൾ)';
+
+  @override
+  String get attTeamEmpty => 'ഇതുവരെ നിങ്ങളുടെ കീഴിൽ ആരുമില്ല';
+
+  @override
+  String attSummaryLine(int present, int absent, int unmarked) {
+    return '$present ഹാജർ · $absent ഹാജരില്ല · $unmarked രേഖപ്പെടുത്താത്തവർ';
+  }
+
+  @override
+  String get attExportMuster => 'മസ്റ്റർ റോൾ';
+
+  @override
+  String attMusterTitle(String month) {
+    return 'മസ്റ്റർ റോൾ — $month';
+  }
+
+  @override
+  String get attExportPdf => 'PDF ഡൗൺലോഡ്';
+
+  @override
+  String get attExportXlsx => 'Excel ഡൗൺലോഡ്';
+
+  @override
+  String get attSelectSection => 'എന്റെ എല്ലാ സെക്ഷനുകളും';
+
+  @override
+  String get leaveTitle => 'അവധി';
+
+  @override
+  String get leaveMine => 'എന്റെ അവധി';
+
+  @override
+  String get leaveRequest => 'അവധി അപേക്ഷ';
+
+  @override
+  String get leaveFrom => 'മുതൽ';
+
+  @override
+  String get leaveTo => 'വരെ';
+
+  @override
+  String get leaveType => 'തരം';
+
+  @override
+  String get leaveTypeCasual => 'കാഷ്വൽ';
+
+  @override
+  String get leaveTypeSick => 'അസുഖ അവധി';
+
+  @override
+  String get leaveTypeEarned => 'ആർജിത അവധി';
+
+  @override
+  String get leaveTypeUnpaid => 'ശമ്പളമില്ലാത്ത അവധി';
+
+  @override
+  String get leaveTypeOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get leaveReason => 'കാരണം';
+
+  @override
+  String get leaveSubmit => 'അപേക്ഷ അയയ്ക്കുക';
+
+  @override
+  String get leaveSent => 'അവധി അപേക്ഷ അയച്ചു';
+
+  @override
+  String get leaveEmpty => 'അവധി അപേക്ഷകളില്ല';
+
+  @override
+  String get leaveCancel => 'അപേക്ഷ റദ്ദാക്കുക';
+
+  @override
+  String leaveDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ദിവസം',
+      one: '1 ദിവസം',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get leaveDateOrder => 'അവസാന തീയതി ആരംഭ തീയതിക്ക് മുമ്പാകരുത്';
+
+  @override
+  String get statusPending => 'തീർപ്പാകാത്തത്';
+
+  @override
+  String get statusApproved => 'അംഗീകരിച്ചു';
+
+  @override
+  String get statusRejected => 'നിരസിച്ചു';
+
+  @override
+  String get statusCancelled => 'റദ്ദാക്കി';
+
+  @override
+  String get approvalsTitle => 'അംഗീകാരങ്ങൾ';
+
+  @override
+  String get approvalsEmpty => 'നിങ്ങൾക്കായി ഒന്നും കാത്തിരിക്കുന്നില്ല';
+
+  @override
+  String get approvalsEmptyHint => 'ടീമിന്റെ അപേക്ഷകൾ ഇവിടെ കാണാം.';
+
+  @override
+  String get approvalsApprove => 'അംഗീകരിക്കുക';
+
+  @override
+  String get approvalsReject => 'നിരസിക്കുക';
+
+  @override
+  String get approvalsRejectReason => 'നിരസിക്കാനുള്ള കാരണം';
+
+  @override
+  String get approvalsDone => 'പൂർത്തിയായി';
+
+  @override
+  String get approvalsKindLeave => 'അവധി';
+
+  @override
+  String get approvalsKindWorksheet => 'വർക്ക്ഷീറ്റ്';
+
+  @override
+  String get approvalsKindMaterial => 'സാമഗ്രി';
+
+  @override
+  String get approvalsKindBonus => 'ബോണസ്';
+
+  @override
+  String get approvalsOpen => 'തുറക്കുക';
+
+  @override
+  String get holidaysTitle => 'അവധി ദിവസങ്ങൾ';
+
+  @override
+  String get holidaysAdd => 'അവധി ചേർക്കുക';
+
+  @override
+  String get holidaysName => 'അവധിയുടെ പേര്';
+
+  @override
+  String get holidaysDate => 'തീയതി';
+
+  @override
+  String holidaysEmpty(int year) {
+    return '$year-ലേക്ക് അവധികൾ ചേർത്തിട്ടില്ല';
+  }
+
+  @override
+  String get holidaysNote =>
+      'ചാന്ദ്ര കലണ്ടർ പ്രകാരമുള്ള അവധികൾ (വിഷു, ഓണം, ഈദ്, ദീപാവലി…) കേരള സർക്കാർ വിജ്ഞാപനം അനുസരിച്ച് ഓരോ വർഷവും ചേർക്കുക.';
+
+  @override
+  String holidaysDeleteConfirm(String name) {
+    return '$name നീക്കം ചെയ്യണോ?';
+  }
+
+  @override
+  String get commonDelete => 'നീക്കം ചെയ്യുക';
+
+  @override
+  String get commonDate => 'തീയതി';
 }

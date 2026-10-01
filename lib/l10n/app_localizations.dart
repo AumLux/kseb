@@ -1087,6 +1087,570 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location not set'**
   String get orgNoLocation;
+
+  /// No description provided for @exportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your file is ready'**
+  String get exportTitle;
+
+  /// No description provided for @exportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get exportOpen;
+
+  /// No description provided for @exportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportShare;
+
+  /// No description provided for @exportCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Export cancelled.'**
+  String get exportCancelled;
+
+  /// No description provided for @exportNoApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No app found to open this file.'**
+  String get exportNoApp;
+
+  /// No description provided for @attMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get attMe;
+
+  /// No description provided for @attTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get attTeam;
+
+  /// No description provided for @attCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in'**
+  String get attCheckIn;
+
+  /// No description provided for @attCheckOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out'**
+  String get attCheckOut;
+
+  /// No description provided for @attCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get attCheckedIn;
+
+  /// No description provided for @attCheckedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked out'**
+  String get attCheckedOut;
+
+  /// No description provided for @attDoneForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day complete'**
+  String get attDoneForDay;
+
+  /// No description provided for @attWorked.
+  ///
+  /// In en, this message translates to:
+  /// **'Worked {duration}'**
+  String attWorked(String duration);
+
+  /// No description provided for @attLocating.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your location…'**
+  String get attLocating;
+
+  /// No description provided for @attSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance recorded'**
+  String get attSynced;
+
+  /// No description provided for @attQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on your phone. It will sync when you\'re back online.'**
+  String get attQueued;
+
+  /// No description provided for @attPendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to sync'**
+  String get attPendingSync;
+
+  /// No description provided for @attNoLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location unavailable'**
+  String get attNoLocationTitle;
+
+  /// No description provided for @attNoLocationContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Record without location'**
+  String get attNoLocationContinue;
+
+  /// No description provided for @attNoLocationNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your supervisor will see that this entry has no location.'**
+  String get attNoLocationNote;
+
+  /// No description provided for @attOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get attOpenSettings;
+
+  /// No description provided for @attThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get attThisMonth;
+
+  /// No description provided for @attDaysPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Days present'**
+  String get attDaysPresent;
+
+  /// No description provided for @attHoursWorked.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours worked'**
+  String get attHoursWorked;
+
+  /// No description provided for @attLeaveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave days'**
+  String get attLeaveDays;
+
+  /// No description provided for @attHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get attHistory;
+
+  /// No description provided for @attNoRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'No attendance yet this month'**
+  String get attNoRecords;
+
+  /// No description provided for @attStatusPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get attStatusPresent;
+
+  /// No description provided for @attStatusAbsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Absent'**
+  String get attStatusAbsent;
+
+  /// No description provided for @attStatusLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get attStatusLeave;
+
+  /// No description provided for @attStatusHalfDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Half day'**
+  String get attStatusHalfDay;
+
+  /// No description provided for @attStatusHoliday.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday'**
+  String get attStatusHoliday;
+
+  /// No description provided for @attNotMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not marked'**
+  String get attNotMarked;
+
+  /// No description provided for @attFlagOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside area'**
+  String get attFlagOutside;
+
+  /// No description provided for @attFlagMocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock location'**
+  String get attFlagMocked;
+
+  /// No description provided for @attFlagNoLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'No location'**
+  String get attFlagNoLocation;
+
+  /// No description provided for @attVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get attVerified;
+
+  /// No description provided for @attVerifySelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify {count}'**
+  String attVerifySelected(int count);
+
+  /// No description provided for @attVerifiedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} verified'**
+  String attVerifiedCount(int count);
+
+  /// No description provided for @attMark.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark attendance'**
+  String get attMark;
+
+  /// No description provided for @attCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct record'**
+  String get attCorrect;
+
+  /// No description provided for @attReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get attReason;
+
+  /// No description provided for @attReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Worked at substation, phone had no signal'**
+  String get attReasonHint;
+
+  /// No description provided for @attReasonTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a reason (at least 5 characters)'**
+  String get attReasonTooShort;
+
+  /// No description provided for @attTeamEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No one reports to you yet'**
+  String get attTeamEmpty;
+
+  /// No description provided for @attSummaryLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{present} present · {absent} absent · {unmarked} not marked'**
+  String attSummaryLine(int present, int absent, int unmarked);
+
+  /// No description provided for @attExportMuster.
+  ///
+  /// In en, this message translates to:
+  /// **'Muster roll'**
+  String get attExportMuster;
+
+  /// No description provided for @attMusterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Muster roll — {month}'**
+  String attMusterTitle(String month);
+
+  /// No description provided for @attExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get attExportPdf;
+
+  /// No description provided for @attExportXlsx.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Excel'**
+  String get attExportXlsx;
+
+  /// No description provided for @attSelectSection.
+  ///
+  /// In en, this message translates to:
+  /// **'All my sections'**
+  String get attSelectSection;
+
+  /// No description provided for @leaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get leaveTitle;
+
+  /// No description provided for @leaveMine.
+  ///
+  /// In en, this message translates to:
+  /// **'My leave'**
+  String get leaveMine;
+
+  /// No description provided for @leaveRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Request leave'**
+  String get leaveRequest;
+
+  /// No description provided for @leaveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get leaveFrom;
+
+  /// No description provided for @leaveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get leaveTo;
+
+  /// No description provided for @leaveType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get leaveType;
+
+  /// No description provided for @leaveTypeCasual.
+  ///
+  /// In en, this message translates to:
+  /// **'Casual'**
+  String get leaveTypeCasual;
+
+  /// No description provided for @leaveTypeSick.
+  ///
+  /// In en, this message translates to:
+  /// **'Sick'**
+  String get leaveTypeSick;
+
+  /// No description provided for @leaveTypeEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned'**
+  String get leaveTypeEarned;
+
+  /// No description provided for @leaveTypeUnpaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpaid'**
+  String get leaveTypeUnpaid;
+
+  /// No description provided for @leaveTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get leaveTypeOther;
+
+  /// No description provided for @leaveReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get leaveReason;
+
+  /// No description provided for @leaveSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get leaveSubmit;
+
+  /// No description provided for @leaveSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave request sent'**
+  String get leaveSent;
+
+  /// No description provided for @leaveEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No leave requests'**
+  String get leaveEmpty;
+
+  /// No description provided for @leaveCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get leaveCancel;
+
+  /// No description provided for @leaveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String leaveDays(int count);
+
+  /// No description provided for @leaveDateOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'End date can\'t be before start date'**
+  String get leaveDateOrder;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @approvalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approvals'**
+  String get approvalsTitle;
+
+  /// No description provided for @approvalsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting for you'**
+  String get approvalsEmpty;
+
+  /// No description provided for @approvalsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests from your team appear here.'**
+  String get approvalsEmptyHint;
+
+  /// No description provided for @approvalsApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approvalsApprove;
+
+  /// No description provided for @approvalsReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get approvalsReject;
+
+  /// No description provided for @approvalsRejectReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for rejecting'**
+  String get approvalsRejectReason;
+
+  /// No description provided for @approvalsDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get approvalsDone;
+
+  /// No description provided for @approvalsKindLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get approvalsKindLeave;
+
+  /// No description provided for @approvalsKindWorksheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Worksheet'**
+  String get approvalsKindWorksheet;
+
+  /// No description provided for @approvalsKindMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get approvalsKindMaterial;
+
+  /// No description provided for @approvalsKindBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus'**
+  String get approvalsKindBonus;
+
+  /// No description provided for @approvalsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get approvalsOpen;
+
+  /// No description provided for @holidaysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Holidays'**
+  String get holidaysTitle;
+
+  /// No description provided for @holidaysAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add holiday'**
+  String get holidaysAdd;
+
+  /// No description provided for @holidaysName.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday name'**
+  String get holidaysName;
+
+  /// No description provided for @holidaysDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get holidaysDate;
+
+  /// No description provided for @holidaysEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No holidays added for {year}'**
+  String holidaysEmpty(int year);
+
+  /// No description provided for @holidaysNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lunar-calendar holidays (Vishu, Onam, Eid, Deepavali…) each year from the Kerala Government notification.'**
+  String get holidaysNote;
+
+  /// No description provided for @holidaysDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String holidaysDeleteConfirm(String name);
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get commonDelete;
+
+  /// No description provided for @commonDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get commonDate;
 }
 
 class _AppLocalizationsDelegate
