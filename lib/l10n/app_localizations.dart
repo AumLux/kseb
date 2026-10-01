@@ -2629,6 +2629,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scrap'**
   String get invTxnScrap;
+
+  /// No description provided for @regSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Field registers'**
+  String get regSection;
+
+  /// No description provided for @openInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Maps'**
+  String get openInMaps;
+
+  /// No description provided for @poleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Polevar'**
+  String get poleTitle;
+
+  /// No description provided for @poleNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Record pole'**
+  String get poleNew;
+
+  /// No description provided for @poleSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search pole no. or feeder'**
+  String get poleSearch;
+
+  /// No description provided for @poleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No poles recorded'**
+  String get poleEmpty;
+
+  /// No description provided for @poleEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Survey poles on site; entries made offline sync later.'**
+  String get poleEmptyHint;
+
+  /// No description provided for @poleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Pole number'**
+  String get poleNumber;
+
+  /// No description provided for @poleFeeder.
+  ///
+  /// In en, this message translates to:
+  /// **'Feeder name'**
+  String get poleFeeder;
+
+  /// No description provided for @poleTransformer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transformer / DP reference'**
+  String get poleTransformer;
+
+  /// No description provided for @poleType.
+  ///
+  /// In en, this message translates to:
+  /// **'Pole type'**
+  String get poleType;
+
+  /// No description provided for @poleTypePsc.
+  ///
+  /// In en, this message translates to:
+  /// **'PSC'**
+  String get poleTypePsc;
+
+  /// No description provided for @poleTypeRcc.
+  ///
+  /// In en, this message translates to:
+  /// **'RCC'**
+  String get poleTypeRcc;
+
+  /// No description provided for @poleTypeSteel.
+  ///
+  /// In en, this message translates to:
+  /// **'Steel tubular'**
+  String get poleTypeSteel;
+
+  /// No description provided for @poleTypeRail.
+  ///
+  /// In en, this message translates to:
+  /// **'Rail pole'**
+  String get poleTypeRail;
+
+  /// No description provided for @poleTypeWooden.
+  ///
+  /// In en, this message translates to:
+  /// **'Wooden'**
+  String get poleTypeWooden;
+
+  /// No description provided for @poleTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get poleTypeOther;
+
+  /// No description provided for @poleHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (m)'**
+  String get poleHeight;
+
+  /// No description provided for @poleLandmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Landmark'**
+  String get poleLandmark;
+
+  /// No description provided for @poleCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get poleCondition;
+
+  /// No description provided for @poleCondGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get poleCondGood;
+
+  /// No description provided for @poleCondLeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaning'**
+  String get poleCondLeaning;
+
+  /// No description provided for @poleCondDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Damaged'**
+  String get poleCondDamaged;
+
+  /// No description provided for @poleCondReplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Replaced'**
+  String get poleCondReplaced;
+
+  /// No description provided for @poleRemarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Remarks'**
+  String get poleRemarks;
+
+  /// No description provided for @poleGpsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture the pole\'s GPS location'**
+  String get poleGpsRequired;
+
+  /// No description provided for @poleSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Pole recorded'**
+  String get poleSaved;
+
+  /// No description provided for @poleDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'This pole number already exists in this section'**
+  String get poleDuplicate;
+
+  /// No description provided for @assetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Assets'**
+  String get assetTitle;
+
+  /// No description provided for @assetNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Register asset'**
+  String get assetNew;
+
+  /// No description provided for @assetSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tag, name or serial no.'**
+  String get assetSearch;
+
+  /// No description provided for @assetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No assets registered'**
+  String get assetEmpty;
+
+  /// No description provided for @assetTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Asset tag'**
+  String get assetTag;
+
+  /// No description provided for @assetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name / description'**
+  String get assetName;
+
+  /// No description provided for @assetCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get assetCategory;
+
+  /// No description provided for @assetCatTransformer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transformer'**
+  String get assetCatTransformer;
+
+  /// No description provided for @assetCatPole.
+  ///
+  /// In en, this message translates to:
+  /// **'Pole'**
+  String get assetCatPole;
+
+  /// No description provided for @assetCatConductor.
+  ///
+  /// In en, this message translates to:
+  /// **'Conductor'**
+  String get assetCatConductor;
+
+  /// No description provided for @assetCatMeter.
+  ///
+  /// In en, this message translates to:
+  /// **'Meter'**
+  String get assetCatMeter;
+
+  /// No description provided for @assetCatTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool / equipment'**
+  String get assetCatTool;
+
+  /// No description provided for @assetCatVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get assetCatVehicle;
+
+  /// No description provided for @assetCatOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get assetCatOther;
+
+  /// No description provided for @assetSerial.
+  ///
+  /// In en, this message translates to:
+  /// **'Serial number'**
+  String get assetSerial;
+
+  /// No description provided for @assetMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make'**
+  String get assetMake;
+
+  /// No description provided for @assetRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating (e.g. 100 kVA)'**
+  String get assetRating;
+
+  /// No description provided for @assetLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get assetLocation;
+
+  /// No description provided for @assetPurchaseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase date'**
+  String get assetPurchaseDate;
+
+  /// No description provided for @assetPurchaseValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase value (₹)'**
+  String get assetPurchaseValue;
+
+  /// No description provided for @assetCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get assetCondition;
+
+  /// No description provided for @assetCondNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get assetCondNew;
+
+  /// No description provided for @assetCondGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get assetCondGood;
+
+  /// No description provided for @assetCondFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get assetCondFair;
+
+  /// No description provided for @assetCondPoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Poor'**
+  String get assetCondPoor;
+
+  /// No description provided for @assetCondUnserviceable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unserviceable'**
+  String get assetCondUnserviceable;
+
+  /// No description provided for @assetStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get assetStatus;
+
+  /// No description provided for @assetStatusInStore.
+  ///
+  /// In en, this message translates to:
+  /// **'In store'**
+  String get assetStatusInStore;
+
+  /// No description provided for @assetStatusDeployed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deployed'**
+  String get assetStatusDeployed;
+
+  /// No description provided for @assetStatusUnderRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Under repair'**
+  String get assetStatusUnderRepair;
+
+  /// No description provided for @assetStatusScrapped.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrapped'**
+  String get assetStatusScrapped;
+
+  /// No description provided for @assetStatusLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get assetStatusLost;
+
+  /// No description provided for @assetAssignedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to'**
+  String get assetAssignedTo;
+
+  /// No description provided for @assetUnassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not assigned'**
+  String get assetUnassigned;
+
+  /// No description provided for @assetNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get assetNotes;
+
+  /// No description provided for @assetHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get assetHistory;
+
+  /// No description provided for @assetEvAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign'**
+  String get assetEvAssign;
+
+  /// No description provided for @assetEvMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to section'**
+  String get assetEvMove;
+
+  /// No description provided for @assetEvInspect.
+  ///
+  /// In en, this message translates to:
+  /// **'Record inspection'**
+  String get assetEvInspect;
+
+  /// No description provided for @assetEvRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Record repair'**
+  String get assetEvRepair;
+
+  /// No description provided for @assetEvStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Change status'**
+  String get assetEvStatus;
+
+  /// No description provided for @assetEvScrap.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrap'**
+  String get assetEvScrap;
+
+  /// No description provided for @assetEvCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered'**
+  String get assetEvCreated;
+
+  /// No description provided for @assetEvAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get assetEvAssigned;
+
+  /// No description provided for @assetEvMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved'**
+  String get assetEvMoved;
+
+  /// No description provided for @assetEvInspected.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspected'**
+  String get assetEvInspected;
+
+  /// No description provided for @assetEvRepaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Repaired'**
+  String get assetEvRepaired;
+
+  /// No description provided for @assetEvStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Status changed'**
+  String get assetEvStatusChanged;
+
+  /// No description provided for @assetEvScrapped.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrapped'**
+  String get assetEvScrapped;
+
+  /// No description provided for @assetScrapConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrap this asset? This is recorded permanently.'**
+  String get assetScrapConfirm;
+
+  /// No description provided for @assetNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get assetNote;
 }
 
 class _AppLocalizationsDelegate
