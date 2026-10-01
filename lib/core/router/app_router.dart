@@ -19,6 +19,8 @@ import '../../features/more/more_page.dart';
 import '../../features/more/sync_queue_page.dart';
 import '../../features/org/presentation/org_page.dart';
 import '../../features/org/presentation/teams_page.dart';
+import '../../features/registers/assets_pages.dart';
+import '../../features/registers/poles_pages.dart';
 import '../../features/staff/presentation/staff_detail_page.dart';
 import '../../features/staff/presentation/staff_form_page.dart';
 import '../../features/staff/presentation/staff_list_page.dart';
@@ -45,6 +47,8 @@ abstract final class Routes {
   static const approvals = '/home/approvals';
   static const leave = '/attendance/leave';
   static const inventory = '/more/inventory';
+  static const poles = '/more/poles';
+  static const assets = '/more/assets';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -148,6 +152,30 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
                 GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
                 GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
+                GoRoute(
+                  path: 'poles',
+                  builder: (_, __) => const PolesPage(),
+                  routes: [
+                    GoRoute(path: 'new', builder: (_, __) => const PoleFormPage()),
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, s) => PoleDetailPage(id: s.pathParameters['id']!),
+                      routes: [GoRoute(path: 'edit', builder: (_, s) => PoleFormPage(poleId: s.pathParameters['id']))],
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'assets',
+                  builder: (_, __) => const AssetsPage(),
+                  routes: [
+                    GoRoute(path: 'new', builder: (_, __) => const AssetFormPage()),
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, s) => AssetDetailPage(id: s.pathParameters['id']!),
+                      routes: [GoRoute(path: 'edit', builder: (_, s) => AssetFormPage(assetId: s.pathParameters['id']))],
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'inventory',
                   builder: (_, __) => const InventoryPage(),

@@ -1368,4 +1368,243 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get invTxnScrap => 'സ്ക്രാപ്പ്';
+
+  @override
+  String get regSection => 'ഫീൽഡ് രജിസ്റ്ററുകൾ';
+
+  @override
+  String get openInMaps => 'മാപ്പിൽ തുറക്കുക';
+
+  @override
+  String get poleTitle => 'പോൾവാർ';
+
+  @override
+  String get poleNew => 'പോസ്റ്റ് രേഖപ്പെടുത്തുക';
+
+  @override
+  String get poleSearch => 'പോസ്റ്റ് നമ്പറോ ഫീഡറോ തിരയുക';
+
+  @override
+  String get poleEmpty => 'പോസ്റ്റുകൾ രേഖപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
+  String get poleEmptyHint =>
+      'സ്ഥലത്ത് വെച്ച് സർവേ ചെയ്യുക; ഓഫ്‌ലൈനിൽ ചേർത്തവ പിന്നീട് സിങ്ക് ആകും.';
+
+  @override
+  String get poleNumber => 'പോസ്റ്റ് നമ്പർ';
+
+  @override
+  String get poleFeeder => 'ഫീഡറിന്റെ പേര്';
+
+  @override
+  String get poleTransformer => 'ട്രാൻസ്‌ഫോർമർ / DP റഫറൻസ്';
+
+  @override
+  String get poleType => 'പോസ്റ്റിന്റെ തരം';
+
+  @override
+  String get poleTypePsc => 'PSC';
+
+  @override
+  String get poleTypeRcc => 'RCC';
+
+  @override
+  String get poleTypeSteel => 'സ്റ്റീൽ ട്യൂബുലാർ';
+
+  @override
+  String get poleTypeRail => 'റെയിൽ പോസ്റ്റ്';
+
+  @override
+  String get poleTypeWooden => 'മരം';
+
+  @override
+  String get poleTypeOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get poleHeight => 'ഉയരം (മീ)';
+
+  @override
+  String get poleLandmark => 'അടയാളം';
+
+  @override
+  String get poleCondition => 'അവസ്ഥ';
+
+  @override
+  String get poleCondGood => 'നല്ലത്';
+
+  @override
+  String get poleCondLeaning => 'ചരിഞ്ഞത്';
+
+  @override
+  String get poleCondDamaged => 'കേടായത്';
+
+  @override
+  String get poleCondReplaced => 'മാറ്റിസ്ഥാപിച്ചു';
+
+  @override
+  String get poleRemarks => 'കുറിപ്പ്';
+
+  @override
+  String get poleGpsRequired => 'പോസ്റ്റിന്റെ GPS സ്ഥാനം രേഖപ്പെടുത്തുക';
+
+  @override
+  String get poleSaved => 'പോസ്റ്റ് രേഖപ്പെടുത്തി';
+
+  @override
+  String get poleDuplicate => 'ഈ സെക്ഷനിൽ ഈ പോസ്റ്റ് നമ്പർ നിലവിലുണ്ട്';
+
+  @override
+  String get assetTitle => 'ആസ്തികൾ';
+
+  @override
+  String get assetNew => 'ആസ്തി രജിസ്റ്റർ ചെയ്യുക';
+
+  @override
+  String get assetSearch => 'ടാഗ്, പേര് അല്ലെങ്കിൽ സീരിയൽ നമ്പർ തിരയുക';
+
+  @override
+  String get assetEmpty => 'ആസ്തികൾ രജിസ്റ്റർ ചെയ്തിട്ടില്ല';
+
+  @override
+  String get assetTag => 'ആസ്തി ടാഗ്';
+
+  @override
+  String get assetName => 'പേര് / വിവരണം';
+
+  @override
+  String get assetCategory => 'വിഭാഗം';
+
+  @override
+  String get assetCatTransformer => 'ട്രാൻസ്‌ഫോർമർ';
+
+  @override
+  String get assetCatPole => 'പോസ്റ്റ്';
+
+  @override
+  String get assetCatConductor => 'കണ്ടക്ടർ';
+
+  @override
+  String get assetCatMeter => 'മീറ്റർ';
+
+  @override
+  String get assetCatTool => 'ഉപകരണം';
+
+  @override
+  String get assetCatVehicle => 'വാഹനം';
+
+  @override
+  String get assetCatOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get assetSerial => 'സീരിയൽ നമ്പർ';
+
+  @override
+  String get assetMake => 'നിർമ്മാതാവ്';
+
+  @override
+  String get assetRating => 'റേറ്റിംഗ് (ഉദാ. 100 kVA)';
+
+  @override
+  String get assetLocation => 'സ്ഥലം';
+
+  @override
+  String get assetPurchaseDate => 'വാങ്ങിയ തീയതി';
+
+  @override
+  String get assetPurchaseValue => 'വാങ്ങിയ വില (₹)';
+
+  @override
+  String get assetCondition => 'അവസ്ഥ';
+
+  @override
+  String get assetCondNew => 'പുതിയത്';
+
+  @override
+  String get assetCondGood => 'നല്ലത്';
+
+  @override
+  String get assetCondFair => 'തരക്കേടില്ല';
+
+  @override
+  String get assetCondPoor => 'മോശം';
+
+  @override
+  String get assetCondUnserviceable => 'ഉപയോഗശൂന്യം';
+
+  @override
+  String get assetStatus => 'നില';
+
+  @override
+  String get assetStatusInStore => 'സ്റ്റോറിൽ';
+
+  @override
+  String get assetStatusDeployed => 'സ്ഥാപിച്ചു';
+
+  @override
+  String get assetStatusUnderRepair => 'അറ്റകുറ്റപ്പണിയിൽ';
+
+  @override
+  String get assetStatusScrapped => 'സ്ക്രാപ്പ് ചെയ്തു';
+
+  @override
+  String get assetStatusLost => 'നഷ്ടപ്പെട്ടു';
+
+  @override
+  String get assetAssignedTo => 'ആർക്ക് നൽകി';
+
+  @override
+  String get assetUnassigned => 'ആർക്കും നൽകിയിട്ടില്ല';
+
+  @override
+  String get assetNotes => 'കുറിപ്പുകൾ';
+
+  @override
+  String get assetHistory => 'ചരിത്രം';
+
+  @override
+  String get assetEvAssign => 'നൽകുക';
+
+  @override
+  String get assetEvMove => 'സെക്ഷനിലേക്ക് മാറ്റുക';
+
+  @override
+  String get assetEvInspect => 'പരിശോധന രേഖപ്പെടുത്തുക';
+
+  @override
+  String get assetEvRepair => 'അറ്റകുറ്റപ്പണി രേഖപ്പെടുത്തുക';
+
+  @override
+  String get assetEvStatus => 'നില മാറ്റുക';
+
+  @override
+  String get assetEvScrap => 'സ്ക്രാപ്പ്';
+
+  @override
+  String get assetEvCreated => 'രജിസ്റ്റർ ചെയ്തു';
+
+  @override
+  String get assetEvAssigned => 'നൽകി';
+
+  @override
+  String get assetEvMoved => 'മാറ്റി';
+
+  @override
+  String get assetEvInspected => 'പരിശോധിച്ചു';
+
+  @override
+  String get assetEvRepaired => 'അറ്റകുറ്റപ്പണി ചെയ്തു';
+
+  @override
+  String get assetEvStatusChanged => 'നില മാറ്റി';
+
+  @override
+  String get assetEvScrapped => 'സ്ക്രാപ്പ് ചെയ്തു';
+
+  @override
+  String get assetScrapConfirm =>
+      'ഈ ആസ്തി സ്ക്രാപ്പ് ചെയ്യണോ? ഇത് സ്ഥിരമായി രേഖപ്പെടുത്തും.';
+
+  @override
+  String get assetNote => 'കുറിപ്പ്';
 }
