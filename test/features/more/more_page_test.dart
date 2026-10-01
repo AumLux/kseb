@@ -41,6 +41,10 @@ class _App extends ConsumerWidget {
 
 void main() {
   testWidgets('switching language re-renders in Malayalam and persists', (tester) async {
+    tester.view
+      ..physicalSize = const Size(800, 2000)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     SharedPreferences.setMockInitialValues({'aumlux.locale': 'en'});
     final prefs = await SharedPreferences.getInstance();
     final repo = FakeAuthRepository(profile: testUser());

@@ -1363,4 +1363,243 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invTxnScrap => 'Scrap';
+
+  @override
+  String get regSection => 'Field registers';
+
+  @override
+  String get openInMaps => 'Open in Maps';
+
+  @override
+  String get poleTitle => 'Polevar';
+
+  @override
+  String get poleNew => 'Record pole';
+
+  @override
+  String get poleSearch => 'Search pole no. or feeder';
+
+  @override
+  String get poleEmpty => 'No poles recorded';
+
+  @override
+  String get poleEmptyHint =>
+      'Survey poles on site; entries made offline sync later.';
+
+  @override
+  String get poleNumber => 'Pole number';
+
+  @override
+  String get poleFeeder => 'Feeder name';
+
+  @override
+  String get poleTransformer => 'Transformer / DP reference';
+
+  @override
+  String get poleType => 'Pole type';
+
+  @override
+  String get poleTypePsc => 'PSC';
+
+  @override
+  String get poleTypeRcc => 'RCC';
+
+  @override
+  String get poleTypeSteel => 'Steel tubular';
+
+  @override
+  String get poleTypeRail => 'Rail pole';
+
+  @override
+  String get poleTypeWooden => 'Wooden';
+
+  @override
+  String get poleTypeOther => 'Other';
+
+  @override
+  String get poleHeight => 'Height (m)';
+
+  @override
+  String get poleLandmark => 'Landmark';
+
+  @override
+  String get poleCondition => 'Condition';
+
+  @override
+  String get poleCondGood => 'Good';
+
+  @override
+  String get poleCondLeaning => 'Leaning';
+
+  @override
+  String get poleCondDamaged => 'Damaged';
+
+  @override
+  String get poleCondReplaced => 'Replaced';
+
+  @override
+  String get poleRemarks => 'Remarks';
+
+  @override
+  String get poleGpsRequired => 'Capture the pole\'s GPS location';
+
+  @override
+  String get poleSaved => 'Pole recorded';
+
+  @override
+  String get poleDuplicate => 'This pole number already exists in this section';
+
+  @override
+  String get assetTitle => 'Assets';
+
+  @override
+  String get assetNew => 'Register asset';
+
+  @override
+  String get assetSearch => 'Search tag, name or serial no.';
+
+  @override
+  String get assetEmpty => 'No assets registered';
+
+  @override
+  String get assetTag => 'Asset tag';
+
+  @override
+  String get assetName => 'Name / description';
+
+  @override
+  String get assetCategory => 'Category';
+
+  @override
+  String get assetCatTransformer => 'Transformer';
+
+  @override
+  String get assetCatPole => 'Pole';
+
+  @override
+  String get assetCatConductor => 'Conductor';
+
+  @override
+  String get assetCatMeter => 'Meter';
+
+  @override
+  String get assetCatTool => 'Tool / equipment';
+
+  @override
+  String get assetCatVehicle => 'Vehicle';
+
+  @override
+  String get assetCatOther => 'Other';
+
+  @override
+  String get assetSerial => 'Serial number';
+
+  @override
+  String get assetMake => 'Make';
+
+  @override
+  String get assetRating => 'Rating (e.g. 100 kVA)';
+
+  @override
+  String get assetLocation => 'Location';
+
+  @override
+  String get assetPurchaseDate => 'Purchase date';
+
+  @override
+  String get assetPurchaseValue => 'Purchase value (₹)';
+
+  @override
+  String get assetCondition => 'Condition';
+
+  @override
+  String get assetCondNew => 'New';
+
+  @override
+  String get assetCondGood => 'Good';
+
+  @override
+  String get assetCondFair => 'Fair';
+
+  @override
+  String get assetCondPoor => 'Poor';
+
+  @override
+  String get assetCondUnserviceable => 'Unserviceable';
+
+  @override
+  String get assetStatus => 'Status';
+
+  @override
+  String get assetStatusInStore => 'In store';
+
+  @override
+  String get assetStatusDeployed => 'Deployed';
+
+  @override
+  String get assetStatusUnderRepair => 'Under repair';
+
+  @override
+  String get assetStatusScrapped => 'Scrapped';
+
+  @override
+  String get assetStatusLost => 'Lost';
+
+  @override
+  String get assetAssignedTo => 'Assigned to';
+
+  @override
+  String get assetUnassigned => 'Not assigned';
+
+  @override
+  String get assetNotes => 'Notes';
+
+  @override
+  String get assetHistory => 'History';
+
+  @override
+  String get assetEvAssign => 'Assign';
+
+  @override
+  String get assetEvMove => 'Move to section';
+
+  @override
+  String get assetEvInspect => 'Record inspection';
+
+  @override
+  String get assetEvRepair => 'Record repair';
+
+  @override
+  String get assetEvStatus => 'Change status';
+
+  @override
+  String get assetEvScrap => 'Scrap';
+
+  @override
+  String get assetEvCreated => 'Registered';
+
+  @override
+  String get assetEvAssigned => 'Assigned';
+
+  @override
+  String get assetEvMoved => 'Moved';
+
+  @override
+  String get assetEvInspected => 'Inspected';
+
+  @override
+  String get assetEvRepaired => 'Repaired';
+
+  @override
+  String get assetEvStatusChanged => 'Status changed';
+
+  @override
+  String get assetEvScrapped => 'Scrapped';
+
+  @override
+  String get assetScrapConfirm =>
+      'Scrap this asset? This is recorded permanently.';
+
+  @override
+  String get assetNote => 'Note';
 }

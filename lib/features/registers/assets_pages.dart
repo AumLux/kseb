@@ -1,0 +1,510 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/design/design.dart';
+import '../../core/format/formatters.dart';
+import '../../core/l10n/l10n.dart';
+import '../../core/media/photo_strip.dart';
+import '../../core/ui/dialogs.dart';
+import '../../core/ui/maps.dart';
+import '../auth/application/session_controller.dart';
+import '../auth/domain/app_user.dart';
+import '../org/data/org_repository.dart';
+import '../staff/presentation/staff_form_page.dart' show assignableSections;
+import 'registers_labels.dart';
+import 'registers_repository.dart';
+
+class AssetsPage extends ConsumerStatefulWidget {
+  const AssetsPage({super.key});
+
+  @override
+  ConsumerState<AssetsPage> createState() => _AssetsPageState();
+}
+
+class _AssetsPageState extends ConsumerState<AssetsPage> {
+  String _q = '';
+  String? _category;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final me = ref.watch(currentUserProvider)!;
+    final assets = ref.watch(assetsProvider);
+    final people = ref.watch(directoryProvider).value ?? const <Person>[];
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.assetTitle)),
+      floatingActionButton: me.role.atLeast(AppRole.manager)
+          ? FloatingActionButton.extended(
+              onPressed: () async {
+                await context.push('/more/assets/new');
+                ref.invalidate(assetsProvider);
+              },
+              icon: const Icon(Icons.add_rounded),
+              label: Text(l10n.assetNew),
+            )
+          : null,
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm),
+          child: TextField(
+            decoration: InputDecoration(hintText: l10n.assetSearch, prefixIcon: const Icon(Icons.search_rounded)),
+            onChanged: (v) => setState(() => _q = v.trim()),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          child: Row(children: [
+            for (final c in [null, ...assetCategories])
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
+                child: ChoiceChip(
+                  label: Text(c == null ? l10n.staffFilterAll : assetCategoryLabel(l10n, c)),
+                  selected: _category == c,
+                  onSelected: (_) => setState(() => _category = c),
+                ),
+              ),
+          ]),
+        ),
+        Expanded(
+          child: switch (assets) {
+            AsyncData(:final value) => () {
+                final list = value.where((a) => (_category == null || a.category == _category) && a.matches(_q)).toList();
+                if (list.isEmpty) return EmptyState(icon: Icons.devices_other_rounded, title: l10n.assetEmpty);
+                return RefreshIndicator(
+                  onRefresh: () => ref.refresh(assetsProvider.future),
+                  child: ListView(padding: const EdgeInsets.only(bottom: 96), children: [
+                    for (final a in list)
+                      AppListRow(
+                        title: '${a.tag} · ${a.name}',
+                        subtitle: [
+                          assetCategoryLabel(l10n, a.category),
+                          ?a.rating,
+                          ?people.where((p) => p.id == a.assignedTo).firstOrNull?.fullName,
+                        ].join(' · '),
+                        trailing: assetStatusChip(l10n, a.status),
+                        onTap: () => context.push('/more/assets/${a.id}'),
+                      ),
+                  ]),
+                );
+              }(),
+            AsyncError(:final error) => ErrorState(
+                title: l10n.commonSomethingWrong,
+                message: failureMessage(l10n, error),
+                retryLabel: l10n.commonRetry,
+                onRetry: () => ref.invalidate(assetsProvider),
+              ),
+            _ => const LoadingView(),
+          },
+        ),
+      ]),
+    );
+  }
+}
+
+class AssetFormPage extends ConsumerStatefulWidget {
+  const AssetFormPage({super.key, this.assetId});
+
+  final String? assetId;
+
+  @override
+  ConsumerState<AssetFormPage> createState() => _AssetFormPageState();
+}
+
+class _AssetFormPageState extends ConsumerState<AssetFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _tag = TextEditingController();
+  final _name = TextEditingController();
+  final _serial = TextEditingController();
+  final _make = TextEditingController();
+  final _rating = TextEditingController();
+  final _location = TextEditingController();
+  final _value = TextEditingController();
+  final _notes = TextEditingController();
+  String _category = 'transformer';
+  String _condition = 'new';
+  String _status = 'in_store';
+  String? _sectionId;
+  DateTime? _purchased;
+  bool _busy = false;
+  bool _loaded = false;
+
+  bool get _isEdit => widget.assetId != null;
+
+  @override
+  void dispose() {
+    for (final c in [_tag, _name, _serial, _make, _rating, _location, _value, _notes]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _fill(Asset a) {
+    if (_loaded) return;
+    _loaded = true;
+    _tag.text = a.tag;
+    _name.text = a.name;
+    _serial.text = a.serialNo ?? '';
+    _make.text = a.make ?? '';
+    _rating.text = a.rating ?? '';
+    _location.text = a.locationText ?? '';
+    _value.text = a.purchaseValue?.toString() ?? '';
+    _notes.text = a.notes ?? '';
+    _category = a.category;
+    _condition = a.condition;
+    _status = a.status;
+    _sectionId = a.sectionId;
+    _purchased = a.purchaseDate;
+  }
+
+  Future<void> _save() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    setState(() => _busy = true);
+    String? blank(String s) => s.trim().isEmpty ? null : s.trim();
+    final common = {
+      'name': _name.text.trim(),
+      'serial_no': blank(_serial.text),
+      'make': blank(_make.text),
+      'rating': blank(_rating.text),
+      'location_text': blank(_location.text),
+      'purchase_date': RegistersRepository.isoOrNull(_purchased),
+      'purchase_value': num.tryParse(_value.text),
+      'notes': blank(_notes.text),
+    };
+    final repo = ref.read(registersRepositoryProvider);
+    try {
+      if (_isEdit) {
+        await repo.updateAsset(widget.assetId!, common);
+        ref.invalidate(assetProvider(widget.assetId!));
+        if (mounted) Navigator.of(context).pop(true);
+      } else {
+        final id = await repo.registerAsset({
+          ...common,
+          'asset_tag': _tag.text.trim().toUpperCase(),
+          'category': _category,
+          'section_id': _sectionId,
+          'condition': _condition,
+          'status': _status,
+        });
+        if (mounted) context.pushReplacement('/more/assets/$id');
+      }
+    } catch (e) {
+      if (mounted) showSnack(context, failureMessage(context.l10n, e));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final me = ref.watch(currentUserProvider)!;
+    final tree = ref.watch(orgTreeProvider).value;
+    final sections = tree == null ? const <OrgUnit>[] : assignableSections(me, tree);
+    if (_isEdit) {
+      if (ref.watch(assetProvider(widget.assetId!)) case AsyncData(:final value)) _fill(value);
+      if (!_loaded) return Scaffold(appBar: AppBar(), body: const LoadingView());
+    } else {
+      _sectionId ??= sections.length == 1 ? sections.single.id : me.sectionId;
+    }
+
+    Widget chips(String label, List<String> values, String selected, String Function(String) text, ValueChanged<String> set) =>
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: AppTypography.label),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
+            for (final v in values) ChoiceChip(label: Text(text(v)), selected: selected == v, onSelected: (_) => setState(() => set(v))),
+          ]),
+          const SizedBox(height: AppSpacing.lg),
+        ]);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(_isEdit ? _tag.text : l10n.assetNew)),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: AppSpacing.formMaxWidth),
+            child: Form(
+              key: _formKey,
+              child: ListView(padding: const EdgeInsets.all(AppSpacing.lg), children: [
+                AppTextField(
+                  label: l10n.assetTag,
+                  controller: _tag,
+                  required: true,
+                  enabled: !_isEdit,
+                  textCapitalization: TextCapitalization.characters,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (!_isEdit) ...[
+                  chips(l10n.assetCategory, assetCategories, _category, (v) => assetCategoryLabel(l10n, v), (v) => _category = v),
+                  AppDropdownField<String>(
+                    label: l10n.staffSection,
+                    required: true,
+                    items: sections.map((s) => s.id).toList(),
+                    value: _sectionId,
+                    itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
+                    onChanged: (v) => setState(() => _sectionId = v),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+                AppTextField(label: l10n.assetName, controller: _name, required: true),
+                const SizedBox(height: AppSpacing.lg),
+                AppTextField(label: l10n.assetSerial, controller: _serial),
+                const SizedBox(height: AppSpacing.lg),
+                Row(children: [
+                  Expanded(child: AppTextField(label: l10n.assetMake, controller: _make)),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(child: AppTextField(label: l10n.assetRating, controller: _rating)),
+                ]),
+                const SizedBox(height: AppSpacing.lg),
+                AppTextField(label: l10n.assetLocation, controller: _location),
+                const SizedBox(height: AppSpacing.lg),
+                Row(children: [
+                  Expanded(
+                    child: AppTextField(
+                      key: ValueKey(_purchased),
+                      label: l10n.assetPurchaseDate,
+                      initialValue: _purchased == null ? '' : Fmt.date(_purchased),
+                      readOnly: true,
+                      onTap: () async {
+                        final d = await showDatePicker(
+                            context: context, initialDate: _purchased ?? DateTime.now(), firstDate: DateTime(1980), lastDate: DateTime.now());
+                        if (d != null) setState(() => _purchased = d);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: AppTextField(
+                      label: l10n.assetPurchaseValue,
+                      controller: _value,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: AppSpacing.lg),
+                if (!_isEdit) ...[
+                  chips(l10n.assetCondition, assetConditions, _condition, (v) => assetConditionLabel(l10n, v), (v) => _condition = v),
+                  chips(l10n.assetStatus, const ['in_store', 'deployed', 'under_repair'], _status, (v) => assetStatusLabel(l10n, v),
+                      (v) => _status = v),
+                ],
+                AppTextField(label: l10n.assetNotes, controller: _notes, maxLines: 3),
+                const SizedBox(height: AppSpacing.xl),
+                AppButton(label: l10n.commonSave, expand: true, loading: _busy, onPressed: _save),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AssetDetailPage extends ConsumerStatefulWidget {
+  const AssetDetailPage({super.key, required this.id});
+
+  final String id;
+
+  @override
+  ConsumerState<AssetDetailPage> createState() => _AssetDetailPageState();
+}
+
+class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
+  bool _busy = false;
+
+  Future<void> _event(Asset a, String type) async {
+    final l10n = context.l10n;
+    final me = ref.read(currentUserProvider)!;
+    final people = ref.read(directoryProvider).value ?? const <Person>[];
+    final tree = ref.read(orgTreeProvider).value;
+    final sections = tree == null ? const <OrgUnit>[] : assignableSections(me, tree);
+    final note = TextEditingController();
+    String? pick = type == 'assigned' ? a.assignedTo : null;
+    String? status = a.status, condition = a.condition;
+
+    if (type == 'scrapped' &&
+        !await confirmAction(context, message: l10n.assetScrapConfirm, confirmLabel: l10n.assetEvScrap, destructive: true)) {
+      return;
+    }
+    if (!mounted) return;
+    final ok = type == 'scrapped' ||
+        (await showDialog<bool>(
+              context: context,
+              builder: (context) => StatefulBuilder(
+                builder: (context, setLocal) => AlertDialog(
+                  title: Text(switch (type) {
+                    'assigned' => l10n.assetEvAssign,
+                    'moved' => l10n.assetEvMove,
+                    'inspected' => l10n.assetEvInspect,
+                    'repaired' => l10n.assetEvRepair,
+                    _ => l10n.assetEvStatus,
+                  }),
+                  content: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      if (type == 'assigned')
+                        AppDropdownField<String?>(
+                          label: l10n.assetAssignedTo,
+                          items: [null, ...people.where((p) => p.active && p.sectionId == a.sectionId).map((p) => p.id)],
+                          value: pick,
+                          itemLabel: (id) => id == null ? l10n.assetUnassigned : people.firstWhere((p) => p.id == id).fullName,
+                          onChanged: (v) => setLocal(() => pick = v),
+                        ),
+                      if (type == 'moved')
+                        AppDropdownField<String>(
+                          label: l10n.staffSection,
+                          items: sections.where((s) => s.id != a.sectionId).map((s) => s.id).toList(),
+                          value: pick,
+                          itemLabel: (id) => sections.firstWhere((s) => s.id == id).name,
+                          onChanged: (v) => setLocal(() => pick = v),
+                        ),
+                      if (type == 'status_changed')
+                        AppDropdownField<String>(
+                          label: l10n.assetStatus,
+                          items: const ['in_store', 'deployed', 'under_repair', 'lost'],
+                          value: status,
+                          itemLabel: (v) => assetStatusLabel(l10n, v),
+                          onChanged: (v) => setLocal(() => status = v),
+                        ),
+                      if (type == 'inspected' || type == 'repaired')
+                        AppDropdownField<String>(
+                          label: l10n.assetCondition,
+                          items: assetConditions,
+                          value: condition,
+                          itemLabel: (v) => assetConditionLabel(l10n, v),
+                          onChanged: (v) => setLocal(() => condition = v),
+                        ),
+                      const SizedBox(height: AppSpacing.md),
+                      AppTextField(label: l10n.assetNote, controller: note, maxLines: 2),
+                    ]),
+                  ),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+                    TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.commonSave)),
+                  ],
+                ),
+              ),
+            ) ??
+            false);
+    if (!ok || (type == 'moved' && pick == null)) {
+      note.dispose();
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(registersRepositoryProvider).recordEvent(
+            a.id,
+            type,
+            note: note.text.trim().isEmpty ? null : note.text.trim(),
+            toSectionId: type == 'moved' ? pick : null,
+            assignedTo: type == 'assigned' ? pick : null,
+            status: type == 'status_changed' ? status : null,
+            condition: (type == 'inspected' || type == 'repaired') ? condition : null,
+          );
+      ref
+        ..invalidate(assetProvider(a.id))
+        ..invalidate(assetEventsProvider(a.id))
+        ..invalidate(assetsProvider);
+    } catch (e) {
+      if (mounted) showSnack(context, failureMessage(l10n, e));
+    } finally {
+      note.dispose();
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final me = ref.watch(currentUserProvider)!;
+    final asset = ref.watch(assetProvider(widget.id));
+    final events = ref.watch(assetEventsProvider(widget.id)).value ?? const <AssetEvent>[];
+    final people = ref.watch(directoryProvider).value ?? const <Person>[];
+    final tree = ref.watch(orgTreeProvider).value;
+    String name(String? id) => people.where((p) => p.id == id).firstOrNull?.fullName ?? '—';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(asset.value?.tag ?? l10n.assetTitle),
+        actions: [
+          if (asset.value != null && me.role.atLeast(AppRole.manager) && !asset.value!.scrapped)
+            IconButton(
+              tooltip: l10n.staffEdit,
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => context.push('/more/assets/${widget.id}/edit'),
+            ),
+        ],
+      ),
+      body: switch (asset) {
+        AsyncData(:final value) => ListView(padding: const EdgeInsets.only(bottom: AppSpacing.xxxl), children: [
+            Container(
+              color: AppColors.canvas,
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Wrap(spacing: AppSpacing.sm, children: [
+                  assetStatusChip(l10n, value.status),
+                  StatusChip(label: assetConditionLabel(l10n, value.condition), dense: true),
+                  StatusChip(label: assetCategoryLabel(l10n, value.category), tone: StatusTone.brand, dense: true),
+                ]),
+                const SizedBox(height: AppSpacing.sm),
+                Text(value.name, style: AppTypography.title),
+                Text([value.tag, ?tree?.byId(value.sectionId)?.name].join(' · '), style: AppTypography.caption),
+              ]),
+            ),
+            if (me.role.atLeast(AppRole.supervisor) && !value.scrapped)
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Wrap(spacing: AppSpacing.sm, runSpacing: AppSpacing.sm, children: [
+                  AppButton.secondary(label: l10n.assetEvAssign, icon: Icons.person_add_alt_rounded, onPressed: _busy ? null : () => _event(value, 'assigned')),
+                  AppButton.secondary(label: l10n.assetEvInspect, icon: Icons.fact_check_rounded, onPressed: _busy ? null : () => _event(value, 'inspected')),
+                  AppButton.secondary(label: l10n.assetEvRepair, icon: Icons.build_rounded, onPressed: _busy ? null : () => _event(value, 'repaired')),
+                  AppButton.secondary(label: l10n.assetEvStatus, icon: Icons.swap_vert_rounded, onPressed: _busy ? null : () => _event(value, 'status_changed')),
+                  if (me.role.atLeast(AppRole.manager)) ...[
+                    AppButton.secondary(label: l10n.assetEvMove, icon: Icons.local_shipping_rounded, onPressed: _busy ? null : () => _event(value, 'moved')),
+                    AppButton.tertiary(label: l10n.assetEvScrap, onPressed: _busy ? null : () => _event(value, 'scrapped')),
+                  ],
+                ]),
+              ),
+            AppListRow(title: value.assignedTo == null ? l10n.assetUnassigned : name(value.assignedTo), subtitle: l10n.assetAssignedTo),
+            if (value.serialNo != null) AppListRow(title: value.serialNo!, subtitle: l10n.assetSerial),
+            if (value.make != null || value.rating != null)
+              AppListRow(title: [?value.make, ?value.rating].join(' · '), subtitle: '${l10n.assetMake} / ${l10n.assetRating}'),
+            if (value.locationText != null) AppListRow(title: value.locationText!, subtitle: l10n.assetLocation),
+            if (value.purchaseDate != null || value.purchaseValue != null)
+              AppListRow(
+                title: [if (value.purchaseDate != null) Fmt.date(value.purchaseDate), if (value.purchaseValue != null) Fmt.money(value.purchaseValue)].join(' · '),
+                subtitle: l10n.assetPurchaseDate,
+              ),
+            if (value.lat != null)
+              AppListRow(
+                leading: const Icon(Icons.map_rounded, color: AppColors.inkMute),
+                title: l10n.openInMaps,
+                onTap: () => openInMaps(value.lat!, value.lng!),
+              ),
+            PhotoStrip(owner: (table: 'assets', id: value.id), canAdd: !value.scrapped),
+            SectionHeader(l10n.assetHistory),
+            for (final e in events)
+              AppListRow(
+                leading: const Icon(Icons.history_rounded, color: AppColors.inkMute),
+                title: assetEventLabel(l10n, e.type),
+                subtitle: [
+                  Fmt.dateTime(e.at),
+                  name(e.actor),
+                  if (e.assignedTo != null) '→ ${name(e.assignedTo)}',
+                  if (e.toSectionId != null) '→ ${tree?.byId(e.toSectionId)?.name ?? ''}',
+                  if (e.status != null) assetStatusLabel(l10n, e.status!),
+                  if (e.condition != null) assetConditionLabel(l10n, e.condition!),
+                  ?e.note,
+                ].join(' · '),
+              ),
+          ]),
+        AsyncError(:final error) => ErrorState(title: failureMessage(l10n, error), onRetry: () => ref.invalidate(assetProvider(widget.id))),
+        _ => const LoadingView(),
+      },
+    );
+  }
+}
