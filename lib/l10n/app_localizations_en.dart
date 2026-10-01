@@ -1990,4 +1990,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comPdfTooLarge => 'This PDF is larger than 10 MB.';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifEmpty => 'You\'re all caught up';
+
+  @override
+  String get notifMarkAll => 'Mark all read';
+
+  @override
+  String get notifChannelName => 'AumLux updates';
+
+  @override
+  String get notifChannelDescription => 'Approvals, alerts and reminders';
+
+  @override
+  String get bonusTitle => 'Bonus';
+
+  @override
+  String get bonusMyTotal => 'My approved bonus';
+
+  @override
+  String get bonusPoints => 'Points';
+
+  @override
+  String get bonusAmount => 'Amount';
+
+  @override
+  String get bonusPropose => 'Propose bonus';
+
+  @override
+  String get bonusFor => 'For';
+
+  @override
+  String get bonusReason => 'Reason';
+
+  @override
+  String get bonusReasonHint => 'e.g. Storm restoration overtime, 14–15 Oct';
+
+  @override
+  String get bonusNeedValue => 'Enter points or an amount';
+
+  @override
+  String get bonusProposed => 'Bonus proposed for approval';
+
+  @override
+  String get bonusEmpty => 'No bonus entries yet';
+
+  @override
+  String get bonusPendingNote => 'Bonuses are approved by the COO or Director.';
 }
