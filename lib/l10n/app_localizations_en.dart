@@ -1602,4 +1602,392 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assetNote => 'Note';
+
+  @override
+  String get comTitle => 'Commercial';
+
+  @override
+  String get comOverview => 'Overview';
+
+  @override
+  String get comSearch => 'Search tenders, work orders, invoices, letters';
+
+  @override
+  String get comNoResults => 'No matching records';
+
+  @override
+  String get comExpiringSoon => 'Deposits expiring soon';
+
+  @override
+  String get comNothingExpiring => 'No deposits expiring in the next 30 days';
+
+  @override
+  String get comAgeing => 'Receivables ageing';
+
+  @override
+  String comDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left',
+      one: '1 day left',
+      zero: 'Expires today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comNew => 'Add';
+
+  @override
+  String get comEmpty => 'Nothing recorded yet';
+
+  @override
+  String get comExportXlsx => 'Export Excel';
+
+  @override
+  String get comExportPdf => 'Export PDF';
+
+  @override
+  String get comLinked => 'Linked records';
+
+  @override
+  String get comDocuments => 'Documents';
+
+  @override
+  String get comAttachPdf => 'Attach PDF';
+
+  @override
+  String get comNoDocuments => 'No documents attached';
+
+  @override
+  String get comReadOnly =>
+      'View only — changes are made by the COO or Director';
+
+  @override
+  String get comAll => 'All';
+
+  @override
+  String get entTenders => 'Tenders';
+
+  @override
+  String get entDeposits => 'EMD / SD / BG';
+
+  @override
+  String get entWorkOrders => 'Work orders';
+
+  @override
+  String get entBills => 'Bills / invoices';
+
+  @override
+  String get entLetters => 'Dispatch / letters';
+
+  @override
+  String get entGst => 'GST returns';
+
+  @override
+  String get fReference => 'Tender / work reference';
+
+  @override
+  String get fTitle => 'Title';
+
+  @override
+  String get fTenderType => 'Tender type';
+
+  @override
+  String get fWorkCategory => 'Work category';
+
+  @override
+  String get fDepartment => 'Department';
+
+  @override
+  String get fSection => 'Section office';
+
+  @override
+  String get fLocation => 'Location';
+
+  @override
+  String get fNoticeDate => 'Notice date';
+
+  @override
+  String get fSubmissionDeadline => 'Submission deadline';
+
+  @override
+  String get fOpeningDate => 'Opening date';
+
+  @override
+  String get fWorkStartDate => 'Work start date';
+
+  @override
+  String get fEstimate => 'Estimate amount';
+
+  @override
+  String get fEmd => 'EMD amount';
+
+  @override
+  String get fSecurityDeposit => 'Security deposit';
+
+  @override
+  String get fQuoted => 'Quoted amount';
+
+  @override
+  String get fContactPerson => 'Contact person';
+
+  @override
+  String get fContactPhone => 'Contact phone';
+
+  @override
+  String get fRemarks => 'Remarks';
+
+  @override
+  String get fStatus => 'Status';
+
+  @override
+  String get fKind => 'Type';
+
+  @override
+  String get fTender => 'Tender';
+
+  @override
+  String get fWorkOrder => 'Work order';
+
+  @override
+  String get fAmount => 'Amount';
+
+  @override
+  String get fPaymentMode => 'Payment mode';
+
+  @override
+  String get fInstrumentNo => 'DD / BG / UTR no.';
+
+  @override
+  String get fBank => 'Bank';
+
+  @override
+  String get fDepositDate => 'Deposit date';
+
+  @override
+  String get fValidityDate => 'Valid until';
+
+  @override
+  String get fReleasedOn => 'Released on';
+
+  @override
+  String get fWoNumber => 'Work order no.';
+
+  @override
+  String get fAgreementNo => 'Agreement no.';
+
+  @override
+  String get fAwardedAmount => 'Awarded amount';
+
+  @override
+  String get fIssueDate => 'Issue date';
+
+  @override
+  String get fDueDate => 'Completion due';
+
+  @override
+  String get fInvoiceNo => 'Invoice no.';
+
+  @override
+  String get fBillType => 'Bill type';
+
+  @override
+  String get fInvoiceDate => 'Invoice date';
+
+  @override
+  String get fTaxAmount => 'Tax (GST) amount';
+
+  @override
+  String get fPassedAmount => 'Passed amount';
+
+  @override
+  String get fPaidAmount => 'Paid amount';
+
+  @override
+  String get fPaidOn => 'Paid on';
+
+  @override
+  String get fRefNo => 'Reference no.';
+
+  @override
+  String get fDirection => 'In / out';
+
+  @override
+  String get fDocType => 'Document type';
+
+  @override
+  String get fParty => 'From / to';
+
+  @override
+  String get fSubject => 'Subject';
+
+  @override
+  String get fDocDate => 'Date';
+
+  @override
+  String get fGstin => 'GSTIN';
+
+  @override
+  String get fLegalName => 'Legal name';
+
+  @override
+  String get fReturnType => 'Return type';
+
+  @override
+  String get fPeriod => 'Return period (month)';
+
+  @override
+  String get fTaxable => 'Taxable value';
+
+  @override
+  String get fCgst => 'CGST';
+
+  @override
+  String get fSgst => 'SGST';
+
+  @override
+  String get fIgst => 'IGST';
+
+  @override
+  String get fFiledOn => 'Filed on';
+
+  @override
+  String get fArn => 'ARN';
+
+  @override
+  String get fGstinInvalid => 'Enter a valid 15-character GSTIN';
+
+  @override
+  String get fAmountInvalid => 'Enter a valid amount';
+
+  @override
+  String get optNone => '—';
+
+  @override
+  String get optTenderDraft => 'Draft';
+
+  @override
+  String get optTenderSubmitted => 'Submitted';
+
+  @override
+  String get optTenderOpened => 'Opened';
+
+  @override
+  String get optTenderAwarded => 'Awarded';
+
+  @override
+  String get optTenderLost => 'Lost';
+
+  @override
+  String get optTenderCancelled => 'Cancelled';
+
+  @override
+  String get optDepEmd => 'EMD';
+
+  @override
+  String get optDepSd => 'Security deposit';
+
+  @override
+  String get optDepBg => 'Bank guarantee';
+
+  @override
+  String get optDepRetention => 'Retention';
+
+  @override
+  String get optDepHeld => 'Held';
+
+  @override
+  String get optDepRefundRequested => 'Refund requested';
+
+  @override
+  String get optDepReleased => 'Released';
+
+  @override
+  String get optDepForfeited => 'Forfeited';
+
+  @override
+  String get optModeDd => 'Demand draft';
+
+  @override
+  String get optModeBg => 'Bank guarantee';
+
+  @override
+  String get optModeOnline => 'Online';
+
+  @override
+  String get optModeFdr => 'FDR';
+
+  @override
+  String get optModeCash => 'Cash';
+
+  @override
+  String get optModeOther => 'Other';
+
+  @override
+  String get optWoAwarded => 'Awarded';
+
+  @override
+  String get optWoInProgress => 'In progress';
+
+  @override
+  String get optWoCompleted => 'Completed';
+
+  @override
+  String get optWoClosed => 'Closed';
+
+  @override
+  String get optWoTerminated => 'Terminated';
+
+  @override
+  String get optBillRa => 'Running account (RA)';
+
+  @override
+  String get optBillFinal => 'Final';
+
+  @override
+  String get optBillAdvance => 'Advance';
+
+  @override
+  String get optBillOther => 'Other';
+
+  @override
+  String get optBillSubmitted => 'Submitted';
+
+  @override
+  String get optBillPassed => 'Passed';
+
+  @override
+  String get optBillPartiallyPaid => 'Partially paid';
+
+  @override
+  String get optBillPaid => 'Paid';
+
+  @override
+  String get optBillRejected => 'Rejected';
+
+  @override
+  String get optDirIn => 'Received';
+
+  @override
+  String get optDirOut => 'Sent';
+
+  @override
+  String get optDocLetter => 'Letter';
+
+  @override
+  String get optDocNotice => 'Notice';
+
+  @override
+  String get optDocCircular => 'Circular';
+
+  @override
+  String get optDocWorkOrder => 'Work order';
+
+  @override
+  String get optDocOther => 'Other';
+
+  @override
+  String get comPdfTooLarge => 'This PDF is larger than 10 MB.';
 }
