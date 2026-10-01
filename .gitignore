@@ -86,3 +86,7 @@ tools/**/out/
 
 # Local Claude Code / preview config
 /.claude/
+
+# Local dart-define files (may hold local stack keys)
+/env/*.json
+!/env/*.example.json
