@@ -821,5 +821,22 @@
   "optDocCircular": "Circular",
   "optDocWorkOrder": "Work order",
   "optDocOther": "Other",
-  "comPdfTooLarge": "This PDF is larger than 10 MB."
+  "comPdfTooLarge": "This PDF is larger than 10 MB.",
+  "notifTitle": "Notifications",
+  "notifEmpty": "You're all caught up",
+  "notifMarkAll": "Mark all read",
+  "notifChannelName": "AumLux updates",
+  "notifChannelDescription": "Approvals, alerts and reminders",
+  "bonusTitle": "Bonus",
+  "bonusMyTotal": "My approved bonus",
+  "bonusPoints": "Points",
+  "bonusAmount": "Amount",
+  "bonusPropose": "Propose bonus",
+  "bonusFor": "For",
+  "bonusReason": "Reason",
+  "bonusReasonHint": "e.g. Storm restoration overtime, 14–15 Oct",
+  "bonusNeedValue": "Enter points or an amount",
+  "bonusProposed": "Bonus proposed for approval",
+  "bonusEmpty": "No bonus entries yet",
+  "bonusPendingNote": "Bonuses are approved by the COO or Director."
 }

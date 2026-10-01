@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
 import 'core/config/env.dart';
 import 'core/outbox/outbox.dart';
+import 'core/push/push_service.dart';
 import 'core/supabase/providers.dart';
 
 /// Bundled fonts are SIL OFL 1.1; surface their licenses in the About page.
@@ -27,6 +28,7 @@ Future<void> main() async {
   _registerFontLicenses();
 
   final prefs = await SharedPreferences.getInstance();
+  await initFirebaseForPush();
   await Supabase.initialize(
     url: Env.supabaseUrl,
     publishableKey: Env.supabasePublishableKey,

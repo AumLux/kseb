@@ -3859,6 +3859,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This PDF is larger than 10 MB.'**
   String get comPdfTooLarge;
+
+  /// No description provided for @notifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifTitle;
+
+  /// No description provided for @notifEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up'**
+  String get notifEmpty;
+
+  /// No description provided for @notifMarkAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notifMarkAll;
+
+  /// No description provided for @notifChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'AumLux updates'**
+  String get notifChannelName;
+
+  /// No description provided for @notifChannelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Approvals, alerts and reminders'**
+  String get notifChannelDescription;
+
+  /// No description provided for @bonusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus'**
+  String get bonusTitle;
+
+  /// No description provided for @bonusMyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'My approved bonus'**
+  String get bonusMyTotal;
+
+  /// No description provided for @bonusPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get bonusPoints;
+
+  /// No description provided for @bonusAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get bonusAmount;
+
+  /// No description provided for @bonusPropose.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose bonus'**
+  String get bonusPropose;
+
+  /// No description provided for @bonusFor.
+  ///
+  /// In en, this message translates to:
+  /// **'For'**
+  String get bonusFor;
+
+  /// No description provided for @bonusReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get bonusReason;
+
+  /// No description provided for @bonusReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Storm restoration overtime, 14–15 Oct'**
+  String get bonusReasonHint;
+
+  /// No description provided for @bonusNeedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter points or an amount'**
+  String get bonusNeedValue;
+
+  /// No description provided for @bonusProposed.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus proposed for approval'**
+  String get bonusProposed;
+
+  /// No description provided for @bonusEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bonus entries yet'**
+  String get bonusEmpty;
+
+  /// No description provided for @bonusPendingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonuses are approved by the COO or Director.'**
+  String get bonusPendingNote;
 }
 
 class _AppLocalizationsDelegate
