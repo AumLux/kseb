@@ -22,6 +22,7 @@ To test against a local backend with a demo account for every role, see [docs/LO
 
 | Doc | What |
 |---|---|
+| [DEEP_DIVE.md](DEEP_DIVE.md) | **Start here.** The whole system end to end: why it exists, DB schema, RLS, RPC/API reference, client architecture, design system, CI/CD, ops, gotchas |
 | [DESIGN.md](DESIGN.md) | Design system: tokens, components, accessibility and field-use rules. **Read this before building UI.** |
 | [docs/REVAMP_PLAN.md](docs/REVAMP_PLAN.md) | Audit findings, target architecture, DB schema, delivery phases |
 | [docs/BACKEND.md](docs/BACKEND.md) | Supabase setup, security model, push, Android signing, backups: the ops runbook |
