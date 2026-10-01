@@ -6,9 +6,10 @@ import 'core/design/design.dart';
 import 'core/l10n/l10n.dart';
 import 'core/l10n/locale_controller.dart';
 import 'core/outbox/outbox.dart';
+import 'core/push/push_service.dart';
 import 'core/router/app_router.dart';
 import 'core/session/idle_guard.dart';
-import 'utils/page_transitions.dart';
+import 'core/design/motion/page_transitions.dart';
 
 class AumluxApp extends ConsumerStatefulWidget {
   const AumluxApp({super.key});
@@ -42,6 +43,7 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
   Widget build(BuildContext context) {
     // Keep the outbox alive app-wide without rebuilding on every change.
     ref.listen(outboxProvider, (_, __) {});
+    ref.watch(pushControllerProvider);
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
 

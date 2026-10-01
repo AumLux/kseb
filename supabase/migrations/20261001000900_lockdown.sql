@@ -34,5 +34,8 @@ grant execute on function
   public.record_asset_event(uuid, text, text, uuid, uuid, public.asset_status, public.asset_condition),
   public.decide_bonus(uuid, boolean, text),
   public.my_approvals(),
-  public.dashboard_kpis()
+  public.dashboard_kpis(),
+  public.register_device(text, text),
+  public.unregister_device(text),
+  public.mark_all_notifications_read()
 to authenticated;
