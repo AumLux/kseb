@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/errors/app_failure.dart';
 import '../../../core/supabase/providers.dart';
+import '../../../core/supabase/update_guard.dart';
 import '../../auth/domain/app_user.dart';
 
 enum OrgLevel { circle, division, subdivision, section }
@@ -204,7 +205,7 @@ class OrgRepository {
           if (level.parentColumn != null) row[level.parentColumn!] = parentId;
           await _client.from(level.table).insert(row);
         } else {
-          await _client.from(level.table).update(row).eq('id', id);
+          await updateOrFail(_client, level.table, row, id);
         }
       });
 
@@ -228,11 +229,11 @@ class OrgRepository {
             'supervisor_id': supervisorId,
           });
         } else {
-          await _client.from('teams').update({
+          await updateOrFail(_client, 'teams', {
             'name': name.trim(),
             'supervisor_id': supervisorId,
             'active': active,
-          }).eq('id', id);
+          }, id);
         }
       });
 

@@ -133,13 +133,24 @@ class MorePage extends ConsumerWidget {
                 title: l10n.orgTitle,
                 onTap: () => context.go(Routes.org),
               ),
-            SectionHeader(l10n.moreTitle),
           ],
+          SectionHeader(l10n.regSection),
           AppListRow(
             leading: const Icon(Icons.inventory_2_rounded, color: AppColors.inkMute),
             title: l10n.invTitle,
             onTap: () => context.go(Routes.inventory),
           ),
+          AppListRow(
+            leading: const Icon(Icons.electrical_services_rounded, color: AppColors.inkMute),
+            title: l10n.poleTitle,
+            onTap: () => context.go(Routes.poles),
+          ),
+          AppListRow(
+            leading: const Icon(Icons.devices_other_rounded, color: AppColors.inkMute),
+            title: l10n.assetTitle,
+            onTap: () => context.go(Routes.assets),
+          ),
+          SectionHeader(l10n.moreTitle),
           AppListRow(
             leading: const Icon(Icons.sync_rounded, color: AppColors.inkMute),
             title: l10n.moreSyncQueue,
