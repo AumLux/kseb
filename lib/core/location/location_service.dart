@@ -25,9 +25,22 @@ abstract interface class LocationService {
   /// Throws [AppFailure] with code `location_off`, `location_denied`,
   /// `location_denied_forever` or `location_timeout`.
   Future<CapturedLocation> current();
+
+  /// True while the OS permission prompt hasn't been answered yet, i.e. the
+  /// next [current] call would show it.
+  Future<bool> permissionUndecided();
 }
 
 class GeolocatorLocationService implements LocationService {
+  @override
+  Future<bool> permissionUndecided() async {
+    try {
+      return await Geolocator.checkPermission() == LocationPermission.denied;
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Future<CapturedLocation> current() async {
     if (!await Geolocator.isLocationServiceEnabled()) {

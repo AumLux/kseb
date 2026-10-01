@@ -3961,6 +3961,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bonuses are approved by the COO or Director.'**
   String get bonusPendingNote;
+
+  /// No description provided for @locRationaleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why AumLux needs your location'**
+  String get locRationaleTitle;
+
+  /// No description provided for @locRationaleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your location is recorded only at the moment you check in or out, or capture a site photo or pole. It is never tracked in the background.'**
+  String get locRationaleBody;
+
+  /// No description provided for @updateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get updateTitle;
+
+  /// No description provided for @updateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of AumLux is no longer supported. Install the latest version to continue — your saved data is kept.'**
+  String get updateBody;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Download update'**
+  String get updateButton;
 }
 
 class _AppLocalizationsDelegate
