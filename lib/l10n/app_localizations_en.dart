@@ -549,4 +549,311 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgNoLocation => 'Location not set';
+
+  @override
+  String get exportTitle => 'Your file is ready';
+
+  @override
+  String get exportOpen => 'Open';
+
+  @override
+  String get exportShare => 'Share';
+
+  @override
+  String get exportCancelled => 'Export cancelled.';
+
+  @override
+  String get exportNoApp => 'No app found to open this file.';
+
+  @override
+  String get attMe => 'Me';
+
+  @override
+  String get attTeam => 'Team';
+
+  @override
+  String get attCheckIn => 'Check in';
+
+  @override
+  String get attCheckOut => 'Check out';
+
+  @override
+  String get attCheckedIn => 'Checked in';
+
+  @override
+  String get attCheckedOut => 'Checked out';
+
+  @override
+  String get attDoneForDay => 'Day complete';
+
+  @override
+  String attWorked(String duration) {
+    return 'Worked $duration';
+  }
+
+  @override
+  String get attLocating => 'Getting your location…';
+
+  @override
+  String get attSynced => 'Attendance recorded';
+
+  @override
+  String get attQueued =>
+      'Saved on your phone. It will sync when you\'re back online.';
+
+  @override
+  String get attPendingSync => 'Waiting to sync';
+
+  @override
+  String get attNoLocationTitle => 'Location unavailable';
+
+  @override
+  String get attNoLocationContinue => 'Record without location';
+
+  @override
+  String get attNoLocationNote =>
+      'Your supervisor will see that this entry has no location.';
+
+  @override
+  String get attOpenSettings => 'Open settings';
+
+  @override
+  String get attThisMonth => 'This month';
+
+  @override
+  String get attDaysPresent => 'Days present';
+
+  @override
+  String get attHoursWorked => 'Hours worked';
+
+  @override
+  String get attLeaveDays => 'Leave days';
+
+  @override
+  String get attHistory => 'History';
+
+  @override
+  String get attNoRecords => 'No attendance yet this month';
+
+  @override
+  String get attStatusPresent => 'Present';
+
+  @override
+  String get attStatusAbsent => 'Absent';
+
+  @override
+  String get attStatusLeave => 'Leave';
+
+  @override
+  String get attStatusHalfDay => 'Half day';
+
+  @override
+  String get attStatusHoliday => 'Holiday';
+
+  @override
+  String get attNotMarked => 'Not marked';
+
+  @override
+  String get attFlagOutside => 'Outside area';
+
+  @override
+  String get attFlagMocked => 'Mock location';
+
+  @override
+  String get attFlagNoLocation => 'No location';
+
+  @override
+  String get attVerified => 'Verified';
+
+  @override
+  String attVerifySelected(int count) {
+    return 'Verify $count';
+  }
+
+  @override
+  String attVerifiedCount(int count) {
+    return '$count verified';
+  }
+
+  @override
+  String get attMark => 'Mark attendance';
+
+  @override
+  String get attCorrect => 'Correct record';
+
+  @override
+  String get attReason => 'Reason';
+
+  @override
+  String get attReasonHint => 'e.g. Worked at substation, phone had no signal';
+
+  @override
+  String get attReasonTooShort => 'Give a reason (at least 5 characters)';
+
+  @override
+  String get attTeamEmpty => 'No one reports to you yet';
+
+  @override
+  String attSummaryLine(int present, int absent, int unmarked) {
+    return '$present present · $absent absent · $unmarked not marked';
+  }
+
+  @override
+  String get attExportMuster => 'Muster roll';
+
+  @override
+  String attMusterTitle(String month) {
+    return 'Muster roll — $month';
+  }
+
+  @override
+  String get attExportPdf => 'Download PDF';
+
+  @override
+  String get attExportXlsx => 'Download Excel';
+
+  @override
+  String get attSelectSection => 'All my sections';
+
+  @override
+  String get leaveTitle => 'Leave';
+
+  @override
+  String get leaveMine => 'My leave';
+
+  @override
+  String get leaveRequest => 'Request leave';
+
+  @override
+  String get leaveFrom => 'From';
+
+  @override
+  String get leaveTo => 'To';
+
+  @override
+  String get leaveType => 'Type';
+
+  @override
+  String get leaveTypeCasual => 'Casual';
+
+  @override
+  String get leaveTypeSick => 'Sick';
+
+  @override
+  String get leaveTypeEarned => 'Earned';
+
+  @override
+  String get leaveTypeUnpaid => 'Unpaid';
+
+  @override
+  String get leaveTypeOther => 'Other';
+
+  @override
+  String get leaveReason => 'Reason';
+
+  @override
+  String get leaveSubmit => 'Send request';
+
+  @override
+  String get leaveSent => 'Leave request sent';
+
+  @override
+  String get leaveEmpty => 'No leave requests';
+
+  @override
+  String get leaveCancel => 'Cancel request';
+
+  @override
+  String leaveDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get leaveDateOrder => 'End date can\'t be before start date';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get approvalsTitle => 'Approvals';
+
+  @override
+  String get approvalsEmpty => 'Nothing waiting for you';
+
+  @override
+  String get approvalsEmptyHint => 'Requests from your team appear here.';
+
+  @override
+  String get approvalsApprove => 'Approve';
+
+  @override
+  String get approvalsReject => 'Reject';
+
+  @override
+  String get approvalsRejectReason => 'Reason for rejecting';
+
+  @override
+  String get approvalsDone => 'Done';
+
+  @override
+  String get approvalsKindLeave => 'Leave';
+
+  @override
+  String get approvalsKindWorksheet => 'Worksheet';
+
+  @override
+  String get approvalsKindMaterial => 'Material';
+
+  @override
+  String get approvalsKindBonus => 'Bonus';
+
+  @override
+  String get approvalsOpen => 'Open';
+
+  @override
+  String get holidaysTitle => 'Holidays';
+
+  @override
+  String get holidaysAdd => 'Add holiday';
+
+  @override
+  String get holidaysName => 'Holiday name';
+
+  @override
+  String get holidaysDate => 'Date';
+
+  @override
+  String holidaysEmpty(int year) {
+    return 'No holidays added for $year';
+  }
+
+  @override
+  String get holidaysNote =>
+      'Add lunar-calendar holidays (Vishu, Onam, Eid, Deepavali…) each year from the Kerala Government notification.';
+
+  @override
+  String holidaysDeleteConfirm(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get commonDelete => 'Remove';
+
+  @override
+  String get commonDate => 'Date';
 }
