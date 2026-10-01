@@ -85,7 +85,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginForgotBody =>
-      'For security, passwords are reset by your supervisor or manager. Ask them to reset it from Staff › your name › Reset password. You\'ll get a temporary password to sign in with.';
+      'For security, passwords are reset by your supervisor or manager. Ask them to reset it from More › Staff › your name › Reset password. You\'ll get a temporary password to sign in with.';
 
   @override
   String get loginInactive =>
@@ -318,4 +318,235 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorSamePassword =>
       'Choose a password different from the current one.';
+
+  @override
+  String get adminSection => 'Administration';
+
+  @override
+  String get staffTitle => 'Staff';
+
+  @override
+  String get staffMyTeam => 'My team';
+
+  @override
+  String get staffSearch => 'Search name, ID or phone';
+
+  @override
+  String get staffAdd => 'Add staff';
+
+  @override
+  String get staffEmpty => 'No staff found';
+
+  @override
+  String get staffEmptyHint => 'Try a different search or filter.';
+
+  @override
+  String get staffFilterAll => 'All';
+
+  @override
+  String get statusActive => 'Active';
+
+  @override
+  String get statusSuspended => 'Suspended';
+
+  @override
+  String get statusExited => 'Exited';
+
+  @override
+  String get staffDetails => 'Details';
+
+  @override
+  String get staffEmployeeCode => 'Employee ID';
+
+  @override
+  String get staffFullName => 'Full name';
+
+  @override
+  String get staffRole => 'Role';
+
+  @override
+  String get staffSection => 'Section';
+
+  @override
+  String get staffTeam => 'Team';
+
+  @override
+  String get staffNoTeam => 'No team';
+
+  @override
+  String get staffPhone => 'Mobile number';
+
+  @override
+  String get staffEmail => 'Email (officers only)';
+
+  @override
+  String get staffEmailHelper =>
+      'Leave empty for crew. They sign in with their employee ID.';
+
+  @override
+  String get staffDob => 'Date of birth';
+
+  @override
+  String get staffJoined => 'Joined';
+
+  @override
+  String get staffEdit => 'Edit details';
+
+  @override
+  String get staffResetPassword => 'Reset password';
+
+  @override
+  String staffResetConfirm(String name) {
+    return 'Reset the password for $name? They will need the new temporary password to sign in.';
+  }
+
+  @override
+  String get staffSuspend => 'Suspend login';
+
+  @override
+  String get staffReactivate => 'Reactivate';
+
+  @override
+  String get staffMarkExited => 'Mark as exited';
+
+  @override
+  String staffSuspendConfirm(String name) {
+    return 'Suspend $name? They are signed out immediately and cannot sign in until reactivated.';
+  }
+
+  @override
+  String staffExitConfirm(String name) {
+    return 'Mark $name as exited? Their login is disabled; their records are kept.';
+  }
+
+  @override
+  String get staffSaved => 'Saved';
+
+  @override
+  String get staffCodeInvalid => '2–32 letters, digits, - or _';
+
+  @override
+  String get staffPhoneInvalid => 'Enter a 10-digit mobile number';
+
+  @override
+  String get staffEmailInvalid => 'Enter a valid email';
+
+  @override
+  String get staffNewTitle => 'New staff member';
+
+  @override
+  String get staffEditTitle => 'Edit staff member';
+
+  @override
+  String get credentialsTitle => 'Share these sign-in details';
+
+  @override
+  String credentialsBody(String name) {
+    return 'Give these to $name in person. The password is shown only once and must be changed at first sign-in.';
+  }
+
+  @override
+  String get credentialsLoginId => 'Sign in with';
+
+  @override
+  String get credentialsPassword => 'Temporary password';
+
+  @override
+  String get credentialsCopy => 'Copy';
+
+  @override
+  String get credentialsCopied => 'Copied';
+
+  @override
+  String get credentialsDone => 'Done';
+
+  @override
+  String get teamsTitle => 'Teams';
+
+  @override
+  String get teamsAdd => 'Add team';
+
+  @override
+  String get teamsEmpty => 'No teams yet';
+
+  @override
+  String get teamName => 'Team name';
+
+  @override
+  String get teamSupervisor => 'Supervisor';
+
+  @override
+  String get teamNoSupervisor => 'No supervisor';
+
+  @override
+  String get teamActive => 'Active';
+
+  @override
+  String teamMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count members',
+      one: '1 member',
+      zero: 'No members',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orgTitle => 'Organisation';
+
+  @override
+  String get orgCircle => 'Circle';
+
+  @override
+  String get orgDivision => 'Division';
+
+  @override
+  String get orgSubdivision => 'Sub-division';
+
+  @override
+  String get orgSectionOffice => 'Section office';
+
+  @override
+  String orgAdd(String level) {
+    return 'Add $level';
+  }
+
+  @override
+  String get orgCode => 'Code';
+
+  @override
+  String get orgName => 'Name';
+
+  @override
+  String get orgAddress => 'Address';
+
+  @override
+  String get orgLatitude => 'Latitude';
+
+  @override
+  String get orgLongitude => 'Longitude';
+
+  @override
+  String get orgGeofence => 'Attendance radius (metres)';
+
+  @override
+  String get orgGeofenceHelper =>
+      'Check-ins farther than this from the section office are flagged.';
+
+  @override
+  String get orgCoordsInvalid =>
+      'Enter both latitude and longitude, or neither';
+
+  @override
+  String get orgEmpty => 'No organisation units yet';
+
+  @override
+  String fieldRequired(String field) {
+    return '$field is required';
+  }
+
+  @override
+  String get orgNoLocation => 'Location not set';
 }

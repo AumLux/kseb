@@ -63,7 +63,7 @@ import 'app_localizations_ml.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,16 +86,16 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('ml')
+    Locale('ml'),
   ];
 
   /// No description provided for @appName.
@@ -245,7 +245,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginForgotBody.
   ///
   /// In en, this message translates to:
-  /// **'For security, passwords are reset by your supervisor or manager. Ask them to reset it from Staff › your name › Reset password. You\'ll get a temporary password to sign in with.'**
+  /// **'For security, passwords are reset by your supervisor or manager. Ask them to reset it from More › Staff › your name › Reset password. You\'ll get a temporary password to sign in with.'**
   String get loginForgotBody;
 
   /// No description provided for @loginInactive.
@@ -673,6 +673,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose a password different from the current one.'**
   String get errorSamePassword;
+
+  /// No description provided for @adminSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Administration'**
+  String get adminSection;
+
+  /// No description provided for @staffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffTitle;
+
+  /// No description provided for @staffMyTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'My team'**
+  String get staffMyTeam;
+
+  /// No description provided for @staffSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, ID or phone'**
+  String get staffSearch;
+
+  /// No description provided for @staffAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff'**
+  String get staffAdd;
+
+  /// No description provided for @staffEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff found'**
+  String get staffEmpty;
+
+  /// No description provided for @staffEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search or filter.'**
+  String get staffEmptyHint;
+
+  /// No description provided for @staffFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get staffFilterAll;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended'**
+  String get statusSuspended;
+
+  /// No description provided for @statusExited.
+  ///
+  /// In en, this message translates to:
+  /// **'Exited'**
+  String get statusExited;
+
+  /// No description provided for @staffDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get staffDetails;
+
+  /// No description provided for @staffEmployeeCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee ID'**
+  String get staffEmployeeCode;
+
+  /// No description provided for @staffFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get staffFullName;
+
+  /// No description provided for @staffRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get staffRole;
+
+  /// No description provided for @staffSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Section'**
+  String get staffSection;
+
+  /// No description provided for @staffTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get staffTeam;
+
+  /// No description provided for @staffNoTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'No team'**
+  String get staffNoTeam;
+
+  /// No description provided for @staffPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get staffPhone;
+
+  /// No description provided for @staffEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (officers only)'**
+  String get staffEmail;
+
+  /// No description provided for @staffEmailHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty for crew. They sign in with their employee ID.'**
+  String get staffEmailHelper;
+
+  /// No description provided for @staffDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get staffDob;
+
+  /// No description provided for @staffJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get staffJoined;
+
+  /// No description provided for @staffEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get staffEdit;
+
+  /// No description provided for @staffResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get staffResetPassword;
+
+  /// No description provided for @staffResetConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset the password for {name}? They will need the new temporary password to sign in.'**
+  String staffResetConfirm(String name);
+
+  /// No description provided for @staffSuspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspend login'**
+  String get staffSuspend;
+
+  /// No description provided for @staffReactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get staffReactivate;
+
+  /// No description provided for @staffMarkExited.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as exited'**
+  String get staffMarkExited;
+
+  /// No description provided for @staffSuspendConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspend {name}? They are signed out immediately and cannot sign in until reactivated.'**
+  String staffSuspendConfirm(String name);
+
+  /// No description provided for @staffExitConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark {name} as exited? Their login is disabled; their records are kept.'**
+  String staffExitConfirm(String name);
+
+  /// No description provided for @staffSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get staffSaved;
+
+  /// No description provided for @staffCodeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'2–32 letters, digits, - or _'**
+  String get staffCodeInvalid;
+
+  /// No description provided for @staffPhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a 10-digit mobile number'**
+  String get staffPhoneInvalid;
+
+  /// No description provided for @staffEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get staffEmailInvalid;
+
+  /// No description provided for @staffNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New staff member'**
+  String get staffNewTitle;
+
+  /// No description provided for @staffEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit staff member'**
+  String get staffEditTitle;
+
+  /// No description provided for @credentialsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share these sign-in details'**
+  String get credentialsTitle;
+
+  /// No description provided for @credentialsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Give these to {name} in person. The password is shown only once and must be changed at first sign-in.'**
+  String credentialsBody(String name);
+
+  /// No description provided for @credentialsLoginId.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with'**
+  String get credentialsLoginId;
+
+  /// No description provided for @credentialsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary password'**
+  String get credentialsPassword;
+
+  /// No description provided for @credentialsCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get credentialsCopy;
+
+  /// No description provided for @credentialsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get credentialsCopied;
+
+  /// No description provided for @credentialsDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get credentialsDone;
+
+  /// No description provided for @teamsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Teams'**
+  String get teamsTitle;
+
+  /// No description provided for @teamsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add team'**
+  String get teamsAdd;
+
+  /// No description provided for @teamsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No teams yet'**
+  String get teamsEmpty;
+
+  /// No description provided for @teamName.
+  ///
+  /// In en, this message translates to:
+  /// **'Team name'**
+  String get teamName;
+
+  /// No description provided for @teamSupervisor.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor'**
+  String get teamSupervisor;
+
+  /// No description provided for @teamNoSupervisor.
+  ///
+  /// In en, this message translates to:
+  /// **'No supervisor'**
+  String get teamNoSupervisor;
+
+  /// No description provided for @teamActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get teamActive;
+
+  /// No description provided for @teamMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No members} =1{1 member} other{{count} members}}'**
+  String teamMembers(int count);
+
+  /// No description provided for @orgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Organisation'**
+  String get orgTitle;
+
+  /// No description provided for @orgCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle'**
+  String get orgCircle;
+
+  /// No description provided for @orgDivision.
+  ///
+  /// In en, this message translates to:
+  /// **'Division'**
+  String get orgDivision;
+
+  /// No description provided for @orgSubdivision.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-division'**
+  String get orgSubdivision;
+
+  /// No description provided for @orgSectionOffice.
+  ///
+  /// In en, this message translates to:
+  /// **'Section office'**
+  String get orgSectionOffice;
+
+  /// No description provided for @orgAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {level}'**
+  String orgAdd(String level);
+
+  /// No description provided for @orgCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get orgCode;
+
+  /// No description provided for @orgName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get orgName;
+
+  /// No description provided for @orgAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get orgAddress;
+
+  /// No description provided for @orgLatitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get orgLatitude;
+
+  /// No description provided for @orgLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get orgLongitude;
+
+  /// No description provided for @orgGeofence.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance radius (metres)'**
+  String get orgGeofence;
+
+  /// No description provided for @orgGeofenceHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-ins farther than this from the section office are flagged.'**
+  String get orgGeofenceHelper;
+
+  /// No description provided for @orgCoordsInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter both latitude and longitude, or neither'**
+  String get orgCoordsInvalid;
+
+  /// No description provided for @orgEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No organisation units yet'**
+  String get orgEmpty;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} is required'**
+  String fieldRequired(String field);
+
+  /// No description provided for @orgNoLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not set'**
+  String get orgNoLocation;
 }
 
 class _AppLocalizationsDelegate
@@ -702,8 +1116,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }
