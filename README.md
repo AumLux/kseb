@@ -4,7 +4,7 @@ Operations app for an electrical contractor executing KSEB distribution works (t
 
 **Platforms:** Android (field crews) and Web (office).
 
-> 🚧 The production revamp is in progress on `revamp/prod-ready`. It moves the backend from Firebase to Supabase, restructures the client into feature modules, and applies the new design system. See [docs/REVAMP_PLAN.md](docs/REVAMP_PLAN.md).
+**Stack:** Flutter (Riverpod, go_router) on Supabase (Postgres with row-level security, Auth, Storage, Edge Functions); Firebase only for FCM push. English and Malayalam.
 
 ## Quick start
 
@@ -12,8 +12,11 @@ Operations app for an electrical contractor executing KSEB distribution works (t
 flutter pub get
 flutter analyze
 flutter test
-flutter run
+flutter run                                   # staging backend
+flutter run --dart-define=AUMLUX_ENV=production
 ```
+
+For the local backend (Docker + Supabase CLI), see [docs/BACKEND.md](docs/BACKEND.md#local-development).
 
 ## Documentation
 
@@ -21,7 +24,8 @@ flutter run
 |---|---|
 | [DESIGN.md](DESIGN.md) | Design system: tokens, components, accessibility and field-use rules. **Read this before building UI.** |
 | [docs/REVAMP_PLAN.md](docs/REVAMP_PLAN.md) | Audit findings, target architecture, DB schema, delivery phases |
-| [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md) | Branch flow `v7 → staging → releases` and CI |
+| [docs/BACKEND.md](docs/BACKEND.md) | Supabase setup, security model, push, Android signing, backups: the ops runbook |
+| [docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md) | Branch flow `feature → staging → releases` and CI |
 | [docs/archive/](docs/archive/) | Firestore-era docs, kept for migration reference only |
 
 ## Roles

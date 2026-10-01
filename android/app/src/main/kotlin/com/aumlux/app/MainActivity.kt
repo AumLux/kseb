@@ -1,4 +1,4 @@
-package com.example.kseb
+package com.aumlux.app
 
 import io.flutter.embedding.android.FlutterActivity
 

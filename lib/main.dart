@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/config/env.dart';
+import 'core/errors/error_reporter.dart';
 import 'core/outbox/outbox.dart';
 import 'core/push/push_service.dart';
 import 'core/supabase/providers.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
     url: Env.supabaseUrl,
     publishableKey: Env.supabasePublishableKey,
   );
+  await ErrorReporter.install();
 
   runApp(ProviderScope(
     overrides: [

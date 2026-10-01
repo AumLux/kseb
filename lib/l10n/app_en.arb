@@ -838,5 +838,10 @@
   "bonusNeedValue": "Enter points or an amount",
   "bonusProposed": "Bonus proposed for approval",
   "bonusEmpty": "No bonus entries yet",
-  "bonusPendingNote": "Bonuses are approved by the COO or Director."
+  "bonusPendingNote": "Bonuses are approved by the COO or Director.",
+  "locRationaleTitle": "Why AumLux needs your location",
+  "locRationaleBody": "Your location is recorded only at the moment you check in or out, or capture a site photo or pole. It is never tracked in the background.",
+  "updateTitle": "Update required",
+  "updateBody": "This version of AumLux is no longer supported. Install the latest version to continue — your saved data is kept.",
+  "updateButton": "Download update"
 }

@@ -2050,4 +2050,21 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get bonusPendingNote =>
       'ബോണസ് അംഗീകരിക്കുന്നത് സി.ഒ.ഒ അല്ലെങ്കിൽ ഡയറക്ടർ ആണ്.';
+
+  @override
+  String get locRationaleTitle => 'AumLux-ന് നിങ്ങളുടെ സ്ഥാനം എന്തിന്';
+
+  @override
+  String get locRationaleBody =>
+      'ചെക്ക് ഇൻ/ഔട്ട് ചെയ്യുമ്പോഴോ സൈറ്റ് ഫോട്ടോ/പോസ്റ്റ് രേഖപ്പെടുത്തുമ്പോഴോ മാത്രമാണ് സ്ഥാനം രേഖപ്പെടുത്തുന്നത്. പശ്ചാത്തലത്തിൽ ഒരിക്കലും ട്രാക്ക് ചെയ്യുന്നില്ല.';
+
+  @override
+  String get updateTitle => 'അപ്ഡേറ്റ് ആവശ്യമാണ്';
+
+  @override
+  String get updateBody =>
+      'AumLux-ന്റെ ഈ പതിപ്പ് ഇനി പിന്തുണയ്ക്കുന്നില്ല. തുടരാൻ പുതിയ പതിപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക — സേവ് ചെയ്ത വിവരങ്ങൾ നഷ്ടപ്പെടില്ല.';
+
+  @override
+  String get updateButton => 'അപ്ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക';
 }
