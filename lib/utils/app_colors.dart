@@ -1,54 +1,55 @@
 import 'package:flutter/material.dart';
 
-/// Color token system for the AumLux design system.
-///
-/// Contains ONLY color tokens. Typography, spacing, decorations,
-/// and responsive helpers have been extracted to their own modules.
-/// See: [AppTypography], [AppSpacing], [AppDecorations].
+import '../core/design/app_tokens.dart' as t;
+
+/// LEGACY palette — aliases onto the DESIGN.md tokens in
+/// `lib/core/design/app_tokens.dart` so screens not yet rewritten adopt the
+/// new design. Do not use in new code; import `core/design/design.dart`.
 abstract final class AppColors {
   // ── Primary Palette ───────────────────────────────────────────────
-  static const Color primary = Color(0xFFFF6B35);
-  static const Color primaryLight = Color(0xFFFF8A65);
-  static const Color primaryDark = Color(0xFFE64A19);
+  static const Color primary = t.AppColors.primary;
+  static const Color primaryLight = Color(0xFFFF8A5C);
+  static const Color primaryDark = t.AppColors.primaryPress;
 
   // ── Secondary & Accent ────────────────────────────────────────────
-  static const Color secondary = Color(0xFF6C5CE7);
-  static const Color accent = Color(0xFF00D4AA);
-  static const Color purple = Color(0xFF9B59B6);
+  static const Color secondary = t.AppColors.brandDark;
+  static const Color accent = t.AppColors.info;
+  static const Color purple = t.AppColors.brandDark;
 
   // ── Status Colors ─────────────────────────────────────────────────
-  static const Color success = Color(0xFF27AE60);
-  static const Color warning = Color(0xFFF39C12);
-  static const Color error = Color(0xFFE74C3C);
-  static const Color info = Color(0xFF3498DB);
+  static const Color success = t.AppColors.success;
+  static const Color warning = t.AppColors.warning;
+  static const Color error = t.AppColors.danger;
+  static const Color info = t.AppColors.info;
 
   // ── Neutral Scale ─────────────────────────────────────────────────
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color black = Color(0xFF1A1A1A);
-  static const Color grey50 = Color(0xFFFCFCFC);
-  static const Color grey100 = Color(0xFFF8F9FA);
-  static const Color grey200 = Color(0xFFE9ECEF);
-  static const Color grey300 = Color(0xFFDEE2E6);
-  static const Color grey400 = Color(0xFFCED4DA);
-  static const Color grey500 = Color(0xFF6C757D);
-  static const Color grey600 = Color(0xFF495057);
-  static const Color grey700 = Color(0xFF343A40);
-  static const Color grey800 = Color(0xFF212529);
-  static const Color grey900 = Color(0xFF1A1A1A);
+  static const Color white = t.AppColors.canvas;
+  static const Color black = t.AppColors.ink;
+  static const Color grey50 = t.AppColors.canvasSoft;
+  static const Color grey100 = t.AppColors.canvasSunken;
+  static const Color grey200 = t.AppColors.hairline;
+  static const Color grey300 = Color(0xFFD5DDE7);
+  static const Color grey400 = t.AppColors.inkDisabled;
+  static const Color grey500 = t.AppColors.inkMute;
+  static const Color grey600 = t.AppColors.inkSecondary;
+  static const Color grey700 = Color(0xFF1C2F47);
+  static const Color grey800 = t.AppColors.ink;
+  static const Color grey900 = t.AppColors.ink;
 
   // ── Semantic Aliases ──────────────────────────────────────────────
-  static const Color background = white;
-  static const Color surface = white;
+  static const Color background = t.AppColors.canvasSoft;
+  static const Color surface = t.AppColors.canvas;
   static const Color surfaceVariant = grey50;
-  static const Color cardShadow = Color(0x08000000);
+  static const Color cardShadow = Color(0x14003770);
 
   // ── Text Colors ───────────────────────────────────────────────────
   static const Color textPrimary = grey800;
   static const Color textSecondary = grey500;
   static const Color textTertiary = grey400;
-  static const Color textOnPrimary = white;
+  /// Navy on orange (5.49:1); white on orange fails WCAG AA.
+  static const Color textOnPrimary = t.AppColors.onPrimary;
   static const Color textOnDark = white;
-  static const Color textPlaceholder = grey400;
+  static const Color textPlaceholder = grey500;
 
   // ── Opacity Variants (computed) ───────────────────────────────────
   static Color get primaryWithLowOpacity => primary.withValues(alpha: 0.08);
@@ -63,10 +64,10 @@ abstract final class AppColors {
 
   // ── Dashboard Card Colors (ordered list) ──────────────────────────
   static const List<Color> dashboardCardColors = [
-    Color(0xFF6C5CE7), // Purple — Attendance
-    Color(0xFF00D4AA), // Teal — History
-    Color(0xFF3498DB), // Blue — Worksheet
-    Color(0xFFFF6B35), // Orange — Material
+    t.AppColors.brandDark,
+    t.AppColors.info,
+    t.AppColors.success,
+    t.AppColors.primaryInk,
   ];
 
   // ── Status Colors for Stats ───────────────────────────────────────

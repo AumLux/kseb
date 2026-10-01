@@ -11,8 +11,8 @@ A full walkthrough found that the app is not production-safe. There are security
 |---|---|
 | Design system | **Stripe** (from getdesign.md) for structure, keeping **AumLux orange #FF6B35** as the single brand accent |
 | Backend | **Migrate to Supabase free tier**: Postgres, Auth, Storage, Edge Functions, pg_cron. Firebase is kept only for FCM push and Crashlytics, both free on Spark |
-| Data | **Migrate everything** from Firestore (users, attendance, materials, requests, tenders) |
-| Platforms | **Android + Web** only |
+| Data | **Start fresh**: no Firestore data migration. The Firestore structure (`firestore.rules`, `firebase.json`) is reference only. A bootstrap script creates the first Director account, and a sample KSEB org hierarchy is seeded (editable in-app) |
+| Platforms | **Android + Web** only. Android package `com.aumlux.app` |
 | Org master | **KSEB hierarchy**: Circle → Division → Sub-division → Section → Team |
 | Attendance | **Check-in/out with GPS**, geofence flag, supervisor verification, audited corrections |
 | Offline | **Outbox**: check-in/out, worksheets and photos queue locally and sync later (Android) |
@@ -205,13 +205,9 @@ The work happens on branch `revamp/prod-ready`, created from `releases`. Each ph
 8. **Field registers.** Polevar and Asset Details.
 9. **Commercial.** Tenders (org-wide), EMD/SD/BG with expiry alerts, work orders, bills with ageing, Dispatch/Letter, GST, View Details search, the COO/Director KPI dashboard, and Downloads rewired.
 10. **Notifications and bonus.** Notification inbox, FCM push on approval events, and the bonus ledger behind `ENABLE_BONUS_MODULE`.
-11. **Data migration.**
-    - A Node script in `tools/migrate-firestore/`: firebase-admin reads with a project service-account key (free on Spark), then writes to Supabase with the service role.
-    - It supports `--dry-run`, an idempotent upsert keyed on `legacy_firebase_id`, and a reconciliation report of counts and stock totals per material.
-    - Users are created with temporary passwords and `must_change_password = true`, and an XLSX of credentials is produced for the admin to hand out.
-    - String amounts and dates in tenders are parsed, and failures go into the report.
+11. **Bootstrap (no migration).** `tools/bootstrap/` creates the first Director through the Admin API, and `supabase/seed.sql` provides the sample org hierarchy, Kerala holidays and the material catalogue. Firestore and Firebase Storage are decommissioned once production is live on Supabase.
 12. **Release hardening.**
-    - Android: real `applicationId` (proposed `in.aumlux.app`; I'll confirm before changing), release keystore through GitHub secrets, `key.properties` gitignored, R8, versioning from tags.
+    - Android: real `applicationId` `com.aumlux.app`, release keystore through GitHub secrets, `key.properties` gitignored, R8, versioning from tags.
     - Web: `SUPABASE_URL` and `SUPABASE_ANON_KEY` passed via `--dart-define` per environment, with staging and prod projects wired into the existing `deploy-aumlux.yml`.
     - Minimum-version force-update check, privacy and permission rationale screens, and `docs/RUNBOOK.md` (backups, restore, storage quota, rotating keys).
 13. **Final PR** from `revamp/prod-ready` into `releases`, after staging validation. `gh` isn't installed locally, so I'll either install it with your OK or push the branch and give you the compare URL.
@@ -220,9 +216,7 @@ The work happens on branch `revamp/prod-ready`, created from `releases`. Each ph
 
 ### Inputs required from the client (not blocking)
 - A Supabase account with two projects (staging and prod), and their URL and anon key. Service-role keys go only into GitHub Secrets and Edge Function env, never into the app.
-- A Firebase service-account JSON for the one-time migration, used locally and never committed.
-- The real KSEB circles, divisions, sections and their GPS points, or I seed a sample set you can edit in-app.
-- Final Android package name and app display name.
+- The real KSEB circles, divisions, sections and their GPS points (a sample set is seeded until then, editable in-app).
 
 ---
 
@@ -243,5 +237,5 @@ The work happens on branch `revamp/prod-ready`, created from `releases`. Each ph
   - Create a tender, EMD, work order and bill, and check the expiry alert.
   - Export the muster roll.
   - Switch to Malayalam.
-- **Migration:** a dry-run against a staging copy, then confirm the reconciliation report matches Firestore counts and per-material stock before the prod run.
+- **Bootstrap:** the bootstrap script on staging creates the first Director, who can then create the org and staff entirely in-app.
 - **Release:** a signed APK installs over the old build (confirm the package-name change implication with you), the web build at `/web/` works, and the restore from a backup is rehearsed once.
