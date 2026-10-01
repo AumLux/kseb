@@ -61,6 +61,10 @@ jobs:
       - name: Test
         run: flutter test
 
+  # Every push to staging builds BOTH variants from the same commit: the
+  # staging site (tested against the staging project) and the production site
+  # (production project, release-signed). `releases` later promotes exactly
+  # that production artifact, so what ships is what was tested.
   build-staging:
     if: github.event_name == 'push' && github.ref_name == 'staging'
     runs-on: ubuntu-latest
@@ -93,198 +97,53 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release --target-platform android-arm64
+      - name: Test
+        run: flutter test
 
-      - name: Verify Android APK
+      - name: Configure release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
-          APK="build/app/outputs/flutter-apk/app-release.apk"
-          test -s "$APK"
-          unzip -t "$APK" > build/app/outputs/flutter-apk/apk-zip-check.txt
-          sha256sum "$APK" | tee build/app/outputs/flutter-apk/aumlux.apk.sha256
-          AAPT="$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -n 1)"
-          "$AAPT" dump badging "$APK" > build/app/outputs/flutter-apk/aumlux-apk-info.txt
-
-      - name: Build web app
-        run: flutter build web --release --base-href /web/
-
-      - name: Add APK download files
-        shell: bash
-        run: |
-          mv build/web build/flutter-web
-          mkdir -p build/web/web
-          cp -R build/flutter-web/. build/web/web/
-          mkdir -p build/web/downloads
-          cp build/app/outputs/flutter-apk/app-release.apk build/web/downloads/aumlux.apk
-          cp build/app/outputs/flutter-apk/aumlux.apk.sha256 build/web/downloads/aumlux.apk.sha256
-          cp build/app/outputs/flutter-apk/aumlux-apk-info.txt build/web/downloads/aumlux-apk-info.txt
-          cat > build/web/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Aumlux</title>
-            <style>
-              :root {
-                color-scheme: light;
-                font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-                background: #f4f7f6;
-                color: #18211f;
-              }
-              body {
-                margin: 0;
-                min-height: 100vh;
-                background:
-                  linear-gradient(135deg, rgba(255, 107, 53, 0.12), transparent 34%),
-                  linear-gradient(225deg, rgba(28, 112, 91, 0.14), transparent 38%),
-                  #f4f7f6;
-              }
-              .shell {
-                width: min(960px, calc(100% - 32px));
-                min-height: 100vh;
-                margin: 0 auto;
-                display: grid;
-                align-content: center;
-                gap: 28px;
-                padding: 32px 0;
-                box-sizing: border-box;
-              }
-              header {
-                display: grid;
-                gap: 12px;
-              }
-              .mark {
-                width: 52px;
-                height: 52px;
-                border-radius: 8px;
-                background: #ff6b35;
-                display: grid;
-                place-items: center;
-                color: #ffffff;
-                font-size: 24px;
-                font-weight: 800;
-              }
-              h1 {
-                margin: 0;
-                font-size: clamp(36px, 7vw, 72px);
-                line-height: 0.95;
-                letter-spacing: 0;
-              }
-              p {
-                max-width: 620px;
-                margin: 0;
-                line-height: 1.5;
-                color: #52615d;
-                font-size: 18px;
-              }
-              .actions {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 16px;
-              }
-              .action {
-                min-height: 190px;
-                display: grid;
-                align-content: space-between;
-                gap: 24px;
-                padding: 24px;
-                border: 1px solid #d9e3df;
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.88);
-                color: inherit;
-                text-decoration: none;
-                box-shadow: 0 18px 50px rgba(24, 33, 31, 0.08);
-                transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-              }
-              .action:hover {
-                transform: translateY(-2px);
-                border-color: #9db9b1;
-                box-shadow: 0 24px 60px rgba(24, 33, 31, 0.12);
-              }
-              .action strong {
-                display: block;
-                margin-bottom: 8px;
-                font-size: 24px;
-              }
-              .action span {
-                color: #52615d;
-                line-height: 1.45;
-              }
-              .cta {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: fit-content;
-                min-height: 42px;
-                padding: 0 16px;
-                border-radius: 6px;
-                background: #18211f;
-                color: #ffffff;
-                font-weight: 700;
-              }
-              .download .cta {
-                background: #ff6b35;
-              }
-              footer {
-                color: #687671;
-                font-size: 14px;
-              }
-              @media (max-width: 720px) {
-                .actions {
-                  grid-template-columns: 1fr;
-                }
-                .action {
-                  min-height: 160px;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <main class="shell">
-              <header>
-                <div class="mark">A</div>
-                <h1>Aumlux</h1>
-                <p>Open the app instantly in your browser or install the latest Android release APK.</p>
-              </header>
-              <section class="actions" aria-label="Aumlux options">
-                <a class="action preview" href="/web/">
-                  <span>
-                    <strong>Web Preview</strong>
-                    Use the app quickly from any modern browser without installing anything.
-                  </span>
-                  <span class="cta">Open web app</span>
-                </a>
-                <a class="action download" href="/downloads/aumlux.apk">
-                  <span>
-                    <strong>App Download</strong>
-                    Get the latest Android APK built from the release branch.
-                  </span>
-                  <span class="cta">Download APK</span>
-                </a>
-              </section>
-              <footer>Latest build published automatically from GitHub.</footer>
-            </main>
-          </body>
-          </html>
-          HTML
-          cp build/web/index.html build/web/download-apk.html
-          echo "aumlux.simplewebsite.in" > build/web/CNAME
-          cat > build/web/release-metadata.txt <<EOF
-          branch=${GITHUB_REF_NAME}
-          commit=${GITHUB_SHA}
-          run_id=${GITHUB_RUN_ID}
-          built_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret; the production build will be refused."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/aumlux-release.jks"
+          cat > android/key.properties <<EOF
+          storeFile=$RUNNER_TEMP/aumlux-release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
           EOF
 
-      - name: Upload staging test build
+      - name: Build staging site
+        run: tools/ci/build-site.sh staging site-staging
+
+      - name: Build production site
+        run: tools/ci/build-site.sh production site-production
+
+      - name: Remove signing material
+        if: always()
+        run: rm -f android/key.properties "$RUNNER_TEMP/aumlux-release.jks"
+
+      - name: Upload staging build
         uses: actions/upload-artifact@v4
         with:
           name: aumlux-staging-${{ github.sha }}
-          path: build/web
+          path: site-staging
           retention-days: 14
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: aumlux-production-${{ github.sha }}
+          path: site-production
+          retention-days: 30
 
   deploy-release:
     if: github.event_name == 'push' && github.ref_name == 'releases'
@@ -294,44 +153,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download latest staging artifact
+      - name: Download the production build of the latest staging run
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          RUN_ID="$(gh run list \
-            --repo "$GITHUB_REPOSITORY" \
-            --workflow "deploy-aumlux.yml" \
-            --branch staging \
-            --event push \
-            --status success \
-            --limit 1 \
-            --json databaseId \
-            --jq '.[0].databaseId')"
+          RUN_ID="$(gh run list             --repo "$GITHUB_REPOSITORY"             --workflow "deploy-aumlux.yml"             --branch staging             --event push             --status success             --limit 1             --json databaseId             --jq '.[0].databaseId')"
           if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
             echo "No successful staging build found."
             exit 1
           fi
 
-          ARTIFACT_NAME="$(gh api \
-            "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" \
-            --jq '.artifacts[] | select(.expired == false) | select(.name | startswith("aumlux-staging-")) | .name' \
-            | head -n 1)"
+          ARTIFACT_NAME="$(gh api             "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts"             --jq '.artifacts[] | select(.expired == false) | select(.name | startswith("aumlux-production-")) | .name'             | head -n 1)"
           if [ -z "$ARTIFACT_NAME" ]; then
-            echo "No non-expired staging artifact found for run $RUN_ID."
+            echo "No non-expired production artifact found for run $RUN_ID."
             exit 1
           fi
 
           mkdir -p build/web
-          gh run download "$RUN_ID" \
-            --repo "$GITHUB_REPOSITORY" \
-            --name "$ARTIFACT_NAME" \
-            --dir build/web
+          gh run download "$RUN_ID"             --repo "$GITHUB_REPOSITORY"             --name "$ARTIFACT_NAME"             --dir build/web
 
-          echo "Promoting staging artifact: $ARTIFACT_NAME from run $RUN_ID"
+          echo "Promoting $ARTIFACT_NAME from run $RUN_ID"
           test -s build/web/index.html
           test -s build/web/downloads/aumlux.apk
+          grep -qx "environment=production" build/web/release-metadata.txt
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

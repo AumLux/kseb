@@ -7,6 +7,7 @@ import '../../../core/errors/app_failure.dart';
 import '../../../core/format/formatters.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/location/location_rationale.dart';
 import '../../../core/location/location_service.dart';
 import '../../../core/ui/dialogs.dart';
 import '../application/capture_controller.dart';
@@ -29,6 +30,7 @@ class _MyAttendanceViewState extends ConsumerState<MyAttendanceView> {
 
   Future<void> _capture(CaptureKind kind) async {
     final l10n = context.l10n;
+    if (!await explainLocationIfNeeded(context, ref) || !mounted) return;
     setState(() {
       _busy = true;
       _locating = true;
