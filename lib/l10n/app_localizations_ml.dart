@@ -1607,4 +1607,393 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get assetNote => 'കുറിപ്പ്';
+
+  @override
+  String get comTitle => 'വാണിജ്യം';
+
+  @override
+  String get comOverview => 'സംഗ്രഹം';
+
+  @override
+  String get comSearch => 'ടെൻഡർ, വർക്ക് ഓർഡർ, ഇൻവോയ്സ്, കത്തുകൾ തിരയുക';
+
+  @override
+  String get comNoResults => 'പൊരുത്തപ്പെടുന്ന രേഖകളില്ല';
+
+  @override
+  String get comExpiringSoon => 'ഉടൻ കാലാവധി തീരുന്ന നിക്ഷേപങ്ങൾ';
+
+  @override
+  String get comNothingExpiring =>
+      'അടുത്ത 30 ദിവസത്തിൽ കാലാവധി തീരുന്ന നിക്ഷേപങ്ങളില്ല';
+
+  @override
+  String get comAgeing => 'ലഭിക്കാനുള്ള തുകയുടെ പഴക്കം';
+
+  @override
+  String comDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days ദിവസം ബാക്കി',
+      one: '1 ദിവസം ബാക്കി',
+      zero: 'ഇന്ന് കാലാവധി തീരും',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comNew => 'ചേർക്കുക';
+
+  @override
+  String get comEmpty => 'ഇതുവരെ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
+  String get comExportXlsx => 'Excel എക്സ്പോർട്ട്';
+
+  @override
+  String get comExportPdf => 'PDF എക്സ്പോർട്ട്';
+
+  @override
+  String get comLinked => 'ബന്ധപ്പെട്ട രേഖകൾ';
+
+  @override
+  String get comDocuments => 'രേഖകൾ';
+
+  @override
+  String get comAttachPdf => 'PDF ചേർക്കുക';
+
+  @override
+  String get comNoDocuments => 'രേഖകൾ ചേർത്തിട്ടില്ല';
+
+  @override
+  String get comReadOnly =>
+      'കാണാൻ മാത്രം — മാറ്റങ്ങൾ വരുത്തുന്നത് സി.ഒ.ഒ അല്ലെങ്കിൽ ഡയറക്ടർ';
+
+  @override
+  String get comAll => 'എല്ലാം';
+
+  @override
+  String get entTenders => 'ടെൻഡറുകൾ';
+
+  @override
+  String get entDeposits => 'EMD / SD / BG';
+
+  @override
+  String get entWorkOrders => 'വർക്ക് ഓർഡറുകൾ';
+
+  @override
+  String get entBills => 'ബില്ലുകൾ / ഇൻവോയ്സുകൾ';
+
+  @override
+  String get entLetters => 'ഡിസ്പാച്ച് / കത്തുകൾ';
+
+  @override
+  String get entGst => 'GST റിട്ടേണുകൾ';
+
+  @override
+  String get fReference => 'ടെൻഡർ / ജോലി റഫറൻസ്';
+
+  @override
+  String get fTitle => 'തലക്കെട്ട്';
+
+  @override
+  String get fTenderType => 'ടെൻഡർ തരം';
+
+  @override
+  String get fWorkCategory => 'ജോലി വിഭാഗം';
+
+  @override
+  String get fDepartment => 'വകുപ്പ്';
+
+  @override
+  String get fSection => 'സെക്ഷൻ ഓഫീസ്';
+
+  @override
+  String get fLocation => 'സ്ഥലം';
+
+  @override
+  String get fNoticeDate => 'നോട്ടീസ് തീയതി';
+
+  @override
+  String get fSubmissionDeadline => 'സമർപ്പിക്കേണ്ട അവസാന സമയം';
+
+  @override
+  String get fOpeningDate => 'തുറക്കുന്ന തീയതി';
+
+  @override
+  String get fWorkStartDate => 'ജോലി തുടങ്ങുന്ന തീയതി';
+
+  @override
+  String get fEstimate => 'എസ്റ്റിമേറ്റ് തുക';
+
+  @override
+  String get fEmd => 'EMD തുക';
+
+  @override
+  String get fSecurityDeposit => 'സെക്യൂരിറ്റി ഡെപ്പോസിറ്റ്';
+
+  @override
+  String get fQuoted => 'ക്വോട്ട് ചെയ്ത തുക';
+
+  @override
+  String get fContactPerson => 'ബന്ധപ്പെടേണ്ടയാൾ';
+
+  @override
+  String get fContactPhone => 'ബന്ധപ്പെടേണ്ട ഫോൺ';
+
+  @override
+  String get fRemarks => 'കുറിപ്പ്';
+
+  @override
+  String get fStatus => 'നില';
+
+  @override
+  String get fKind => 'തരം';
+
+  @override
+  String get fTender => 'ടെൻഡർ';
+
+  @override
+  String get fWorkOrder => 'വർക്ക് ഓർഡർ';
+
+  @override
+  String get fAmount => 'തുക';
+
+  @override
+  String get fPaymentMode => 'പണമടച്ച രീതി';
+
+  @override
+  String get fInstrumentNo => 'DD / BG / UTR നമ്പർ';
+
+  @override
+  String get fBank => 'ബാങ്ക്';
+
+  @override
+  String get fDepositDate => 'നിക്ഷേപിച്ച തീയതി';
+
+  @override
+  String get fValidityDate => 'സാധുത വരെ';
+
+  @override
+  String get fReleasedOn => 'തിരികെ ലഭിച്ചത്';
+
+  @override
+  String get fWoNumber => 'വർക്ക് ഓർഡർ നമ്പർ';
+
+  @override
+  String get fAgreementNo => 'കരാർ നമ്പർ';
+
+  @override
+  String get fAwardedAmount => 'അനുവദിച്ച തുക';
+
+  @override
+  String get fIssueDate => 'നൽകിയ തീയതി';
+
+  @override
+  String get fDueDate => 'പൂർത്തിയാക്കേണ്ട തീയതി';
+
+  @override
+  String get fInvoiceNo => 'ഇൻവോയ്സ് നമ്പർ';
+
+  @override
+  String get fBillType => 'ബിൽ തരം';
+
+  @override
+  String get fInvoiceDate => 'ഇൻവോയ്സ് തീയതി';
+
+  @override
+  String get fTaxAmount => 'നികുതി (GST) തുക';
+
+  @override
+  String get fPassedAmount => 'പാസാക്കിയ തുക';
+
+  @override
+  String get fPaidAmount => 'ലഭിച്ച തുക';
+
+  @override
+  String get fPaidOn => 'ലഭിച്ച തീയതി';
+
+  @override
+  String get fRefNo => 'റഫറൻസ് നമ്പർ';
+
+  @override
+  String get fDirection => 'വന്നത് / അയച്ചത്';
+
+  @override
+  String get fDocType => 'രേഖയുടെ തരം';
+
+  @override
+  String get fParty => 'അയച്ചയാൾ / ലഭിക്കുന്നയാൾ';
+
+  @override
+  String get fSubject => 'വിഷയം';
+
+  @override
+  String get fDocDate => 'തീയതി';
+
+  @override
+  String get fGstin => 'GSTIN';
+
+  @override
+  String get fLegalName => 'നിയമപരമായ പേര്';
+
+  @override
+  String get fReturnType => 'റിട്ടേൺ തരം';
+
+  @override
+  String get fPeriod => 'റിട്ടേൺ കാലയളവ് (മാസം)';
+
+  @override
+  String get fTaxable => 'നികുതി ബാധകമായ മൂല്യം';
+
+  @override
+  String get fCgst => 'CGST';
+
+  @override
+  String get fSgst => 'SGST';
+
+  @override
+  String get fIgst => 'IGST';
+
+  @override
+  String get fFiledOn => 'ഫയൽ ചെയ്തത്';
+
+  @override
+  String get fArn => 'ARN';
+
+  @override
+  String get fGstinInvalid => 'ശരിയായ 15 അക്ക GSTIN നൽകുക';
+
+  @override
+  String get fAmountInvalid => 'ശരിയായ തുക നൽകുക';
+
+  @override
+  String get optNone => '—';
+
+  @override
+  String get optTenderDraft => 'ഡ്രാഫ്റ്റ്';
+
+  @override
+  String get optTenderSubmitted => 'സമർപ്പിച്ചു';
+
+  @override
+  String get optTenderOpened => 'തുറന്നു';
+
+  @override
+  String get optTenderAwarded => 'ലഭിച്ചു';
+
+  @override
+  String get optTenderLost => 'ലഭിച്ചില്ല';
+
+  @override
+  String get optTenderCancelled => 'റദ്ദാക്കി';
+
+  @override
+  String get optDepEmd => 'EMD';
+
+  @override
+  String get optDepSd => 'സെക്യൂരിറ്റി ഡെപ്പോസിറ്റ്';
+
+  @override
+  String get optDepBg => 'ബാങ്ക് ഗ്യാരന്റി';
+
+  @override
+  String get optDepRetention => 'റിട്ടൻഷൻ';
+
+  @override
+  String get optDepHeld => 'കെട്ടിവെച്ചത്';
+
+  @override
+  String get optDepRefundRequested => 'തിരികെ ആവശ്യപ്പെട്ടു';
+
+  @override
+  String get optDepReleased => 'തിരികെ ലഭിച്ചു';
+
+  @override
+  String get optDepForfeited => 'കണ്ടുകെട്ടി';
+
+  @override
+  String get optModeDd => 'ഡിമാൻഡ് ഡ്രാഫ്റ്റ്';
+
+  @override
+  String get optModeBg => 'ബാങ്ക് ഗ്യാരന്റി';
+
+  @override
+  String get optModeOnline => 'ഓൺലൈൻ';
+
+  @override
+  String get optModeFdr => 'FDR';
+
+  @override
+  String get optModeCash => 'പണം';
+
+  @override
+  String get optModeOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get optWoAwarded => 'ലഭിച്ചു';
+
+  @override
+  String get optWoInProgress => 'പുരോഗമിക്കുന്നു';
+
+  @override
+  String get optWoCompleted => 'പൂർത്തിയായി';
+
+  @override
+  String get optWoClosed => 'അവസാനിപ്പിച്ചു';
+
+  @override
+  String get optWoTerminated => 'റദ്ദാക്കി';
+
+  @override
+  String get optBillRa => 'റണ്ണിംഗ് അക്കൗണ്ട് (RA)';
+
+  @override
+  String get optBillFinal => 'ഫൈനൽ';
+
+  @override
+  String get optBillAdvance => 'അഡ്വാൻസ്';
+
+  @override
+  String get optBillOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get optBillSubmitted => 'സമർപ്പിച്ചു';
+
+  @override
+  String get optBillPassed => 'പാസാക്കി';
+
+  @override
+  String get optBillPartiallyPaid => 'ഭാഗികമായി ലഭിച്ചു';
+
+  @override
+  String get optBillPaid => 'ലഭിച്ചു';
+
+  @override
+  String get optBillRejected => 'നിരസിച്ചു';
+
+  @override
+  String get optDirIn => 'ലഭിച്ചത്';
+
+  @override
+  String get optDirOut => 'അയച്ചത്';
+
+  @override
+  String get optDocLetter => 'കത്ത്';
+
+  @override
+  String get optDocNotice => 'നോട്ടീസ്';
+
+  @override
+  String get optDocCircular => 'സർക്കുലർ';
+
+  @override
+  String get optDocWorkOrder => 'വർക്ക് ഓർഡർ';
+
+  @override
+  String get optDocOther => 'മറ്റുള്ളവ';
+
+  @override
+  String get comPdfTooLarge => 'ഈ PDF 10 MB-യിൽ കൂടുതലാണ്.';
 }
