@@ -2161,6 +2161,474 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Closed'**
   String get incStatusClosed;
+
+  /// No description provided for @invTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get invTitle;
+
+  /// No description provided for @invStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get invStock;
+
+  /// No description provided for @invRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get invRequests;
+
+  /// No description provided for @invSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search material or code'**
+  String get invSearch;
+
+  /// No description provided for @invAllStores.
+  ///
+  /// In en, this message translates to:
+  /// **'All stores'**
+  String get invAllStores;
+
+  /// No description provided for @invLowOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock only'**
+  String get invLowOnly;
+
+  /// No description provided for @invOnHand.
+  ///
+  /// In en, this message translates to:
+  /// **'On hand'**
+  String get invOnHand;
+
+  /// No description provided for @invReorderAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder at {qty}'**
+  String invReorderAt(String qty);
+
+  /// No description provided for @invLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get invLow;
+
+  /// No description provided for @invNoStock.
+  ///
+  /// In en, this message translates to:
+  /// **'No stock recorded yet'**
+  String get invNoStock;
+
+  /// No description provided for @invNoStockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock appears after the first approved receipt.'**
+  String get invNoStockHint;
+
+  /// No description provided for @invNewRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get invNewRequest;
+
+  /// No description provided for @invReqIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue (take from store)'**
+  String get invReqIssue;
+
+  /// No description provided for @invReqReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return (unused to store)'**
+  String get invReqReturn;
+
+  /// No description provided for @invReqReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt (new stock in)'**
+  String get invReqReceipt;
+
+  /// No description provided for @invTypeIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue'**
+  String get invTypeIssue;
+
+  /// No description provided for @invTypeReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get invTypeReturn;
+
+  /// No description provided for @invTypeReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get invTypeReceipt;
+
+  /// No description provided for @invStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get invStore;
+
+  /// No description provided for @invMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get invMaterial;
+
+  /// No description provided for @invQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get invQuantity;
+
+  /// No description provided for @invQtyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity above zero'**
+  String get invQtyInvalid;
+
+  /// No description provided for @invAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available: {qty}'**
+  String invAvailable(String qty);
+
+  /// No description provided for @invUnitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price (₹)'**
+  String get invUnitPrice;
+
+  /// No description provided for @invSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get invSupplier;
+
+  /// No description provided for @invInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice / DC no.'**
+  String get invInvoice;
+
+  /// No description provided for @invWorksheet.
+  ///
+  /// In en, this message translates to:
+  /// **'For worksheet'**
+  String get invWorksheet;
+
+  /// No description provided for @invNoWorksheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not linked to a worksheet'**
+  String get invNoWorksheet;
+
+  /// No description provided for @invPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Purpose'**
+  String get invPurpose;
+
+  /// No description provided for @invPriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get invPriority;
+
+  /// No description provided for @invPriorityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get invPriorityLow;
+
+  /// No description provided for @invPriorityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get invPriorityMedium;
+
+  /// No description provided for @invPriorityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get invPriorityHigh;
+
+  /// No description provided for @invPriorityCritical.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical'**
+  String get invPriorityCritical;
+
+  /// No description provided for @invRequiredBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Required by'**
+  String get invRequiredBy;
+
+  /// No description provided for @invSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get invSubmit;
+
+  /// No description provided for @invRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent for approval'**
+  String get invRequestSent;
+
+  /// No description provided for @invRequestsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No material requests'**
+  String get invRequestsEmpty;
+
+  /// No description provided for @invMineFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get invMineFilter;
+
+  /// No description provided for @invToDecide.
+  ///
+  /// In en, this message translates to:
+  /// **'To decide'**
+  String get invToDecide;
+
+  /// No description provided for @invAllFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get invAllFilter;
+
+  /// No description provided for @invRequestDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Material request'**
+  String get invRequestDetail;
+
+  /// No description provided for @invRequestedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested by'**
+  String get invRequestedBy;
+
+  /// No description provided for @invDecidedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Decided by'**
+  String get invDecidedBy;
+
+  /// No description provided for @invCancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get invCancelRequest;
+
+  /// No description provided for @invCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this request?'**
+  String get invCancelConfirm;
+
+  /// No description provided for @invLedger.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock movements'**
+  String get invLedger;
+
+  /// No description provided for @invLedgerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No movements yet'**
+  String get invLedgerEmpty;
+
+  /// No description provided for @invAdjust.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust stock'**
+  String get invAdjust;
+
+  /// No description provided for @invAdjustHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a positive number to add, negative to remove (physical count correction).'**
+  String get invAdjustHelp;
+
+  /// No description provided for @invScrap.
+  ///
+  /// In en, this message translates to:
+  /// **'Record as scrap'**
+  String get invScrap;
+
+  /// No description provided for @invTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get invTransfer;
+
+  /// No description provided for @invFromStore.
+  ///
+  /// In en, this message translates to:
+  /// **'From store'**
+  String get invFromStore;
+
+  /// No description provided for @invToStore.
+  ///
+  /// In en, this message translates to:
+  /// **'To store'**
+  String get invToStore;
+
+  /// No description provided for @invCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Material catalogue'**
+  String get invCatalog;
+
+  /// No description provided for @invAddMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Add material'**
+  String get invAddMaterial;
+
+  /// No description provided for @invCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get invCode;
+
+  /// No description provided for @invName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get invName;
+
+  /// No description provided for @invCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get invCategory;
+
+  /// No description provided for @invUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get invUnit;
+
+  /// No description provided for @invHsn.
+  ///
+  /// In en, this message translates to:
+  /// **'HSN code'**
+  String get invHsn;
+
+  /// No description provided for @invReorderLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder level'**
+  String get invReorderLevel;
+
+  /// No description provided for @invStores.
+  ///
+  /// In en, this message translates to:
+  /// **'Stores'**
+  String get invStores;
+
+  /// No description provided for @invAddStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add store'**
+  String get invAddStore;
+
+  /// No description provided for @invStoreName.
+  ///
+  /// In en, this message translates to:
+  /// **'Store name'**
+  String get invStoreName;
+
+  /// No description provided for @invMaterialsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get invMaterialsUsed;
+
+  /// No description provided for @invMaterialsUsedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No materials issued for this job yet'**
+  String get invMaterialsUsedEmpty;
+
+  /// No description provided for @invIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued {qty}'**
+  String invIssued(String qty);
+
+  /// No description provided for @invReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned {qty}'**
+  String invReturned(String qty);
+
+  /// No description provided for @invRequestForJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Request material'**
+  String get invRequestForJob;
+
+  /// No description provided for @invExportRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock register'**
+  String get invExportRegister;
+
+  /// No description provided for @invTxnReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get invTxnReceipt;
+
+  /// No description provided for @invTxnIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue'**
+  String get invTxnIssue;
+
+  /// No description provided for @invTxnReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get invTxnReturn;
+
+  /// No description provided for @invTxnAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment'**
+  String get invTxnAdjustment;
+
+  /// No description provided for @invTxnTransferIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer in'**
+  String get invTxnTransferIn;
+
+  /// No description provided for @invTxnTransferOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer out'**
+  String get invTxnTransferOut;
+
+  /// No description provided for @invTxnScrap.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrap'**
+  String get invTxnScrap;
 }
 
 class _AppLocalizationsDelegate
