@@ -76,6 +76,14 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
+    // Stop push to this phone for the signed-out user (best effort).
+    final fcm = _prefs.getString('aumlux.fcm_token');
+    if (fcm != null) {
+      try {
+        await _client.rpc('unregister_device', params: {'p_token': fcm});
+      } catch (_) {}
+      await _prefs.remove('aumlux.fcm_token');
+    }
     await _prefs.remove(_profileCacheKey);
     try {
       await _client.auth.signOut(scope: SignOutScope.local);
