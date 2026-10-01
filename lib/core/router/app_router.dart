@@ -1,13 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/approvals/approvals_page.dart';
+import '../../features/attendance/presentation/attendance_page.dart';
+import '../../features/attendance/presentation/holidays_page.dart';
 import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/change_password_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
 import '../../features/home/home_page.dart';
+import '../../features/leave/leave.dart';
 import '../../features/more/more_page.dart';
 import '../../features/more/sync_queue_page.dart';
 import '../../features/org/presentation/org_page.dart';
@@ -17,6 +20,8 @@ import '../../features/staff/presentation/staff_form_page.dart';
 import '../../features/staff/presentation/staff_list_page.dart';
 import '../../features/shell/app_shell.dart';
 import '../../features/shell/coming_soon_page.dart';
+import '../design/design.dart';
+import '../l10n/l10n.dart';
 
 abstract final class Routes {
   static const splash = '/splash';
@@ -30,6 +35,9 @@ abstract final class Routes {
   static const staff = '/more/staff';
   static const teams = '/more/teams';
   static const org = '/more/org';
+  static const holidays = '/more/holidays';
+  static const approvals = '/home/approvals';
+  static const leave = '/attendance/leave';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -62,6 +70,14 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Routes.splash,
     refreshListenable: refresh,
     redirect: (context, state) => resolveRedirect(ref.read(sessionProvider), state.matchedLocation),
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(),
+      body: EmptyState(
+        icon: Icons.explore_off_rounded,
+        title: context.l10n.commonComingSoonTitle,
+        message: context.l10n.commonComingSoonBody,
+      ),
+    ),
     routes: [
       GoRoute(path: Routes.splash, builder: (_, __) => const SplashPage()),
       GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
@@ -70,12 +86,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
           StatefulShellBranch(routes: [
-            GoRoute(path: Routes.home, builder: (_, __) => const HomePage()),
+            GoRoute(
+              path: Routes.home,
+              builder: (_, __) => const HomePage(),
+              routes: [GoRoute(path: 'approvals', builder: (_, __) => const ApprovalsPage())],
+            ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: Routes.attendance,
-              builder: (_, __) => const ComingSoonPage(titleKey: ComingSoonTitle.attendance),
+              builder: (_, __) => const AttendancePage(),
+              routes: [GoRoute(path: 'leave', builder: (_, __) => const LeavePage())],
             ),
           ]),
           StatefulShellBranch(routes: [
@@ -109,6 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
                 GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
                 GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
+                GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
               ],
             ),
           ]),

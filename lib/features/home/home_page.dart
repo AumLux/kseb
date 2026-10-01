@@ -110,33 +110,34 @@ class _DashboardBody extends StatelessWidget {
     final checkIn = DateTime.tryParse(today?['check_in_at'] as String? ?? '');
     final checkOut = DateTime.tryParse(today?['check_out_at'] as String? ?? '');
 
-    final kpis = <({String label, String value, IconData icon})>[
-      (label: l10n.kpiPresentThisMonth, value: Fmt.qty(dashboard.number('my_month_present')), icon: Icons.event_available_rounded),
-      (label: l10n.kpiPendingApprovals, value: Fmt.qty(dashboard.number('pending_approvals')), icon: Icons.fact_check_rounded),
+    final kpis = <({String label, String value, IconData icon, String? route})>[
+      (label: l10n.kpiPresentThisMonth, value: Fmt.qty(dashboard.number('my_month_present')), icon: Icons.event_available_rounded, route: Routes.attendance),
+      (label: l10n.kpiPendingApprovals, value: Fmt.qty(dashboard.number('pending_approvals')), icon: Icons.fact_check_rounded, route: Routes.approvals),
       if (dashboard.has('team_present_today'))
         (
           label: l10n.kpiTeamPresentToday,
           value: '${Fmt.qty(dashboard.number('team_present_today'))} / ${Fmt.qty(dashboard.number('team_size'))}',
           icon: Icons.groups_rounded,
+          route: Routes.attendance,
         ),
       if (dashboard.has('worksheets_in_progress'))
-        (label: l10n.kpiWorkInProgress, value: Fmt.qty(dashboard.number('worksheets_in_progress')), icon: Icons.engineering_rounded),
+        (label: l10n.kpiWorkInProgress, value: Fmt.qty(dashboard.number('worksheets_in_progress')), icon: Icons.engineering_rounded, route: null),
       if (dashboard.has('open_incidents'))
-        (label: l10n.kpiOpenIncidents, value: Fmt.qty(dashboard.number('open_incidents')), icon: Icons.health_and_safety_rounded),
+        (label: l10n.kpiOpenIncidents, value: Fmt.qty(dashboard.number('open_incidents')), icon: Icons.health_and_safety_rounded, route: null),
       if (dashboard.has('low_stock_items'))
-        (label: l10n.kpiLowStock, value: Fmt.qty(dashboard.number('low_stock_items')), icon: Icons.inventory_2_rounded),
+        (label: l10n.kpiLowStock, value: Fmt.qty(dashboard.number('low_stock_items')), icon: Icons.inventory_2_rounded, route: null),
       if (dashboard.has('active_work_orders'))
-        (label: l10n.kpiActiveWorkOrders, value: Fmt.qty(dashboard.number('active_work_orders')), icon: Icons.description_rounded),
+        (label: l10n.kpiActiveWorkOrders, value: Fmt.qty(dashboard.number('active_work_orders')), icon: Icons.description_rounded, route: null),
       if (dashboard.has('open_tenders'))
-        (label: l10n.kpiOpenTenders, value: Fmt.qty(dashboard.number('open_tenders')), icon: Icons.gavel_rounded),
+        (label: l10n.kpiOpenTenders, value: Fmt.qty(dashboard.number('open_tenders')), icon: Icons.gavel_rounded, route: null),
       if (dashboard.has('deposits_held'))
-        (label: l10n.kpiDepositsHeld, value: Fmt.moneyCompact(dashboard.number('deposits_held')), icon: Icons.account_balance_rounded),
+        (label: l10n.kpiDepositsHeld, value: Fmt.moneyCompact(dashboard.number('deposits_held')), icon: Icons.account_balance_rounded, route: null),
       if (dashboard.has('deposits_expiring_30d'))
-        (label: l10n.kpiDepositsExpiring, value: Fmt.qty(dashboard.number('deposits_expiring_30d')), icon: Icons.timer_rounded),
+        (label: l10n.kpiDepositsExpiring, value: Fmt.qty(dashboard.number('deposits_expiring_30d')), icon: Icons.timer_rounded, route: null),
       if (dashboard.has('receivables_outstanding'))
-        (label: l10n.kpiReceivables, value: Fmt.moneyCompact(dashboard.number('receivables_outstanding')), icon: Icons.request_quote_rounded),
+        (label: l10n.kpiReceivables, value: Fmt.moneyCompact(dashboard.number('receivables_outstanding')), icon: Icons.request_quote_rounded, route: null),
       if (dashboard.has('receivables_over_90d'))
-        (label: l10n.kpiReceivables90, value: Fmt.moneyCompact(dashboard.number('receivables_over_90d')), icon: Icons.warning_amber_rounded),
+        (label: l10n.kpiReceivables90, value: Fmt.moneyCompact(dashboard.number('receivables_over_90d')), icon: Icons.warning_amber_rounded, route: null),
     ];
 
     return Column(
@@ -182,7 +183,15 @@ class _DashboardBody extends StatelessWidget {
             runSpacing: gap,
             children: [
               for (final k in kpis)
-                SizedBox(width: width, child: KpiCard(label: k.label, value: k.value, icon: k.icon)),
+                SizedBox(
+                  width: width,
+                  child: KpiCard(
+                    label: k.label,
+                    value: k.value,
+                    icon: k.icon,
+                    onTap: k.route == null ? null : () => context.go(k.route!),
+                  ),
+                ),
             ],
           );
         }),
