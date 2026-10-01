@@ -121,11 +121,11 @@ class _DashboardBody extends StatelessWidget {
           route: Routes.attendance,
         ),
       if (dashboard.has('worksheets_in_progress'))
-        (label: l10n.kpiWorkInProgress, value: Fmt.qty(dashboard.number('worksheets_in_progress')), icon: Icons.engineering_rounded, route: null),
+        (label: l10n.kpiWorkInProgress, value: Fmt.qty(dashboard.number('worksheets_in_progress')), icon: Icons.engineering_rounded, route: Routes.work),
       if (dashboard.has('open_incidents'))
         (label: l10n.kpiOpenIncidents, value: Fmt.qty(dashboard.number('open_incidents')), icon: Icons.health_and_safety_rounded, route: null),
       if (dashboard.has('low_stock_items'))
-        (label: l10n.kpiLowStock, value: Fmt.qty(dashboard.number('low_stock_items')), icon: Icons.inventory_2_rounded, route: null),
+        (label: l10n.kpiLowStock, value: Fmt.qty(dashboard.number('low_stock_items')), icon: Icons.inventory_2_rounded, route: Routes.inventory),
       if (dashboard.has('active_work_orders'))
         (label: l10n.kpiActiveWorkOrders, value: Fmt.qty(dashboard.number('active_work_orders')), icon: Icons.description_rounded, route: null),
       if (dashboard.has('open_tenders'))

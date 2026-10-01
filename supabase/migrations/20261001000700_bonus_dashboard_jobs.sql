@@ -92,7 +92,7 @@ as $$
   union all
   select 'material_request', r.id, r.code,
          initcap(r.request_type::text) || ' · ' || m.name || ' × ' || trim(to_char(r.quantity, 'FM999999990.###')) || ' ' || m.unit,
-         r.requested_by, p.full_name, r.created_at, r.priority::text, '/inventory/requests/' || r.id
+         r.requested_by, p.full_name, r.created_at, r.priority::text, '/more/inventory/requests/' || r.id
   from public.material_requests r
   join public.profiles p on p.id = r.requested_by
   join public.material_catalog m on m.id = r.material_id
@@ -209,7 +209,7 @@ begin
     insert into public.notifications (user_id, title, body, route, data)
     select p.id, 'Low stock: ' || r.material_name,
            r.store_name || ' · ' || trim(to_char(r.on_hand, 'FM999999990.###')) || ' ' || r.unit || ' left',
-           '/inventory/stock', jsonb_build_object('material_id', r.material_id, 'store_id', r.store_id)
+           '/more/inventory', jsonb_build_object('material_id', r.material_id, 'store_id', r.store_id)
     from public.profiles p
     where p.status = 'active' and p.role = 'manager'
       and (p.section_id = r.section_id

@@ -195,7 +195,7 @@ begin
   perform private.notify(
     req.requested_by,
     case when p_approve then 'Material request approved' else 'Material request rejected' end,
-    req.code, '/inventory/requests/' || req.id);
+    req.code, '/more/inventory/requests/' || req.id);
   return req;
 end;
 $$;
