@@ -1,0 +1,86 @@
+# Backend (Supabase): setup and runbook
+
+| Environment | Project ref | Branch that deploys it |
+|---|---|---|
+| Staging | `dtficnziewtaplbqoofn` | `staging` |
+| Production | `zjgqpyiceqofubjbevtv` | `releases` |
+
+Both run on the Supabase **free tier**. Firebase is kept only for FCM push and Crashlytics, which are free on Spark.
+
+## Layout
+
+```
+supabase/
+  config.toml            local stack + auth settings (signup disabled, 8+ char passwords)
+  migrations/*.sql       schema, RLS, RPCs, triggers, jobs — applied in order
+  seed.sql               sample org / Kerala fixed holidays / material catalogue (no users)
+  tests/*_test.sql       pgTAP security + workflow tests (run in CI)
+  functions/admin-users  account create / update / suspend / reset (service role)
+tools/bootstrap/         one-off: create the first Director
+```
+
+## Security model, in one paragraph
+
+Every table has RLS and **no default grants**. Reads are scoped by the caller's live profile: staff see themselves; supervisors see their team; managers see their sections (home section plus `user_sections`); COO/Director see everything. Writes are granted **per column**, and workflow columns (`status`, `decided_by`, stock balances, the ledger, attendance) are never client-writable. They change only inside `SECURITY DEFINER` RPCs that check rank (strictly higher, no self-approval) and scope, lock rows (`FOR UPDATE`, so replays fail), and log to `audit_log`. A suspended or exited user loses access on their next request, because nothing depends on cached JWT claims. `supabase/tests/` proves these properties.
+
+## One-time setup
+
+1. **GitHub → Settings → Environments.** Create `staging` and `production`, each with these secrets:
+   - `SUPABASE_ACCESS_TOKEN`: a personal access token from supabase.com/dashboard/account/tokens.
+   - `SUPABASE_DB_PASSWORD`: that project's database password.
+   - `BACKUP_PASSPHRASE` (production only): a long random passphrase for the encrypted nightly backups. Store it in the company password manager too; without it, backups can't be restored.
+2. **Supabase dashboard → Authentication → Providers → Email.** Turn off "Allow new users to sign up" and "Confirm email". The `config.toml` values only apply to the local stack.
+3. Push to `staging`. The `Supabase` workflow runs the tests, applies migrations plus the sample seed, and deploys functions.
+4. **Bootstrap the first Director** (once per project):
+   ```powershell
+   $env:SUPABASE_URL = "https://dtficnziewtaplbqoofn.supabase.co"
+   $env:SUPABASE_SECRET_KEY = "<secret key from Project Settings → API Keys>"
+   node tools/bootstrap/create-director.mjs --code AUM0001 --name "Full Name" --email director@company.com
+   ```
+   The Director signs in, sets a password, and creates everyone else in-app.
+
+## Accounts and sign-in
+
+- Officers with a real email sign in with that email.
+- Crew without email sign in with their **employee code**. Internally that maps to `<code>@staff.aumlux.internal`; no mail is ever sent there.
+- New accounts and admin resets get a temporary password, which must be changed at first sign-in (`profiles.must_change_password`).
+- Nobody is hard-deleted. *Exited* or *suspended* bans the login and keeps the history.
+
+## Local development
+
+Requires Docker Desktop and the Supabase CLI.
+
+```bash
+supabase start                 # full stack; prints local URL + keys
+supabase db reset              # re-apply migrations + seed
+supabase test db               # pgTAP suite
+supabase db lint --level warning
+supabase functions serve       # edge functions with hot reload
+```
+
+To add a schema change, create a new file `supabase/migrations/<timestamp>_<name>.sql` (never edit applied migrations), add or extend a pgTAP test, and add any new RPC to the grant list in `20261001000900_lockdown.sql`.
+
+## Backups and restore
+
+The `Supabase` workflow runs nightly at 02:00 IST. It dumps production (roles, schema, data), encrypts the dump with `BACKUP_PASSPHRASE`, and keeps it as a 30-day artifact. The same job pings both projects so the free tier never pauses.
+
+To restore into an empty project:
+
+```bash
+gpg -d aumlux-<stamp>.tgz.gpg | tar xz
+psql "$TARGET_DB_URL" -f backup/roles.sql
+psql "$TARGET_DB_URL" -f backup/schema.sql
+psql "$TARGET_DB_URL" -f backup/data.sql
+```
+
+Rehearse a restore into staging once before go-live, and then quarterly.
+
+## Free-tier limits to watch
+
+| Limit | Mitigation |
+|---|---|
+| 500 MB database | Plenty for this workload. Watch `audit_log` growth (prune or archive yearly). |
+| 1 GB storage | Photos are compressed client-side (about 200 KB). An alert fires at 70% (`app_settings.storage_quota_alert_pct`). Fallback: Cloudflare R2 (10 GB free). |
+| No automatic backups | The nightly encrypted dump above. |
+| Pause after 7 idle days | Nightly keep-alive ping. |
+| 2 active projects | Exactly staging + production. |

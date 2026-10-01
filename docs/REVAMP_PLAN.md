@@ -103,7 +103,8 @@ All tables have `id uuid pk default gen_random_uuid()`, `created_at`, `created_b
 - `profiles(id = auth.users.id, employee_code unique, full_name, phone unique, email, role app_role, team_id, section_id, dob, photo_path, status {active, suspended, exited}, must_change_password, joined_on)`.
   - Team membership lives **only** in `profiles.team_id`, which removes the `members[]` duplication.
 - `app_role` enum: `staff < supervisor < manager < coo < director`. The helper `role_rank()` mirrors `UserRole.hierarchyLevel`.
-- **Scope rule:** staff see themselves; supervisors see their team; managers see their section(s); COO and Director see everything. This is enforced by the RLS helper `can_see(section_id, team_id, user_id)`, which reads JWT claims set by the custom-access-token hook. Claims avoid per-row profile lookups, which is the Firestore `get()` cost problem.
+- **Scope rule:** staff see themselves; supervisors see their team; managers see their section(s); COO and Director see everything. This is enforced by the `private.*` RLS helpers (`my_role`, `my_section_ids`, `can_see_user`, `can_approve_for`).
+  - *Implementation note (Phase 2):* the helpers read the caller's **live** profile instead of custom JWT claims. A suspended or demoted user then loses access on the next request rather than after token expiry, and no auth hook needs configuring. Policies wrap the helpers in scalar sub-selects, so each is evaluated once per statement.
 - `device_tokens(user_id, token, platform)`, `notifications(user_id, title, body, route, read_at)`, `app_settings(key, value jsonb)`, which holds the idle timeout, minimum app version, and storage quota alert level.
 
 **Attendance**
@@ -117,7 +118,7 @@ All tables have `id uuid pk default gen_random_uuid()`, `created_at`, `created_b
 **Worksheets (one lifecycle record instead of request plus copy)**
 - `worksheets(code 'WS-YYYY-#####', type {project, maintenance, calamity}, section_id, project_ref (work_order_id), location_text, lat, lng, permit_book_no, description, status {draft, submitted, approved, rejected, in_progress, completed, cancelled}, requested_by, decided_by, decided_at, rejection_reason)`.
   - Today, approval copies a `worksheet_requests` doc into `worksheets`, which creates duplicate data and a drift risk. A single row with a status machine and an RPC `decide_worksheet(id, approve, reason)` is the standard pattern.
-- `worksheet_crew(worksheet_id, user_id)`, `worksheet_photos(storage_path, captured_at, lat, lng)`.
+- `worksheet_crew(worksheet_id, user_id)`. Photos live in the shared `attachments` table (with `captured_at`, `lat`, `lng`).
 - **Safety:** `permit_checklists(worksheet_id, line_clear_ref, isolation_points, earthing_done, ppe_confirmed[], supervisor_sign_at)` and `incidents(worksheet_id, severity, description, photos)`. A worksheet can't move to `in_progress` without a completed checklist.
 
 **Inventory (ledger-based)**

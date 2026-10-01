@@ -1,0 +1,72 @@
+-- Shared pgTAP fixture: two sections, one user at each level.
+--
+--   Section A: manager M, supervisor S (supervises Team 1), staff W1 (Team 1)
+--   Section B: manager M2, staff W2 (Team 2)
+--   Org-wide : director D, COO C
+--
+-- Switch users with:  select tests.login('<uuid>');   back to postgres: reset role;
+create extension if not exists pgtap with schema extensions;
+
+create schema if not exists tests;
+grant usage on schema tests to authenticated;
+
+create or replace function tests.login(uid uuid) returns void
+language plpgsql as $$
+begin
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', uid, 'role', 'authenticated')::text, true);
+  execute 'set local role authenticated';
+end;
+$$;
+
+-- Well-known ids
+--   D  d0000000-0000-0000-0000-000000000001   C  c0000000-0000-0000-0000-000000000001
+--   M  e0000000-0000-0000-0000-000000000001   M2 e0000000-0000-0000-0000-000000000002
+--   S  f0000000-0000-0000-0000-000000000001
+--   W1 a0000000-0000-0000-0000-000000000001   W2 a0000000-0000-0000-0000-000000000002
+--   Section A 40000000-0000-0000-0000-00000000000a   Section B ...0b
+--   Team 1    50000000-0000-0000-0000-000000000001   Team 2    ...02
+
+insert into public.circles (id, code, name)
+values ('10000000-0000-0000-0000-000000000001', 'TC1', 'Test Circle');
+insert into public.divisions (id, circle_id, code, name)
+values ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'TD1', 'Test Division');
+insert into public.subdivisions (id, division_id, code, name)
+values ('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'TSD1', 'Test Sub-division');
+insert into public.sections (id, subdivision_id, code, name, lat, lng, geofence_radius_m) values
+  ('40000000-0000-0000-0000-00000000000a', '30000000-0000-0000-0000-000000000001', 'TSA', 'Section A', 9.9943, 76.2999, 300),
+  ('40000000-0000-0000-0000-00000000000b', '30000000-0000-0000-0000-000000000001', 'TSB', 'Section B', 10.1076, 76.3516, 300);
+
+insert into auth.users (id, email) values
+  ('d0000000-0000-0000-0000-000000000001', 'd@test.local'),
+  ('c0000000-0000-0000-0000-000000000001', 'c@test.local'),
+  ('e0000000-0000-0000-0000-000000000001', 'm@test.local'),
+  ('e0000000-0000-0000-0000-000000000002', 'm2@test.local'),
+  ('f0000000-0000-0000-0000-000000000001', 's@test.local'),
+  ('a0000000-0000-0000-0000-000000000001', 'w1@test.local'),
+  ('a0000000-0000-0000-0000-000000000002', 'w2@test.local');
+
+insert into public.profiles (id, employee_code, full_name, role, section_id) values
+  ('d0000000-0000-0000-0000-000000000001', 'T-D', 'Dir Ector', 'director', null),
+  ('c0000000-0000-0000-0000-000000000001', 'T-C', 'Coo Officer', 'coo', null),
+  ('e0000000-0000-0000-0000-000000000001', 'T-M', 'Man Ager', 'manager', '40000000-0000-0000-0000-00000000000a'),
+  ('e0000000-0000-0000-0000-000000000002', 'T-M2', 'Man Two', 'manager', '40000000-0000-0000-0000-00000000000b'),
+  ('f0000000-0000-0000-0000-000000000001', 'T-S', 'Super Visor', 'supervisor', '40000000-0000-0000-0000-00000000000a'),
+  ('a0000000-0000-0000-0000-000000000001', 'T-W1', 'Worker One', 'staff', '40000000-0000-0000-0000-00000000000a'),
+  ('a0000000-0000-0000-0000-000000000002', 'T-W2', 'Worker Two', 'staff', '40000000-0000-0000-0000-00000000000b');
+
+insert into public.teams (id, section_id, name, supervisor_id) values
+  ('50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-00000000000a', 'Team 1', 'f0000000-0000-0000-0000-000000000001'),
+  ('50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-00000000000b', 'Team 2', null);
+
+update public.profiles set team_id = '50000000-0000-0000-0000-000000000001'
+ where id in ('f0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001');
+update public.profiles set team_id = '50000000-0000-0000-0000-000000000002'
+ where id = 'a0000000-0000-0000-0000-000000000002';
+
+-- A capture time that is always valid: yesterday 10:00 IST.
+create or replace function tests.yesterday_at(hh integer default 10) returns timestamptz
+language sql stable as $$
+  select (((now() at time zone 'Asia/Kolkata')::date - 1) + make_time(hh, 0, 0)) at time zone 'Asia/Kolkata';
+$$;
+grant execute on all functions in schema tests to authenticated;
