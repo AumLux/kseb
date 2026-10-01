@@ -133,6 +133,11 @@ begin
 
   case p_action
     when 'submit' then
+      -- Idempotent for the requester: an offline replay of a submit whose
+      -- response was lost must not surface as an error.
+      if is_requester and w.status = 'submitted' then
+        return w;
+      end if;
       if not is_requester or w.status not in ('draft', 'rejected') then
         perform private.fail('invalid_transition', 'Only your own draft or rejected worksheets can be submitted.');
       end if;
@@ -158,7 +163,7 @@ begin
       perform private.notify(
         w.requested_by,
         case when p_action = 'approve' then 'Worksheet approved' else 'Worksheet rejected' end,
-        w.code || ' · ' || w.title, '/worksheets/' || w.id);
+        w.code || ' · ' || w.title, '/work/' || w.id);
 
     when 'start' then
       if not (is_requester or is_approver) or w.status <> 'approved' then
@@ -345,8 +350,20 @@ grant update (work_type, title, section_id, work_order_id, location_text, lat, l
               permit_book_no, description, planned_date)
   on public.worksheets to authenticated;
 
+-- Column-based (not an id lookup): INSERT ... ON CONFLICT DO NOTHING, which
+-- the offline outbox uses for idempotent replays, also evaluates the SELECT
+-- policy against the *new* row, which an id lookup cannot find yet.
 create policy worksheets_read on public.worksheets for select to authenticated
-  using ((select private.can_see_worksheet(id)));
+  using (
+    (select private.my_role()) is not null
+    and (
+      requested_by = auth.uid()
+      or ((select private.has_role('supervisor'))
+          and section_id = any ((select private.my_section_ids())::uuid[]))
+      or exists (select 1 from public.worksheet_crew c
+                  where c.worksheet_id = id and c.user_id = auth.uid())
+    )
+  );
 create policy worksheets_insert on public.worksheets for insert to authenticated
   with check (requested_by = auth.uid()
               and section_id = any ((select private.my_section_ids())::uuid[]));
