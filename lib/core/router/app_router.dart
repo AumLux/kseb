@@ -9,6 +9,7 @@ import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/change_password_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/splash_page.dart';
+import '../../features/bonus/bonus_page.dart';
 import '../../features/commercial/entity_pages.dart';
 import '../../features/home/home_page.dart';
 import '../../features/inventory/presentation/catalog_pages.dart';
@@ -18,6 +19,7 @@ import '../../features/inventory/presentation/material_request_form_page.dart';
 import '../../features/leave/leave.dart';
 import '../../features/more/more_page.dart';
 import '../../features/more/sync_queue_page.dart';
+import '../../features/notifications/notifications.dart';
 import '../../features/org/presentation/org_page.dart';
 import '../../features/org/presentation/teams_page.dart';
 import '../../features/registers/assets_pages.dart';
@@ -51,6 +53,8 @@ abstract final class Routes {
   static const poles = '/more/poles';
   static const assets = '/more/assets';
   static const commercial = '/more/commercial';
+  static const notifications = '/home/notifications';
+  static const bonus = '/more/bonus';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -102,7 +106,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: Routes.home,
               builder: (_, __) => const HomePage(),
-              routes: [GoRoute(path: 'approvals', builder: (_, __) => const ApprovalsPage())],
+              routes: [
+                GoRoute(path: 'approvals', builder: (_, __) => const ApprovalsPage()),
+                GoRoute(path: 'notifications', builder: (_, __) => const NotificationsPage()),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [
@@ -154,6 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
                 GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
                 GoRoute(path: 'holidays', builder: (_, __) => const HolidaysPage()),
+                GoRoute(path: 'bonus', builder: (_, __) => const BonusPage()),
                 GoRoute(
                   path: 'commercial',
                   builder: (_, __) => const CommercialHomePage(),

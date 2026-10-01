@@ -16,6 +16,7 @@ supabase/
   seed.sql               sample org / Kerala fixed holidays / material catalogue (no users)
   tests/*_test.sql       pgTAP security + workflow tests (run in CI)
   functions/admin-users  account create / update / suspend / reset (service role)
+  functions/push         FCM delivery for notifications (called by a DB trigger)
 tools/bootstrap/         one-off: create the first Director
 ```
 
@@ -38,6 +39,23 @@ Every table has RLS and **no default grants**. Reads are scoped by the caller's 
    node tools/bootstrap/create-director.mjs --code AUM0001 --name "Full Name" --email director@company.com
    ```
    The Director signs in, sets a password, and creates everyone else in-app.
+
+## Push notifications (optional, free)
+
+In-app notifications (the bell, kept live by Realtime) work without any setup. To also deliver them to phones through FCM:
+
+1. **Firebase console → Project settings → Service accounts → Generate new private key.** Then:
+   ```bash
+   supabase secrets set --project-ref <ref> FCM_SERVICE_ACCOUNT="$(cat service-account.json)" PUSH_WEBHOOK_SECRET=<long random string>
+   ```
+2. In the SQL editor of the same project:
+   ```sql
+   select vault.create_secret('https://<ref>.supabase.co/functions/v1/push', 'push_function_url');
+   select vault.create_secret('<the same long random string>', 'push_webhook_secret');
+   ```
+3. The Android app registers its FCM token after sign-in and unregisters it on sign-out. Tapping a notification opens the linked screen.
+
+Without these secrets, the database trigger is a no-op and nothing else is affected.
 
 ## Accounts and sign-in
 

@@ -626,5 +626,22 @@
   "optDocCircular": "സർക്കുലർ",
   "optDocWorkOrder": "വർക്ക് ഓർഡർ",
   "optDocOther": "മറ്റുള്ളവ",
-  "comPdfTooLarge": "ഈ PDF 10 MB-യിൽ കൂടുതലാണ്."
+  "comPdfTooLarge": "ഈ PDF 10 MB-യിൽ കൂടുതലാണ്.",
+  "notifTitle": "അറിയിപ്പുകൾ",
+  "notifEmpty": "പുതിയ അറിയിപ്പുകളില്ല",
+  "notifMarkAll": "എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക",
+  "notifChannelName": "AumLux അപ്ഡേറ്റുകൾ",
+  "notifChannelDescription": "അംഗീകാരങ്ങൾ, മുന്നറിയിപ്പുകൾ, ഓർമ്മപ്പെടുത്തലുകൾ",
+  "bonusTitle": "ബോണസ്",
+  "bonusMyTotal": "എനിക്ക് അംഗീകരിച്ച ബോണസ്",
+  "bonusPoints": "പോയിന്റുകൾ",
+  "bonusAmount": "തുക",
+  "bonusPropose": "ബോണസ് ശുപാർശ ചെയ്യുക",
+  "bonusFor": "ആർക്ക്",
+  "bonusReason": "കാരണം",
+  "bonusReasonHint": "ഉദാ. കൊടുങ്കാറ്റിന് ശേഷമുള്ള പുനഃസ്ഥാപന ഓവർടൈം, ഒക്ടോ 14–15",
+  "bonusNeedValue": "പോയിന്റോ തുകയോ നൽകുക",
+  "bonusProposed": "അംഗീകാരത്തിനായി ബോണസ് ശുപാർശ ചെയ്തു",
+  "bonusEmpty": "ഇതുവരെ ബോണസ് രേഖകളില്ല",
+  "bonusPendingNote": "ബോണസ് അംഗീകരിക്കുന്നത് സി.ഒ.ഒ അല്ലെങ്കിൽ ഡയറക്ടർ ആണ്."
 }
