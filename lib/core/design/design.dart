@@ -4,6 +4,7 @@ library;
 export 'app_theme.dart';
 export 'app_tokens.dart';
 export 'widgets/app_button.dart';
+export 'widgets/brand_mark.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_list_row.dart';
 export 'widgets/app_text_field.dart';

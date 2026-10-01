@@ -12,7 +12,6 @@ import 'package:printing/printing.dart';
 import '../components/common/app_bar_builder.dart';
 import '../components/common/app_button.dart';
 import '../components/common/modern_dropdown.dart';
-import '../components/common/shell_bottom_nav.dart';
 import '../models/user_model.dart';
 import '../services/approval_service.dart';
 import '../services/user_service.dart';
@@ -964,7 +963,6 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: buildAppBar(title: 'Downloads'),
-      bottomNavigationBar: const ShellBottomNav(),
       body: ListView(
         padding: EdgeInsets.all(context.responsivePadding(AppSpacing.lg)),
         children: [

@@ -15,7 +15,6 @@ import '../components/common/app_button.dart';
 import '../components/common/app_segmented_tabs.dart';
 import '../components/common/app_text_field.dart';
 import '../components/common/modern_dropdown.dart';
-import '../components/common/shell_bottom_nav.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_decorations.dart';
 import '../utils/generated_file_actions.dart';
@@ -585,7 +584,6 @@ class _TenderDetailsScreenState extends State<TenderDetailsScreen>
       appBar: buildAppBar(
         title: 'Tender Details',
       ),
-      bottomNavigationBar: const ShellBottomNav(),
       body: Column(
         children: [
           Expanded(
