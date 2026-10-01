@@ -8,7 +8,7 @@ select is((select count(*)::integer from public.profiles), 1, 'staff sees only t
 select throws_ok(
   $$update public.profiles set role = 'director' where id = auth.uid()$$,
   '42501', null, 'staff cannot promote themself (no UPDATE privilege)');
-select is((select count(*)::integer from public.people_directory()), 7,
+select is((select count(*)::integer from public.people_directory() where employee_code like 'T-%'), 7,
   'directory exposes names of everyone to active users');
 select is((public.me() ->> 'role'), 'staff', 'me() returns the caller''s role');
 reset role;
@@ -32,7 +32,7 @@ reset role;
 
 -- Director sees everyone.
 select tests.login('d0000000-0000-0000-0000-000000000001');
-select is((select count(*)::integer from public.profiles), 7, 'director sees everyone');
+select is((select count(*)::integer from public.profiles where employee_code like 'T-%'), 7, 'director sees everyone');
 select lives_ok(
   $$insert into public.circles (code, name) values ('X1', 'New circle')$$,
   'director can maintain the org hierarchy');
