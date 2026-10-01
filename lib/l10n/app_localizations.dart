@@ -1651,6 +1651,516 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date'**
   String get commonDate;
+
+  /// No description provided for @wsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Worksheets'**
+  String get wsTitle;
+
+  /// No description provided for @wsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New worksheet'**
+  String get wsNew;
+
+  /// No description provided for @wsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit worksheet'**
+  String get wsEdit;
+
+  /// No description provided for @wsMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get wsMine;
+
+  /// No description provided for @wsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'My sections'**
+  String get wsSection;
+
+  /// No description provided for @wsAllStatuses.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get wsAllStatuses;
+
+  /// No description provided for @wsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No worksheets yet'**
+  String get wsEmpty;
+
+  /// No description provided for @wsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a worksheet before starting a job.'**
+  String get wsEmptyHint;
+
+  /// No description provided for @wsType.
+  ///
+  /// In en, this message translates to:
+  /// **'Work type'**
+  String get wsType;
+
+  /// No description provided for @wsTypeProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get wsTypeProject;
+
+  /// No description provided for @wsTypeMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get wsTypeMaintenance;
+
+  /// No description provided for @wsTypeCalamity.
+  ///
+  /// In en, this message translates to:
+  /// **'Calamity / breakdown'**
+  String get wsTypeCalamity;
+
+  /// No description provided for @wsJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Job title'**
+  String get wsJobTitle;
+
+  /// No description provided for @wsJobTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Replace DP fuse at Kaloor junction'**
+  String get wsJobTitleHint;
+
+  /// No description provided for @wsLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location / landmark'**
+  String get wsLocation;
+
+  /// No description provided for @wsUseGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my location'**
+  String get wsUseGps;
+
+  /// No description provided for @wsGpsSet.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS saved (±{accuracy} m)'**
+  String wsGpsSet(int accuracy);
+
+  /// No description provided for @wsPermitBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Permit book no.'**
+  String get wsPermitBook;
+
+  /// No description provided for @wsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Work description'**
+  String get wsDescription;
+
+  /// No description provided for @wsPlannedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned date'**
+  String get wsPlannedDate;
+
+  /// No description provided for @wsSaveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get wsSaveDraft;
+
+  /// No description provided for @wsSaveSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & submit'**
+  String get wsSaveSubmit;
+
+  /// No description provided for @wsSavedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on your phone. It will upload when you\'re back online.'**
+  String get wsSavedOffline;
+
+  /// No description provided for @wsSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent for approval'**
+  String get wsSubmitted;
+
+  /// No description provided for @wsStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get wsStatusDraft;
+
+  /// No description provided for @wsStatusSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting approval'**
+  String get wsStatusSubmitted;
+
+  /// No description provided for @wsStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get wsStatusApproved;
+
+  /// No description provided for @wsStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get wsStatusRejected;
+
+  /// No description provided for @wsStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get wsStatusInProgress;
+
+  /// No description provided for @wsStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get wsStatusCompleted;
+
+  /// No description provided for @wsStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get wsStatusCancelled;
+
+  /// No description provided for @wsRequestedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested by'**
+  String get wsRequestedBy;
+
+  /// No description provided for @wsDecision.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision note'**
+  String get wsDecision;
+
+  /// No description provided for @wsActionSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for approval'**
+  String get wsActionSubmit;
+
+  /// No description provided for @wsActionApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get wsActionApprove;
+
+  /// No description provided for @wsActionReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get wsActionReject;
+
+  /// No description provided for @wsActionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start work'**
+  String get wsActionStart;
+
+  /// No description provided for @wsActionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark completed'**
+  String get wsActionComplete;
+
+  /// No description provided for @wsActionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel worksheet'**
+  String get wsActionCancel;
+
+  /// No description provided for @wsCompletionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'What was done'**
+  String get wsCompletionNote;
+
+  /// No description provided for @wsCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this worksheet? It can\'t be reopened.'**
+  String get wsCancelConfirm;
+
+  /// No description provided for @wsCrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew'**
+  String get wsCrew;
+
+  /// No description provided for @wsCrewEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit crew'**
+  String get wsCrewEdit;
+
+  /// No description provided for @wsCrewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No crew assigned'**
+  String get wsCrewEmpty;
+
+  /// No description provided for @wsPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get wsPhotos;
+
+  /// No description provided for @wsAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get wsAddPhoto;
+
+  /// No description provided for @wsCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get wsCamera;
+
+  /// No description provided for @wsGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get wsGallery;
+
+  /// No description provided for @wsPhotosEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos yet'**
+  String get wsPhotosEmpty;
+
+  /// No description provided for @wsPhotoQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo saved; it uploads when you\'re online.'**
+  String get wsPhotoQueued;
+
+  /// No description provided for @wsPermit.
+  ///
+  /// In en, this message translates to:
+  /// **'Permit to work'**
+  String get wsPermit;
+
+  /// No description provided for @wsPermitMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not signed yet. Work can\'t start until a supervisor signs the permit.'**
+  String get wsPermitMissing;
+
+  /// No description provided for @wsPermitSign.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign permit'**
+  String get wsPermitSign;
+
+  /// No description provided for @wsPermitLcRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Line clear (LC) reference'**
+  String get wsPermitLcRef;
+
+  /// No description provided for @wsPermitLcBy.
+  ///
+  /// In en, this message translates to:
+  /// **'LC issued by (KSEB officer)'**
+  String get wsPermitLcBy;
+
+  /// No description provided for @wsPermitIsolation.
+  ///
+  /// In en, this message translates to:
+  /// **'Isolation points'**
+  String get wsPermitIsolation;
+
+  /// No description provided for @wsPermitIsolationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. AB switch at DP-14 opened and locked'**
+  String get wsPermitIsolationHint;
+
+  /// No description provided for @wsPermitEarthing.
+  ///
+  /// In en, this message translates to:
+  /// **'Earthing done on both sides'**
+  String get wsPermitEarthing;
+
+  /// No description provided for @wsPermitTestedDead.
+  ///
+  /// In en, this message translates to:
+  /// **'Line tested dead with tester'**
+  String get wsPermitTestedDead;
+
+  /// No description provided for @wsPermitToolbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Toolbox talk done with the crew'**
+  String get wsPermitToolbox;
+
+  /// No description provided for @wsPermitPpe.
+  ///
+  /// In en, this message translates to:
+  /// **'PPE confirmed'**
+  String get wsPermitPpe;
+
+  /// No description provided for @wsPermitPpeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Helmet, gloves and safety belt are mandatory'**
+  String get wsPermitPpeRequired;
+
+  /// No description provided for @wsPermitSignedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed {when}'**
+  String wsPermitSignedBy(String when);
+
+  /// No description provided for @ppeHelmet.
+  ///
+  /// In en, this message translates to:
+  /// **'Helmet'**
+  String get ppeHelmet;
+
+  /// No description provided for @ppeGloves.
+  ///
+  /// In en, this message translates to:
+  /// **'Insulated gloves'**
+  String get ppeGloves;
+
+  /// No description provided for @ppeSafetyBelt.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety belt'**
+  String get ppeSafetyBelt;
+
+  /// No description provided for @ppeBoots.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety boots'**
+  String get ppeBoots;
+
+  /// No description provided for @ppeInsulatedTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Insulated tools'**
+  String get ppeInsulatedTools;
+
+  /// No description provided for @ppeReflectiveVest.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflective vest'**
+  String get ppeReflectiveVest;
+
+  /// No description provided for @incTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Incidents'**
+  String get incTitle;
+
+  /// No description provided for @incReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report incident'**
+  String get incReport;
+
+  /// No description provided for @incSeverity.
+  ///
+  /// In en, this message translates to:
+  /// **'Severity'**
+  String get incSeverity;
+
+  /// No description provided for @incNearMiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Near miss'**
+  String get incNearMiss;
+
+  /// No description provided for @incMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor injury / damage'**
+  String get incMinor;
+
+  /// No description provided for @incMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major injury / damage'**
+  String get incMajor;
+
+  /// No description provided for @incFatal.
+  ///
+  /// In en, this message translates to:
+  /// **'Fatal'**
+  String get incFatal;
+
+  /// No description provided for @incOccurredAt.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get incOccurredAt;
+
+  /// No description provided for @incDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened'**
+  String get incDescription;
+
+  /// No description provided for @incInjured.
+  ///
+  /// In en, this message translates to:
+  /// **'People injured (names)'**
+  String get incInjured;
+
+  /// No description provided for @incAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Immediate action taken'**
+  String get incAction;
+
+  /// No description provided for @incReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Incident reported'**
+  String get incReported;
+
+  /// No description provided for @incNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No incidents'**
+  String get incNone;
+
+  /// No description provided for @incStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get incStatusOpen;
+
+  /// No description provided for @incStatusInvestigating.
+  ///
+  /// In en, this message translates to:
+  /// **'Investigating'**
+  String get incStatusInvestigating;
+
+  /// No description provided for @incStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get incStatusClosed;
 }
 
 class _AppLocalizationsDelegate

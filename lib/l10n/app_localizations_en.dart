@@ -856,4 +856,267 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonDate => 'Date';
+
+  @override
+  String get wsTitle => 'Worksheets';
+
+  @override
+  String get wsNew => 'New worksheet';
+
+  @override
+  String get wsEdit => 'Edit worksheet';
+
+  @override
+  String get wsMine => 'Mine';
+
+  @override
+  String get wsSection => 'My sections';
+
+  @override
+  String get wsAllStatuses => 'All';
+
+  @override
+  String get wsEmpty => 'No worksheets yet';
+
+  @override
+  String get wsEmptyHint => 'Create a worksheet before starting a job.';
+
+  @override
+  String get wsType => 'Work type';
+
+  @override
+  String get wsTypeProject => 'Project';
+
+  @override
+  String get wsTypeMaintenance => 'Maintenance';
+
+  @override
+  String get wsTypeCalamity => 'Calamity / breakdown';
+
+  @override
+  String get wsJobTitle => 'Job title';
+
+  @override
+  String get wsJobTitleHint => 'e.g. Replace DP fuse at Kaloor junction';
+
+  @override
+  String get wsLocation => 'Location / landmark';
+
+  @override
+  String get wsUseGps => 'Use my location';
+
+  @override
+  String wsGpsSet(int accuracy) {
+    return 'GPS saved (±$accuracy m)';
+  }
+
+  @override
+  String get wsPermitBook => 'Permit book no.';
+
+  @override
+  String get wsDescription => 'Work description';
+
+  @override
+  String get wsPlannedDate => 'Planned date';
+
+  @override
+  String get wsSaveDraft => 'Save draft';
+
+  @override
+  String get wsSaveSubmit => 'Save & submit';
+
+  @override
+  String get wsSavedOffline =>
+      'Saved on your phone. It will upload when you\'re back online.';
+
+  @override
+  String get wsSubmitted => 'Sent for approval';
+
+  @override
+  String get wsStatusDraft => 'Draft';
+
+  @override
+  String get wsStatusSubmitted => 'Waiting approval';
+
+  @override
+  String get wsStatusApproved => 'Approved';
+
+  @override
+  String get wsStatusRejected => 'Rejected';
+
+  @override
+  String get wsStatusInProgress => 'In progress';
+
+  @override
+  String get wsStatusCompleted => 'Completed';
+
+  @override
+  String get wsStatusCancelled => 'Cancelled';
+
+  @override
+  String get wsRequestedBy => 'Requested by';
+
+  @override
+  String get wsDecision => 'Decision note';
+
+  @override
+  String get wsActionSubmit => 'Submit for approval';
+
+  @override
+  String get wsActionApprove => 'Approve';
+
+  @override
+  String get wsActionReject => 'Reject';
+
+  @override
+  String get wsActionStart => 'Start work';
+
+  @override
+  String get wsActionComplete => 'Mark completed';
+
+  @override
+  String get wsActionCancel => 'Cancel worksheet';
+
+  @override
+  String get wsCompletionNote => 'What was done';
+
+  @override
+  String get wsCancelConfirm => 'Cancel this worksheet? It can\'t be reopened.';
+
+  @override
+  String get wsCrew => 'Crew';
+
+  @override
+  String get wsCrewEdit => 'Edit crew';
+
+  @override
+  String get wsCrewEmpty => 'No crew assigned';
+
+  @override
+  String get wsPhotos => 'Photos';
+
+  @override
+  String get wsAddPhoto => 'Add photo';
+
+  @override
+  String get wsCamera => 'Camera';
+
+  @override
+  String get wsGallery => 'Gallery';
+
+  @override
+  String get wsPhotosEmpty => 'No photos yet';
+
+  @override
+  String get wsPhotoQueued => 'Photo saved; it uploads when you\'re online.';
+
+  @override
+  String get wsPermit => 'Permit to work';
+
+  @override
+  String get wsPermitMissing =>
+      'Not signed yet. Work can\'t start until a supervisor signs the permit.';
+
+  @override
+  String get wsPermitSign => 'Sign permit';
+
+  @override
+  String get wsPermitLcRef => 'Line clear (LC) reference';
+
+  @override
+  String get wsPermitLcBy => 'LC issued by (KSEB officer)';
+
+  @override
+  String get wsPermitIsolation => 'Isolation points';
+
+  @override
+  String get wsPermitIsolationHint =>
+      'e.g. AB switch at DP-14 opened and locked';
+
+  @override
+  String get wsPermitEarthing => 'Earthing done on both sides';
+
+  @override
+  String get wsPermitTestedDead => 'Line tested dead with tester';
+
+  @override
+  String get wsPermitToolbox => 'Toolbox talk done with the crew';
+
+  @override
+  String get wsPermitPpe => 'PPE confirmed';
+
+  @override
+  String get wsPermitPpeRequired =>
+      'Helmet, gloves and safety belt are mandatory';
+
+  @override
+  String wsPermitSignedBy(String when) {
+    return 'Signed $when';
+  }
+
+  @override
+  String get ppeHelmet => 'Helmet';
+
+  @override
+  String get ppeGloves => 'Insulated gloves';
+
+  @override
+  String get ppeSafetyBelt => 'Safety belt';
+
+  @override
+  String get ppeBoots => 'Safety boots';
+
+  @override
+  String get ppeInsulatedTools => 'Insulated tools';
+
+  @override
+  String get ppeReflectiveVest => 'Reflective vest';
+
+  @override
+  String get incTitle => 'Incidents';
+
+  @override
+  String get incReport => 'Report incident';
+
+  @override
+  String get incSeverity => 'Severity';
+
+  @override
+  String get incNearMiss => 'Near miss';
+
+  @override
+  String get incMinor => 'Minor injury / damage';
+
+  @override
+  String get incMajor => 'Major injury / damage';
+
+  @override
+  String get incFatal => 'Fatal';
+
+  @override
+  String get incOccurredAt => 'When';
+
+  @override
+  String get incDescription => 'What happened';
+
+  @override
+  String get incInjured => 'People injured (names)';
+
+  @override
+  String get incAction => 'Immediate action taken';
+
+  @override
+  String get incReported => 'Incident reported';
+
+  @override
+  String get incNone => 'No incidents';
+
+  @override
+  String get incStatusOpen => 'Open';
+
+  @override
+  String get incStatusInvestigating => 'Investigating';
+
+  @override
+  String get incStatusClosed => 'Closed';
 }

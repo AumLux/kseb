@@ -1,6 +1,6 @@
 begin;
 \ir fixtures/org.psql
-select plan(16);
+select plan(19);
 
 -- W1 drafts a worksheet in their own section.
 select tests.login('a0000000-0000-0000-0000-000000000001');
@@ -10,6 +10,17 @@ select lives_ok($$
           'Kaloor junction', 9.9950, 76.3005)$$,
   'staff can draft a worksheet in their section');
 select matches((select code from public.worksheets), '^WS-[0-9]{4}-[0-9]{5}$', 'a document number is assigned');
+-- The offline outbox replays inserts as ON CONFLICT DO NOTHING.
+select lives_ok($$
+  insert into public.worksheets (id, work_type, title, section_id, location_text)
+  values ('80000000-0000-0000-0000-000000000002', 'project', 'Offline job', '40000000-0000-0000-0000-00000000000a', 'Kaloor')
+  on conflict (id) do nothing$$,
+  'outbox-style idempotent insert is allowed');
+select lives_ok($$
+  insert into public.worksheets (id, work_type, title, section_id, location_text)
+  values ('80000000-0000-0000-0000-000000000002', 'project', 'Offline job', '40000000-0000-0000-0000-00000000000a', 'Kaloor')
+  on conflict (id) do nothing$$,
+  'replaying the same insert is a no-op');
 select throws_ok($$
   insert into public.worksheets (work_type, title, section_id, location_text)
   values ('maintenance', 'Elsewhere', '40000000-0000-0000-0000-00000000000b', 'Aluva')$$,
@@ -20,6 +31,9 @@ select throws_ok(
 select lives_ok(
   $$select public.transition_worksheet('80000000-0000-0000-0000-000000000001', 'submit')$$,
   'requester can submit');
+select is(
+  (select status::text from public.transition_worksheet('80000000-0000-0000-0000-000000000001', 'submit')),
+  'submitted', 'a replayed submit is idempotent for the requester');
 select throws_like(
   $$select public.transition_worksheet('80000000-0000-0000-0000-000000000001', 'approve')$$,
   '%higher authority%', 'requester cannot approve their own worksheet');
