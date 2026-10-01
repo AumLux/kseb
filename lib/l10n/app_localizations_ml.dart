@@ -86,7 +86,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get loginForgotBody =>
-      'സുരക്ഷയ്ക്കായി പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുന്നത് നിങ്ങളുടെ സൂപ്പർവൈസറോ മാനേജരോ ആണ്. Staff › നിങ്ങളുടെ പേര് › Reset password വഴി റീസെറ്റ് ചെയ്യാൻ അവരോട് ആവശ്യപ്പെടുക. സൈൻ ഇൻ ചെയ്യാൻ ഒരു താൽക്കാലിക പാസ്‌വേഡ് ലഭിക്കും.';
+      'സുരക്ഷയ്ക്കായി പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുന്നത് നിങ്ങളുടെ സൂപ്പർവൈസറോ മാനേജരോ ആണ്. More › Staff › നിങ്ങളുടെ പേര് › Reset password വഴി റീസെറ്റ് ചെയ്യാൻ അവരോട് ആവശ്യപ്പെടുക. സൈൻ ഇൻ ചെയ്യാൻ ഒരു താൽക്കാലിക പാസ്‌വേഡ് ലഭിക്കും.';
 
   @override
   String get loginInactive =>
@@ -319,4 +319,235 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get errorSamePassword =>
       'ഇപ്പോഴത്തേതിൽ നിന്ന് വ്യത്യസ്തമായ പാസ്‌വേഡ് തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get adminSection => 'ഭരണ നിർവ്വഹണം';
+
+  @override
+  String get staffTitle => 'ജീവനക്കാർ';
+
+  @override
+  String get staffMyTeam => 'എന്റെ ടീം';
+
+  @override
+  String get staffSearch => 'പേര്, ഐഡി അല്ലെങ്കിൽ ഫോൺ തിരയുക';
+
+  @override
+  String get staffAdd => 'ജീവനക്കാരെ ചേർക്കുക';
+
+  @override
+  String get staffEmpty => 'ജീവനക്കാരെ കണ്ടെത്തിയില്ല';
+
+  @override
+  String get staffEmptyHint => 'മറ്റൊരു തിരയലോ ഫിൽട്ടറോ പരീക്ഷിക്കുക.';
+
+  @override
+  String get staffFilterAll => 'എല്ലാം';
+
+  @override
+  String get statusActive => 'സജീവം';
+
+  @override
+  String get statusSuspended => 'താൽക്കാലികമായി തടഞ്ഞു';
+
+  @override
+  String get statusExited => 'പിരിഞ്ഞുപോയി';
+
+  @override
+  String get staffDetails => 'വിവരങ്ങൾ';
+
+  @override
+  String get staffEmployeeCode => 'എംപ്ലോയീ ഐഡി';
+
+  @override
+  String get staffFullName => 'മുഴുവൻ പേര്';
+
+  @override
+  String get staffRole => 'പദവി';
+
+  @override
+  String get staffSection => 'സെക്ഷൻ';
+
+  @override
+  String get staffTeam => 'ടീം';
+
+  @override
+  String get staffNoTeam => 'ടീം ഇല്ല';
+
+  @override
+  String get staffPhone => 'മൊബൈൽ നമ്പർ';
+
+  @override
+  String get staffEmail => 'ഇമെയിൽ (ഓഫീസർമാർക്ക് മാത്രം)';
+
+  @override
+  String get staffEmailHelper =>
+      'ഫീൽഡ് ജീവനക്കാർക്ക് ഒഴിച്ചിടുക. അവർ എംപ്ലോയീ ഐഡി ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യും.';
+
+  @override
+  String get staffDob => 'ജനനത്തീയതി';
+
+  @override
+  String get staffJoined => 'ചേർന്നത്';
+
+  @override
+  String get staffEdit => 'വിവരങ്ങൾ തിരുത്തുക';
+
+  @override
+  String get staffResetPassword => 'പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുക';
+
+  @override
+  String staffResetConfirm(String name) {
+    return '$name-ന്റെ പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യണോ? സൈൻ ഇൻ ചെയ്യാൻ പുതിയ താൽക്കാലിക പാസ്‌വേഡ് വേണം.';
+  }
+
+  @override
+  String get staffSuspend => 'ലോഗിൻ താൽക്കാലികമായി തടയുക';
+
+  @override
+  String get staffReactivate => 'വീണ്ടും സജീവമാക്കുക';
+
+  @override
+  String get staffMarkExited => 'പിരിഞ്ഞുപോയതായി രേഖപ്പെടുത്തുക';
+
+  @override
+  String staffSuspendConfirm(String name) {
+    return '$name-നെ തടയണോ? ഉടൻ സൈൻ ഔട്ട് ആകും; വീണ്ടും സജീവമാക്കുന്നതുവരെ സൈൻ ഇൻ ചെയ്യാനാകില്ല.';
+  }
+
+  @override
+  String staffExitConfirm(String name) {
+    return '$name പിരിഞ്ഞുപോയതായി രേഖപ്പെടുത്തണോ? ലോഗിൻ നിർത്തലാക്കും; രേഖകൾ സൂക്ഷിക്കും.';
+  }
+
+  @override
+  String get staffSaved => 'സേവ് ചെയ്തു';
+
+  @override
+  String get staffCodeInvalid => '2–32 അക്ഷരങ്ങൾ, അക്കങ്ങൾ, - അല്ലെങ്കിൽ _';
+
+  @override
+  String get staffPhoneInvalid => '10 അക്ക മൊബൈൽ നമ്പർ നൽകുക';
+
+  @override
+  String get staffEmailInvalid => 'ശരിയായ ഇമെയിൽ നൽകുക';
+
+  @override
+  String get staffNewTitle => 'പുതിയ ജീവനക്കാരൻ';
+
+  @override
+  String get staffEditTitle => 'ജീവനക്കാരന്റെ വിവരങ്ങൾ തിരുത്തുക';
+
+  @override
+  String get credentialsTitle => 'സൈൻ ഇൻ വിവരങ്ങൾ കൈമാറുക';
+
+  @override
+  String credentialsBody(String name) {
+    return 'ഇവ $name-ന് നേരിട്ട് നൽകുക. പാസ്‌വേഡ് ഒരിക്കൽ മാത്രമേ കാണിക്കൂ; ആദ്യ സൈൻ ഇന്നിൽ മാറ്റണം.';
+  }
+
+  @override
+  String get credentialsLoginId => 'സൈൻ ഇൻ ചെയ്യേണ്ടത്';
+
+  @override
+  String get credentialsPassword => 'താൽക്കാലിക പാസ്‌വേഡ്';
+
+  @override
+  String get credentialsCopy => 'പകർത്തുക';
+
+  @override
+  String get credentialsCopied => 'പകർത്തി';
+
+  @override
+  String get credentialsDone => 'പൂർത്തിയായി';
+
+  @override
+  String get teamsTitle => 'ടീമുകൾ';
+
+  @override
+  String get teamsAdd => 'ടീം ചേർക്കുക';
+
+  @override
+  String get teamsEmpty => 'ഇതുവരെ ടീമുകളില്ല';
+
+  @override
+  String get teamName => 'ടീമിന്റെ പേര്';
+
+  @override
+  String get teamSupervisor => 'സൂപ്പർവൈസർ';
+
+  @override
+  String get teamNoSupervisor => 'സൂപ്പർവൈസർ ഇല്ല';
+
+  @override
+  String get teamActive => 'സജീവം';
+
+  @override
+  String teamMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count അംഗങ്ങൾ',
+      one: '1 അംഗം',
+      zero: 'അംഗങ്ങളില്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orgTitle => 'സ്ഥാപന ഘടന';
+
+  @override
+  String get orgCircle => 'സർക്കിൾ';
+
+  @override
+  String get orgDivision => 'ഡിവിഷൻ';
+
+  @override
+  String get orgSubdivision => 'സബ് ഡിവിഷൻ';
+
+  @override
+  String get orgSectionOffice => 'സെക്ഷൻ ഓഫീസ്';
+
+  @override
+  String orgAdd(String level) {
+    return '$level ചേർക്കുക';
+  }
+
+  @override
+  String get orgCode => 'കോഡ്';
+
+  @override
+  String get orgName => 'പേര്';
+
+  @override
+  String get orgAddress => 'വിലാസം';
+
+  @override
+  String get orgLatitude => 'അക്ഷാംശം';
+
+  @override
+  String get orgLongitude => 'രേഖാംശം';
+
+  @override
+  String get orgGeofence => 'ഹാജർ പരിധി (മീറ്റർ)';
+
+  @override
+  String get orgGeofenceHelper =>
+      'സെക്ഷൻ ഓഫീസിൽ നിന്ന് ഇതിലും അകലെയുള്ള ചെക്ക് ഇന്നുകൾ അടയാളപ്പെടുത്തും.';
+
+  @override
+  String get orgCoordsInvalid =>
+      'അക്ഷാംശവും രേഖാംശവും രണ്ടും നൽകുക, അല്ലെങ്കിൽ രണ്ടും ഒഴിവാക്കുക';
+
+  @override
+  String get orgEmpty => 'ഇതുവരെ യൂണിറ്റുകളില്ല';
+
+  @override
+  String fieldRequired(String field) {
+    return '$field ആവശ്യമാണ്';
+  }
+
+  @override
+  String get orgNoLocation => 'സ്ഥാനം നൽകിയിട്ടില്ല';
 }

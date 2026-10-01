@@ -10,6 +10,11 @@ import '../../features/auth/presentation/splash_page.dart';
 import '../../features/home/home_page.dart';
 import '../../features/more/more_page.dart';
 import '../../features/more/sync_queue_page.dart';
+import '../../features/org/presentation/org_page.dart';
+import '../../features/org/presentation/teams_page.dart';
+import '../../features/staff/presentation/staff_detail_page.dart';
+import '../../features/staff/presentation/staff_form_page.dart';
+import '../../features/staff/presentation/staff_list_page.dart';
 import '../../features/shell/app_shell.dart';
 import '../../features/shell/coming_soon_page.dart';
 
@@ -22,6 +27,9 @@ abstract final class Routes {
   static const work = '/work';
   static const more = '/more';
   static const syncQueue = '/more/sync';
+  static const staff = '/more/staff';
+  static const teams = '/more/teams';
+  static const org = '/more/org';
 }
 
 const _publicRoutes = {Routes.splash, Routes.login};
@@ -82,6 +90,25 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (_, __) => const MorePage(),
               routes: [
                 GoRoute(path: 'sync', builder: (_, __) => const SyncQueuePage()),
+                GoRoute(
+                  path: 'staff',
+                  builder: (_, __) => const StaffListPage(),
+                  routes: [
+                    GoRoute(path: 'new', builder: (_, __) => const StaffFormPage()),
+                    GoRoute(
+                      path: ':id',
+                      builder: (_, s) => StaffDetailPage(userId: s.pathParameters['id']!),
+                      routes: [
+                        GoRoute(
+                          path: 'edit',
+                          builder: (_, s) => StaffFormPage(userId: s.pathParameters['id']),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                GoRoute(path: 'teams', builder: (_, __) => const TeamsPage()),
+                GoRoute(path: 'org', builder: (_, __) => const OrgPage()),
               ],
             ),
           ]),

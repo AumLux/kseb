@@ -2,7 +2,6 @@
   "@@locale": "en",
   "appName": "AumLux",
   "appTagline": "Field operations for KSEB works",
-
   "commonRetry": "Try again",
   "commonCancel": "Cancel",
   "commonSave": "Save",
@@ -12,7 +11,6 @@
   "commonSomethingWrong": "Something went wrong",
   "commonComingSoonTitle": "On its way",
   "commonComingSoonBody": "This part of the app is being rebuilt and will be available in an upcoming update.",
-
   "loginTitle": "Sign in",
   "loginSubtitle": "Use your employee ID or work email.",
   "loginIdentifierLabel": "Employee ID or email",
@@ -24,14 +22,19 @@
   "loginHidePassword": "Hide password",
   "loginSubmit": "Sign in",
   "loginCooldown": "Too many attempts. Try again in {seconds}s.",
-  "@loginCooldown": { "placeholders": { "seconds": { "type": "int" } } },
+  "@loginCooldown": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "loginForgot": "Forgot password?",
   "loginForgotTitle": "Reset your password",
-  "loginForgotBody": "For security, passwords are reset by your supervisor or manager. Ask them to reset it from Staff › your name › Reset password. You'll get a temporary password to sign in with.",
+  "loginForgotBody": "For security, passwords are reset by your supervisor or manager. Ask them to reset it from More › Staff › your name › Reset password. You'll get a temporary password to sign in with.",
   "loginInactive": "Your account is not active. Contact your supervisor.",
   "loginNoProfile": "Your account isn't set up yet. Contact your manager.",
   "loginIdleSignedOut": "You were signed out after a period of inactivity.",
-
   "changePasswordTitle": "Set a new password",
   "changePasswordSubtitle": "Choose a password only you know. You'll use it from now on.",
   "changePasswordNew": "New password",
@@ -41,21 +44,31 @@
   "changePasswordMismatch": "Passwords don't match",
   "changePasswordSubmit": "Save password",
   "changePasswordDone": "Password updated",
-
   "navHome": "Home",
   "navAttendance": "Attendance",
   "navWork": "Work",
   "navMore": "More",
-
   "homeGreetingMorning": "Good morning",
   "homeGreetingAfternoon": "Good afternoon",
   "homeGreetingEvening": "Good evening",
   "homeTodayTitle": "Today",
   "homeNotCheckedIn": "Not checked in yet",
   "homeCheckedInAt": "Checked in at {time}",
-  "@homeCheckedInAt": { "placeholders": { "time": { "type": "String" } } },
+  "@homeCheckedInAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeCheckedOutAt": "Checked out at {time}",
-  "@homeCheckedOutAt": { "placeholders": { "time": { "type": "String" } } },
+  "@homeCheckedOutAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "homeOverview": "Overview",
   "kpiPresentThisMonth": "Present this month",
   "kpiPendingApprovals": "Waiting for you",
@@ -71,7 +84,6 @@
   "kpiReceivables90": "Overdue > 90 days",
   "kpiUnreadNotifications": "Unread notifications",
   "homeLoadFailed": "Couldn't load your dashboard",
-
   "moreTitle": "More",
   "moreProfile": "My profile",
   "moreSyncQueue": "Sync queue",
@@ -83,10 +95,15 @@
   "moreSignOutConfirmTitle": "Sign out?",
   "moreSignOutConfirmBody": "You'll need your employee ID or email and password to sign in again.",
   "moreSignOutPendingBody": "{count} items haven't synced yet. They stay on this phone and upload after you sign in again with the same account.",
-  "@moreSignOutPendingBody": { "placeholders": { "count": { "type": "int" } } },
+  "@moreSignOutPendingBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "languageEnglish": "English",
   "languageMalayalam": "മലയാളം",
-
   "syncTitle": "Sync queue",
   "syncPending": "Waiting to sync",
   "syncFailed": "Couldn't sync",
@@ -94,21 +111,142 @@
   "syncDiscard": "Discard",
   "syncDiscardConfirm": "Discard this item? It will not be uploaded.",
   "syncNow": "Sync now",
-
   "offlineBanner": "You're offline. Changes will sync when you're back online.",
   "pendingSync": "{count} pending",
-  "@pendingSync": { "placeholders": { "count": { "type": "int" } } },
-
+  "@pendingSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "roleStaff": "Staff",
   "roleSupervisor": "Supervisor",
   "roleManager": "Manager",
   "roleCoo": "COO",
   "roleDirector": "Director",
-
   "errorNetwork": "No connection. Check your mobile data or Wi-Fi and try again.",
   "errorForbidden": "You don't have permission to do that.",
   "errorSessionExpired": "Your session expired. Sign in again.",
   "errorInvalidCredentials": "Wrong employee ID / email or password.",
   "errorWeakPassword": "Use at least 8 characters with letters and numbers.",
-  "errorSamePassword": "Choose a password different from the current one."
+  "errorSamePassword": "Choose a password different from the current one.",
+  "adminSection": "Administration",
+  "staffTitle": "Staff",
+  "staffMyTeam": "My team",
+  "staffSearch": "Search name, ID or phone",
+  "staffAdd": "Add staff",
+  "staffEmpty": "No staff found",
+  "staffEmptyHint": "Try a different search or filter.",
+  "staffFilterAll": "All",
+  "statusActive": "Active",
+  "statusSuspended": "Suspended",
+  "statusExited": "Exited",
+  "staffDetails": "Details",
+  "staffEmployeeCode": "Employee ID",
+  "staffFullName": "Full name",
+  "staffRole": "Role",
+  "staffSection": "Section",
+  "staffTeam": "Team",
+  "staffNoTeam": "No team",
+  "staffPhone": "Mobile number",
+  "staffEmail": "Email (officers only)",
+  "staffEmailHelper": "Leave empty for crew. They sign in with their employee ID.",
+  "staffDob": "Date of birth",
+  "staffJoined": "Joined",
+  "staffEdit": "Edit details",
+  "staffResetPassword": "Reset password",
+  "staffResetConfirm": "Reset the password for {name}? They will need the new temporary password to sign in.",
+  "@staffResetConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "staffSuspend": "Suspend login",
+  "staffReactivate": "Reactivate",
+  "staffMarkExited": "Mark as exited",
+  "staffSuspendConfirm": "Suspend {name}? They are signed out immediately and cannot sign in until reactivated.",
+  "@staffSuspendConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "staffExitConfirm": "Mark {name} as exited? Their login is disabled; their records are kept.",
+  "@staffExitConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "staffSaved": "Saved",
+  "staffCodeInvalid": "2–32 letters, digits, - or _",
+  "staffPhoneInvalid": "Enter a 10-digit mobile number",
+  "staffEmailInvalid": "Enter a valid email",
+  "staffNewTitle": "New staff member",
+  "staffEditTitle": "Edit staff member",
+  "credentialsTitle": "Share these sign-in details",
+  "credentialsBody": "Give these to {name} in person. The password is shown only once and must be changed at first sign-in.",
+  "@credentialsBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "credentialsLoginId": "Sign in with",
+  "credentialsPassword": "Temporary password",
+  "credentialsCopy": "Copy",
+  "credentialsCopied": "Copied",
+  "credentialsDone": "Done",
+  "teamsTitle": "Teams",
+  "teamsAdd": "Add team",
+  "teamsEmpty": "No teams yet",
+  "teamName": "Team name",
+  "teamSupervisor": "Supervisor",
+  "teamNoSupervisor": "No supervisor",
+  "teamActive": "Active",
+  "teamMembers": "{count, plural, =0{No members} =1{1 member} other{{count} members}}",
+  "@teamMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "orgTitle": "Organisation",
+  "orgCircle": "Circle",
+  "orgDivision": "Division",
+  "orgSubdivision": "Sub-division",
+  "orgSectionOffice": "Section office",
+  "orgAdd": "Add {level}",
+  "@orgAdd": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "orgCode": "Code",
+  "orgName": "Name",
+  "orgAddress": "Address",
+  "orgLatitude": "Latitude",
+  "orgLongitude": "Longitude",
+  "orgGeofence": "Attendance radius (metres)",
+  "orgGeofenceHelper": "Check-ins farther than this from the section office are flagged.",
+  "orgCoordsInvalid": "Enter both latitude and longitude, or neither",
+  "orgEmpty": "No organisation units yet",
+  "fieldRequired": "{field} is required",
+  "@fieldRequired": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "orgNoLocation": "Location not set"
 }

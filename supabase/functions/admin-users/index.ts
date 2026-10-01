@@ -7,7 +7,8 @@
 //   reset_password { user_id }
 //
 // Rules (mirror the database helpers in private.*):
-//   * caller must be active and manager or above;
+//   * caller must be active and manager or above — except reset_password,
+//     which a supervisor may use for staff in teams they supervise;
 //   * caller must strictly outrank the target's current and new role
 //     (a director may manage directors);
 //   * managers act only within their sections; COO/Director everywhere;
@@ -37,12 +38,14 @@ interface Caller {
   role: Role;
   status: string;
   section_ids: string[];
+  team_ids: string[];
 }
 
 interface TargetProfile {
   id: string;
   role: Role;
   section_id: string | null;
+  team_id: string | null;
   employee_code: string;
 }
 
@@ -100,17 +103,23 @@ async function loadCaller(jwt: string): Promise<Caller> {
   if (meError || !me) throw new HttpError(403, "not_active", "Your account is not active.");
   if (me.status !== "active") throw new HttpError(403, "not_active", "Your account is not active.");
   const role = assertRole(me.role);
-  if (RANK[role] > RANK.manager) {
-    throw new HttpError(403, "forbidden_role", "Only managers and above can manage accounts.");
+  if (RANK[role] > RANK.supervisor) {
+    throw new HttpError(403, "forbidden_role", "Only supervisors and above can manage accounts.");
   }
-  return { id: me.id, role, status: me.status, section_ids: me.section_ids ?? [] };
+  return {
+    id: me.id,
+    role,
+    status: me.status,
+    section_ids: me.section_ids ?? [],
+    team_ids: me.team_ids ?? [],
+  };
 }
 
 async function loadTarget(userId: unknown): Promise<TargetProfile> {
   if (typeof userId !== "string") throw new HttpError(400, "invalid_user", "User is required.");
   const { data, error } = await adminClient()
     .from("profiles")
-    .select("id, role, section_id, employee_code")
+    .select("id, role, section_id, team_id, employee_code")
     .eq("id", userId)
     .maybeSingle();
   if (error) throw error;
@@ -259,7 +268,13 @@ async function resetPassword(caller: Caller, body: Record<string, unknown>) {
     throw new HttpError(403, "forbidden_self", "Change your own password from your profile.");
   }
   assertOutranks(caller, target.role);
-  assertSectionInScope(caller, target.section_id);
+  if (caller.role === "supervisor") {
+    if (target.role !== "staff" || !target.team_id || !caller.team_ids.includes(target.team_id)) {
+      throw new HttpError(403, "forbidden_scope", "You can only reset passwords for your own team.");
+    }
+  } else {
+    assertSectionInScope(caller, target.section_id);
+  }
 
   const admin = adminClient();
   const password = tempPassword();
@@ -280,6 +295,10 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => {
       throw new HttpError(400, "invalid_json", "Request body must be JSON.");
     }) as Record<string, unknown>;
+
+    if (caller.role === "supervisor" && body.action !== "reset_password") {
+      throw new HttpError(403, "forbidden_role", "Only managers and above can manage accounts.");
+    }
 
     switch (body.action) {
       case "create":

@@ -9,6 +9,7 @@ import '../../core/l10n/locale_controller.dart';
 import '../../core/outbox/outbox.dart';
 import '../../core/router/app_router.dart';
 import '../auth/application/session_controller.dart';
+import '../auth/domain/app_user.dart';
 import '../auth/presentation/change_password_page.dart';
 import '../home/home_page.dart' show roleLabel;
 
@@ -107,6 +108,27 @@ class MorePage extends ConsumerWidget {
             ),
           ),
           const Divider(),
+          if (user.role.atLeast(AppRole.supervisor)) ...[
+            SectionHeader(l10n.adminSection),
+            AppListRow(
+              leading: const Icon(Icons.groups_rounded, color: AppColors.inkMute),
+              title: user.role.atLeast(AppRole.manager) ? l10n.staffTitle : l10n.staffMyTeam,
+              onTap: () => context.go(Routes.staff),
+            ),
+            if (user.role.atLeast(AppRole.manager))
+              AppListRow(
+                leading: const Icon(Icons.groups_2_rounded, color: AppColors.inkMute),
+                title: l10n.teamsTitle,
+                onTap: () => context.go(Routes.teams),
+              ),
+            if (user.role.isExecutive)
+              AppListRow(
+                leading: const Icon(Icons.account_tree_rounded, color: AppColors.inkMute),
+                title: l10n.orgTitle,
+                onTap: () => context.go(Routes.org),
+              ),
+            SectionHeader(l10n.moreTitle),
+          ],
           AppListRow(
             leading: const Icon(Icons.sync_rounded, color: AppColors.inkMute),
             title: l10n.moreSyncQueue,
