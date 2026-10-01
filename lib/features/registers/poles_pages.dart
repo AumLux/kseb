@@ -7,6 +7,7 @@ import '../../core/design/design.dart';
 import '../../core/errors/app_failure.dart';
 import '../../core/format/formatters.dart';
 import '../../core/l10n/l10n.dart';
+import '../../core/location/location_rationale.dart';
 import '../../core/location/location_service.dart';
 import '../../core/media/photo_strip.dart';
 import '../../core/ui/dialogs.dart';
@@ -148,6 +149,7 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
   }
 
   Future<void> _gps() async {
+    if (!await explainLocationIfNeeded(context, ref) || !mounted) return;
     setState(() => _locating = true);
     try {
       final loc = await ref.read(locationServiceProvider).current();
