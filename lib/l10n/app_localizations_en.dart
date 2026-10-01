@@ -2041,4 +2041,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bonusPendingNote => 'Bonuses are approved by the COO or Director.';
+
+  @override
+  String get locRationaleTitle => 'Why AumLux needs your location';
+
+  @override
+  String get locRationaleBody =>
+      'Your location is recorded only at the moment you check in or out, or capture a site photo or pole. It is never tracked in the background.';
+
+  @override
+  String get updateTitle => 'Update required';
+
+  @override
+  String get updateBody =>
+      'This version of AumLux is no longer supported. Install the latest version to continue — your saved data is kept.';
+
+  @override
+  String get updateButton => 'Download update';
 }
