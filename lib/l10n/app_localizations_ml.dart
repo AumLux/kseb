@@ -1125,4 +1125,247 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get incStatusClosed => 'അവസാനിപ്പിച്ചു';
+
+  @override
+  String get invTitle => 'സ്റ്റോക്ക് / സാമഗ്രികൾ';
+
+  @override
+  String get invStock => 'സ്റ്റോക്ക്';
+
+  @override
+  String get invRequests => 'അപേക്ഷകൾ';
+
+  @override
+  String get invSearch => 'സാമഗ്രിയോ കോഡോ തിരയുക';
+
+  @override
+  String get invAllStores => 'എല്ലാ സ്റ്റോറുകളും';
+
+  @override
+  String get invLowOnly => 'കുറവുള്ളവ മാത്രം';
+
+  @override
+  String get invOnHand => 'കൈവശം';
+
+  @override
+  String invReorderAt(String qty) {
+    return '$qty-ൽ വീണ്ടും ഓർഡർ';
+  }
+
+  @override
+  String get invLow => 'കുറവ്';
+
+  @override
+  String get invNoStock => 'ഇതുവരെ സ്റ്റോക്ക് രേഖപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
+  String get invNoStockHint => 'ആദ്യ രസീത് അംഗീകരിച്ചശേഷം സ്റ്റോക്ക് കാണാം.';
+
+  @override
+  String get invNewRequest => 'പുതിയ അപേക്ഷ';
+
+  @override
+  String get invReqIssue => 'ഇഷ്യൂ (സ്റ്റോറിൽ നിന്ന് എടുക്കൽ)';
+
+  @override
+  String get invReqReturn => 'റിട്ടേൺ (ഉപയോഗിക്കാത്തത് തിരികെ)';
+
+  @override
+  String get invReqReceipt => 'രസീത് (പുതിയ സ്റ്റോക്ക് വരവ്)';
+
+  @override
+  String get invTypeIssue => 'ഇഷ്യൂ';
+
+  @override
+  String get invTypeReturn => 'റിട്ടേൺ';
+
+  @override
+  String get invTypeReceipt => 'രസീത്';
+
+  @override
+  String get invStore => 'സ്റ്റോർ';
+
+  @override
+  String get invMaterial => 'സാമഗ്രി';
+
+  @override
+  String get invQuantity => 'അളവ്';
+
+  @override
+  String get invQtyInvalid => 'പൂജ്യത്തിൽ കൂടുതൽ അളവ് നൽകുക';
+
+  @override
+  String invAvailable(String qty) {
+    return 'ലഭ്യം: $qty';
+  }
+
+  @override
+  String get invUnitPrice => 'യൂണിറ്റ് വില (₹)';
+
+  @override
+  String get invSupplier => 'വിതരണക്കാരൻ';
+
+  @override
+  String get invInvoice => 'ഇൻവോയ്സ് / DC നമ്പർ';
+
+  @override
+  String get invWorksheet => 'വർക്ക്ഷീറ്റിനായി';
+
+  @override
+  String get invNoWorksheet => 'വർക്ക്ഷീറ്റുമായി ബന്ധിപ്പിച്ചിട്ടില്ല';
+
+  @override
+  String get invPurpose => 'ആവശ്യം';
+
+  @override
+  String get invPriority => 'മുൻഗണന';
+
+  @override
+  String get invPriorityLow => 'കുറവ്';
+
+  @override
+  String get invPriorityMedium => 'ഇടത്തരം';
+
+  @override
+  String get invPriorityHigh => 'ഉയർന്നത്';
+
+  @override
+  String get invPriorityCritical => 'അടിയന്തരം';
+
+  @override
+  String get invRequiredBy => 'ആവശ്യമുള്ള തീയതി';
+
+  @override
+  String get invSubmit => 'അപേക്ഷ അയയ്ക്കുക';
+
+  @override
+  String get invRequestSent => 'അംഗീകാരത്തിന് അപേക്ഷ അയച്ചു';
+
+  @override
+  String get invRequestsEmpty => 'സാമഗ്രി അപേക്ഷകളില്ല';
+
+  @override
+  String get invMineFilter => 'എന്റേത്';
+
+  @override
+  String get invToDecide => 'തീരുമാനിക്കാനുള്ളവ';
+
+  @override
+  String get invAllFilter => 'എല്ലാം';
+
+  @override
+  String get invRequestDetail => 'സാമഗ്രി അപേക്ഷ';
+
+  @override
+  String get invRequestedBy => 'അപേക്ഷിച്ചത്';
+
+  @override
+  String get invDecidedBy => 'തീരുമാനിച്ചത്';
+
+  @override
+  String get invCancelRequest => 'അപേക്ഷ റദ്ദാക്കുക';
+
+  @override
+  String get invCancelConfirm => 'ഈ അപേക്ഷ റദ്ദാക്കണോ?';
+
+  @override
+  String get invLedger => 'സ്റ്റോക്ക് നീക്കങ്ങൾ';
+
+  @override
+  String get invLedgerEmpty => 'ഇതുവരെ നീക്കങ്ങളില്ല';
+
+  @override
+  String get invAdjust => 'സ്റ്റോക്ക് ക്രമീകരിക്കുക';
+
+  @override
+  String get invAdjustHelp =>
+      'ചേർക്കാൻ പോസിറ്റീവ്, കുറയ്ക്കാൻ നെഗറ്റീവ് സംഖ്യ ഉപയോഗിക്കുക (ഭൗതിക എണ്ണം തിരുത്തൽ).';
+
+  @override
+  String get invScrap => 'സ്ക്രാപ്പ് ആയി രേഖപ്പെടുത്തുക';
+
+  @override
+  String get invTransfer => 'മാറ്റുക';
+
+  @override
+  String get invFromStore => 'ഏത് സ്റ്റോറിൽ നിന്ന്';
+
+  @override
+  String get invToStore => 'ഏത് സ്റ്റോറിലേക്ക്';
+
+  @override
+  String get invCatalog => 'സാമഗ്രി പട്ടിക';
+
+  @override
+  String get invAddMaterial => 'സാമഗ്രി ചേർക്കുക';
+
+  @override
+  String get invCode => 'കോഡ്';
+
+  @override
+  String get invName => 'പേര്';
+
+  @override
+  String get invCategory => 'വിഭാഗം';
+
+  @override
+  String get invUnit => 'യൂണിറ്റ്';
+
+  @override
+  String get invHsn => 'HSN കോഡ്';
+
+  @override
+  String get invReorderLevel => 'റീഓർഡർ നില';
+
+  @override
+  String get invStores => 'സ്റ്റോറുകൾ';
+
+  @override
+  String get invAddStore => 'സ്റ്റോർ ചേർക്കുക';
+
+  @override
+  String get invStoreName => 'സ്റ്റോറിന്റെ പേര്';
+
+  @override
+  String get invMaterialsUsed => 'സാമഗ്രികൾ';
+
+  @override
+  String get invMaterialsUsedEmpty => 'ഈ ജോലിക്ക് ഇതുവരെ സാമഗ്രി നൽകിയിട്ടില്ല';
+
+  @override
+  String invIssued(String qty) {
+    return 'നൽകിയത് $qty';
+  }
+
+  @override
+  String invReturned(String qty) {
+    return 'തിരികെ $qty';
+  }
+
+  @override
+  String get invRequestForJob => 'സാമഗ്രി ആവശ്യപ്പെടുക';
+
+  @override
+  String get invExportRegister => 'സ്റ്റോക്ക് രജിസ്റ്റർ';
+
+  @override
+  String get invTxnReceipt => 'രസീത്';
+
+  @override
+  String get invTxnIssue => 'ഇഷ്യൂ';
+
+  @override
+  String get invTxnReturn => 'റിട്ടേൺ';
+
+  @override
+  String get invTxnAdjustment => 'ക്രമീകരണം';
+
+  @override
+  String get invTxnTransferIn => 'മാറ്റി വന്നത്';
+
+  @override
+  String get invTxnTransferOut => 'മാറ്റി അയച്ചത്';
+
+  @override
+  String get invTxnScrap => 'സ്ക്രാപ്പ്';
 }
