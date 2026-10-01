@@ -115,7 +115,9 @@ supabase db lint --level warning
 supabase functions serve       # edge functions with hot reload
 ```
 
-To add a schema change, create a new file `supabase/migrations/<timestamp>_<name>.sql` (never edit applied migrations), add or extend a pgTAP test, and add any new RPC to the grant list in `20261001000900_lockdown.sql`.
+To add a schema change, create a new file `supabase/migrations/<timestamp>_<name>.sql` (never edit applied migrations) and add or extend a pgTAP test. `20261001000900_lockdown.sql` is already applied in staging, so a new migration grants its own RPCs (`grant execute on function public.x(...) to authenticated;`); the baseline test still proves anon can execute nothing. After editing an edge function locally, restart its container: `docker restart supabase_edge_runtime_aumlux`.
+
+Maps use OpenStreetMap tiles with no key (ADR-0001). To switch provider, build with `--dart-define=MAP_TILE_URL=https://…/{z}/{x}/{y}.png` (and `MAP_ATTRIBUTION=…`).
 
 ## Backups and restore
 

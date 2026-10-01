@@ -272,6 +272,16 @@ Pill, label typography, fg on bg from the semantic table, a leading 16dp icon (c
 
 Material Symbols Rounded at a 24dp default (20dp in dense tables, 48dp in empty states). The icon colour follows its text colour. Domain icons: `bolt` (brand), `electrical_services` (pole), `transform` / `power` (transformer), `inventory_2` (materials), `assignment` (worksheet), `fingerprint` / `how_to_reg` (attendance), `request_quote` (bills), `account_balance` (deposits/GST), `gavel` (tenders), `health_and_safety` (permit/safety).
 
+## Screen patterns (UI revamp 2)
+
+- **Lists:** every row leads with a visual (icon tile, `DateBlock` or `Avatar`); dividers are inset to the text column.
+- **Filters:** pills; selected = ink fill with a white label, no checkmark.
+- **Details:** `DetailHeader` (icon, title, code line, status), headline numbers in a `StatStrip`, facts in an `InfoGroup`, location in a `LocationPreview`, workflow actions in a `StickyActionBar`.
+- **Forms:** labels above fields, the primary action pinned in a `StickyActionBar`; short inputs and choices in bottom sheets (`SheetScaffold`), never centred dialogs.
+- **Navigation:** sub-screens open full-screen above the tab bar; a tab tap returns to its root.
+- **Maps:** OpenStreetMap via `AppMap`, with brand pins and the geofence ring in indigo. Attribution is always visible.
+- **Long text (Malayalam):** chips cap their width and truncate; buttons that sit side by side wrap to a second line. Every dense screen is covered by `test/l10n/malayalam_layout_test.dart`.
+
 ## Brand mark
 
 An "A" drawn as a transmission pylon: two legs, a crossarm with insulators, and a lattice bar. It sits in white on the orange → ruby → indigo tile. One geometry, in a 108-unit square (the adaptive-icon canvas), feeds every output:

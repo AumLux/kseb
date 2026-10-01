@@ -44,10 +44,10 @@ $$;
 
 -- Suggestion shown on the "Add staff" form. Managers and above only (the
 -- same people who may create accounts).
+-- Not STABLE: it can raise via private.fail(), which is volatile.
 create or replace function public.next_employee_code()
 returns text
 language plpgsql
-stable
 security definer
 set search_path = ''
 as $$

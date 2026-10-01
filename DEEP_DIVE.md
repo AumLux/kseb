@@ -135,7 +135,7 @@ People belong to a home **Section** (`profiles.section_id`) and optionally a **T
 |---|---|---|
 | **Auth** | Sign in with **Employee ID or email**. A forced password change applies at first login. Progressive lockout after failed attempts. "Forgot password" explains that a superior resets it. | everyone |
 | **Home** | Gradient-mesh hero with greeting; **Today** card (check-in status, live "On duty · 3h 12m", one-tap Check in); role-aware **Shortcuts**; colour-coded **KPI tiles** | everyone (KPIs vary by role) |
-| **Attendance** | GPS **check-in / check-out**, with geofence distance, mock-location flag and offline capture. Month calendar. Supervisors see **team day**, mark absent or present, **correct** (reason required, audited), **verify** in bulk. **Muster roll export** (PDF/XLSX). | staff+ / supervisor+ |
+| **Attendance** | GPS **check-in / check-out**, with geofence distance (in and out), mock-location flag and offline capture. **Map** of where each day started and ended. Supervisors and managers get a **List | Map** team view (pins coloured inside / outside / mock). Month calendar. Supervisors see **team day**, mark absent or present, **correct** (reason required, audited), **verify** in bulk. **Muster roll export** (PDF/XLSX). | staff+ / supervisor+ |
 | **Leave** | Apply (casual/sick/earned/unpaid/other), cancel while pending; superiors approve or reject | everyone / supervisor+ |
 | **Holidays** | Kerala fixed-date holidays (seeded) + org/section holidays | read: all; edit: COO/Director |
 | **Worksheets (Work)** | Create a job (type project/maintenance/calamity, section, location + GPS, permit book no., planned date) → submit → approve/reject → **sign permit checklist** → start → complete. Crew assignment, photos and documents, incidents. | everyone creates; supervisor+ approves |
@@ -144,8 +144,8 @@ People belong to a home **Section** (`profiles.section_id`) and optionally a **T
 | **Commercial** | Six registers: **Tenders, Deposits (EMD/SD/BG/retention), Work orders, Bills, Letters (dispatch/inward), GST returns**. A dashboard with **bill ageing** buckets and **deposits expiring**. Cross-register search. Exports. | read: manager+; write: COO/Director |
 | **Approvals** | One inbox (`my_approvals()`) for worksheets, material requests, leave and bonus awaiting *me* | supervisor+ |
 | **Notifications** | In-app bell (live via Realtime) + **FCM push** on Android; tapping deep-links to the record | everyone |
-| **Staff & Teams** | Create, edit, suspend and exit accounts (through `admin-users`); show temporary credentials **once**; teams and supervisors | manager+ (supervisors: reset passwords for their staff) |
-| **Organisation** | Circle → Division → Sub-division → Section editor, including section GPS and geofence radius | COO/Director |
+| **Staff & Teams** | Create, edit, suspend and exit accounts (through `admin-users`); **employee IDs generated** (AUM0001…, race-safe); section chosen through the **Circle → Division → Sub-division → Section picker**; show temporary credentials **once**; teams and supervisors | manager+ (supervisors: reset passwords for their staff) |
+| **Organisation** | Circle → Division → Sub-division → Section editor; section office and geofence set by **dragging a pin on a map** with a radius slider | COO/Director |
 | **Bonus** *(feature-flagged)* | Ledger of proposed and approved bonus points/amounts. Totals derive from approved entries. | supervisor+ proposes; COO/Director approve |
 | **More** | Profile, sync queue, language (English/Malayalam), change password, about, sign out | everyone |
 | **Ops features** | Forced app update (`min_app_build`), idle sign-out (web + supervisor+), crash reports, location-permission rationale | — |
@@ -215,6 +215,7 @@ URLs and publishable keys live in `lib/core/config/env.dart`. Publishable keys a
 │   ├── LOCAL_TESTING.md         local stack + demo accounts + staging bootstrap
 │   ├── RELEASE_PROCESS.md       branch flow and what CI does
 │   ├── REVAMP_PLAN.md           audit findings, target architecture, phases
+│   ├── adr/                     Architecture Decision Records (maps, locations, codes, restarts, navigation)
 │   ├── brand/aumlux-mark-1024.png
 │   └── archive/                 Firestore-era docs (reference only)
 ├── lib/                         Flutter app (see §9)
@@ -260,7 +261,8 @@ All schema lives in `supabase/migrations/`. Files apply in order:
 | `…000700_bonus_dashboard_jobs.sql` | `bonus_ledger`, view `bonus_totals`, `decide_bonus()`, `my_approvals()`, `dashboard_kpis()`, daily-alerts cron |
 | `…000800_push.sql` | Realtime on notifications, `push_notification` trigger (pg_net → Edge Function), `register_device` / `unregister_device`, `mark_all_notifications_read` |
 | `…000850_client_errors.sql` | `client_errors` table (self-hosted crash reports) + weekly purge |
-| `…000900_lockdown.sql` | **Always last.** Revokes all function execute rights and re-grants the explicit public RPC list. This is *the* checklist of the API surface. |
+| `…000900_lockdown.sql` | Revokes all function execute rights and re-grants the public RPC list as of the first release. **Already applied in staging/production, so it is never edited**: later migrations grant their own RPCs. |
+| `20261002000100_employee_codes_checkout_geofence.sql` | `app_settings.employee_code_format`; `private.generate_employee_code()` + `public.next_employee_code()`; `attendance_days.check_out_distance_m` / `check_out_outside_geofence`, computed by a replaced `check_out()` (ADR-0002, ADR-0003) |
 
 ### 6.1 Conventions used everywhere
 
@@ -342,6 +344,7 @@ There are **no client INSERT/UPDATE grants**. Accounts change only through the `
 | `attendance_window` | `{"start_hour":5,"end_hour":23}` | `check_in`/`check_out` (IST hours) |
 | `offline_capture_max_hours` | 72 | oldest offline capture accepted |
 | `storage_quota_alert_pct` | 70 | storage alerting |
+| `employee_code_format` | `{"prefix":"AUM","digits":4}` | generated employee IDs (ADR-0003) |
 
 Everyone signed in reads it; COO/Director write (only `value` is updatable).
 
@@ -361,7 +364,7 @@ Everyone signed in reads it; COO/Director write (only `value` is updatable).
 |---|---|
 | Identity | `id`, `user_id`, `work_date`, `status` (= present), `source` (device/supervisor/leave/system) |
 | Check-in | `check_in_at`, `check_in_lat/lng`, `check_in_accuracy_m`, `check_in_mocked`, `check_in_distance_m`, `check_in_outside_geofence`, `check_in_request_id` UQ |
-| Check-out | `check_out_at`, `check_out_lat/lng`, `check_out_accuracy_m`, `check_out_mocked`, `check_out_request_id` UQ |
+| Check-out | `check_out_at`, `check_out_lat/lng`, `check_out_accuracy_m`, `check_out_mocked`, `check_out_distance_m`, `check_out_outside_geofence`, `check_out_request_id` UQ |
 | Context | `worksheet_id` (optional worksite), `note` |
 | Supervision | `marked_by`, `verified_by`, `verified_at` |
 
@@ -560,12 +563,13 @@ All RPCs are called as `supabase.rpc('<name>', params: {...})`, which is `POST /
 | `mark_password_changed()` | — | void | Clears `must_change_password` after the client updates the password |
 | `update_my_contact(p_phone, p_email)` | text, text | void | Self-service contact edit (validated) |
 | `people_directory(p_ids uuid[] = null)` | — | rows: id, full_name, employee_code, role, section_id, team_id, status | Names of people the caller may reference (pickers, "requested by"). With `p_ids`, resolves just those. |
+| `next_employee_code()` | — | text | Manager+. Next free `PREFIX<n>` code org-wide (preview for the Add Staff form). |
 
 #### Attendance and leave
 | RPC | Params | Rules |
 |---|---|---|
 | `check_in` | `p_request_id uuid, p_captured_at timestamptz, p_lat, p_lng, p_accuracy_m, p_is_mocked, p_worksheet_id` | Idempotent on `p_request_id`: a replay returns the existing row. Capture time ≤ now + 5 min (`clock_ahead`), ≥ now − `offline_capture_max_hours` (`capture_too_old`), and inside `attendance_window` (`outside_window`). `work_date` is the IST date of the capture. Fails with `already_checked_in` or `on_leave`. Computes the geofence distance to the nearest of the home section and the worksheet location; a missing section GPS never blocks. Stores the mocked flag and the distance. |
-| `check_out` | same, without worksheet | Requires a check-in; idempotent; out must be after in |
+| `check_out` | same, without worksheet | Requires a check-in; idempotent; out must be after in; records geofence distance and outside flag (nearest of home section and the day's worksite) |
 | `mark_attendance(p_user_id, p_work_date, p_status, p_reason)` | | Supervisor+ who can manage the user; source = supervisor |
 | `correct_attendance(p_attendance_id, p_status, p_check_in_at, p_check_out_at, p_reason)` | | Reason ≥ 5; writes `attendance_corrections` (before and after) |
 | `verify_attendance(p_ids uuid[])` | → count | Supervisor+ verifies days in scope |
@@ -648,7 +652,7 @@ Raised via `private.fail` (as `hint`) or the edge functions (as `code`), and map
 
 | Action | Body | Notes |
 |---|---|---|
-| `create` | `{employee_code, full_name, role, section_id, team_id?, email?, phone?, dob?, extra_section_ids?}` | Creates the auth user (email, or `<code>@staff.aumlux.internal`) with a random temporary password, then the profile. **Compensates** (deletes the auth user) if the profile insert fails, so there are no orphans. Returns `{user_id, login_id, temp_password}` **once**. |
+| `create` | `{employee_code \| auto_code: true, full_name, role, section_id, team_id?, email?, phone?, dob?, extra_section_ids?}`. With `auto_code`, the code is allocated via `next_employee_code()` as the caller and **retried on a clash** (up to 5×; ADR-0003). | Creates the auth user (email, or `<code>@staff.aumlux.internal`) with a random temporary password, then the profile. **Compensates** (deletes the auth user) if the profile insert fails, so there are no orphans. Returns `{user_id, login_id, temp_password}` **once**. |
 | `update` | `{user_id, …fields}` | Changing section clears the team unless one is given |
 | `set_status` | `{user_id, status}` | suspended or exited **ban** the auth user; active un-bans |
 | `reset_password` | `{user_id}` | New temporary password plus a forced change. **Supervisors may reset staff in teams they supervise.** |
@@ -773,6 +777,8 @@ Route map:
   /more/inventory/catalog  /more/inventory/stores
 ```
 
+**Navigation model (ADR-0005).** Tab roots live in the shell. Every direct child of a tab root is on the **root navigator** (`rootNavigatorKey`), so it opens full-screen above the tab bar. Tapping a tab always opens its root. The redirect keeps the intended destination through `/splash?from=` and `/login?from=` (in-app paths only), and with `restorationScopeId` on app, router, shell and branches, Android restores the screen if it kills the app (ADR-0004).
+
 `Routes` holds the constants. **Server-embedded deep links** (notification `route`, `my_approvals.route`) use `/work/<id>` and `/more/inventory/requests/<id>`. Don't rename these without a migration. Unknown routes render a friendly "coming soon" `EmptyState`.
 
 `AppShell` (`features/shell/app_shell.dart`) shows a **bottom `NavigationBar`** below 600dp, and a **`NavigationRail`** with the brand mark at 600dp and wider. It shows an `OfflineBanner` when there's no connectivity, and gives a selection haptic on tab change.
@@ -797,14 +803,15 @@ Route map:
 | `outbox/` | Offline queue (see §12) + platform `file_bytes` helpers (persist picked files for later upload) |
 | `location/location_service.dart` | `LocationService` interface (`current()`, `permissionUndecided()`) + `GeolocatorLocationService`; throws `location_*` failures; flags mocked locations |
 | `location/location_rationale.dart` | `explainLocationIfNeeded(context, ref)`: a bottom sheet explaining *why* before the first OS prompt (scrollable) |
-| `media/` | `AttachmentService` (queue on phone, direct upload on web), `attachmentsProvider`, `signedUrlProvider` (1 h), `PhotoStrip`, `DocumentList`; photos downscaled to ~1600px JPEG q70 |
+| `media/` | `AttachmentService` (queue on phone, direct upload on web; remembers the target before opening the camera and `recoverLostPhotos()` re-attaches a photo taken while Android killed the app), `attachmentsProvider` (incl. `lat/lng`), `pendingPhotoPathsProvider`, `signedUrlProvider` (1 h), `PhotoStrip` (GPS fix taken while the camera is open; pending uploads shown from the phone; thumbnails decoded at tile size), `PhotoViewerPage` (swipe, zoom, time, coordinates, map), `DocumentList`; photos downscaled to ~1600px JPEG q70 |
 | `export/` | `saveAndOpen` bytes → file (IO: temp dir + `open_filex`/share; web: download). Used by the PDF/XLSX exports. |
 | `push/push_service.dart` | Android FCM: permission, token → `register_device`, refresh, tap → `router.go(route)` |
 | `session/` | `IdleGuard` (web and supervisor+ only; crews on phones are never timed out, because signing back in needs connectivity) + `IdleTimeoutService` |
 | `settings/` | `appSettingsProvider` (reads `app_settings` after sign-in; never blocks offline), `installedBuildProvider`, `updateRequiredProvider` (Android only), `UpdateRequiredPage` (→ APK download URL) |
 | `errors/error_reporter.dart` | Release-only crash reports to `client_errors` (signed-in, de-duplicated, ≤ 20 per session) |
 | `format/` | `Fmt` (money ₹ en-IN, compact money, qty, date, time, dateTime) and `Ist` (today in IST, IST conversions) |
-| `ui/` | `showSnack`, `confirmAction` dialogs; `openMap(lat,lng)` |
+| `ui/` | `showSnack`, `confirmAction`; **`sheets.dart`**: `showAppSheet`, `SheetScaffold` (title, content, pinned actions, keyboard-aware), `promptText()` and `DisposeWith` (owns controllers until the sheet is unmounted); `openInMaps(lat,lng)` |
+| `maps/` | `AppMap` (OSM tiles + attribution + UA), `MapPin`, `LocationPreview` (static mini-map → `MapViewPage`), `LocationPickerPage`/`pickLocation()` (drag-to-place, optional geofence slider), `LocationField` (form field: GPS + map). Tile URL overridable with `MAP_TILE_URL` (ADR-0001). |
 | `l10n/` | `context.l10n`, `LocaleController` (persisted) |
 | `supabase/` | `supabaseClientProvider`, `sharedPreferencesProvider`, `updateOrFail` |
 
@@ -910,6 +917,13 @@ It's **memoised** per script, so it isn't rebuilt on every root rebuild.
 | `OfflineBanner`, `SyncBadge` | Live-region banner; "N pending" pill → `/more/sync` |
 | `GradientMesh` | Brand backdrop (cream, orange, lavender, indigo, ruby, magenta radial blobs fading to white); `RepaintBoundary`, painted once |
 | `LazyListView` | Header widgets + lazily built rows + footer. **Use it for any data list.** |
+| `Avatar` | Initials on a stable per-person tint (people lists, map pins) |
+| `StatStrip` / `StatItem` | Row of headline numbers in one card (Groww "invested · current · returns") |
+| `DateBlock` | Calendar-tile leading visual (day number + locale weekday) |
+| `DetailHeader`, `InfoGroup` / `InfoRow` | Detail-page identity block; titled card of label → value facts (long values stack) |
+| `StickyActionBar` | Primary actions pinned at the bottom of forms and detail pages |
+| `NoteBanner` | Tinted callout for decisions, warnings and notes |
+| `SectionPickerField` (features/org) | Hierarchical section field with drill-down sheet, breadcrumbs and search |
 | `BrandMark` / `BrandMarkPainter` | The logo (see 10.6). `progress` draws it on (splash). |
 
 ### 10.6 Brand mark and launch experience
@@ -1012,12 +1026,14 @@ It's **memoised** per script, so it isn't rebuilt on every root rebuild.
 
 ## 14. Testing
 
-### 14.1 Flutter (`flutter test`; ~151 tests)
+### 14.1 Flutter (`flutter test`; ~176 tests)
 
 | Area | Examples |
 |---|---|
 | `test/core/design/` | `contrast_test.dart` (WCAG pairs), `widgets_test.dart` (state views, sync badge…), `motion_test.dart` (lazy list builds only visible rows, press scale, timer-free entrance, reduced motion, brand mark) |
 | `test/core/` | outbox (FIFO, retry vs permanent, shared drain), router redirect policy, idle timeout, `AppFailure` mapping, formatters, settings + update gate, location rationale sheet |
+| `test/l10n/malayalam_layout_test.dart` | 9 dense screens rendered in Malayalam at 360dp, at 100% and 130% text; **fails on any overflow** |
+| `test/core/ui/sheets_test.dart` | prompts close without "used after dispose"; `DisposeWith` keeps controllers alive until unmount |
 | `test/features/` | attendance (capture online and offline, no-GPS path, geofence review flags), auth (login, change password), commercial (forms, required fields), inventory, registers, notifications (bell badge), staff (manager creates crew, credentials shown once), worksheets, more (Malayalam switch persists) |
 
 Conventions:
@@ -1045,6 +1061,7 @@ Conventions:
 | `07_reports_smoke` | views and KPI functions run for every role |
 | `08_notifications` | device-token takeover, push trigger never blocks, own-only reads |
 | `09_client_errors` | insert-own, no spoofing, exec-only read, anon blocked |
+| `10_codes_checkout_geofence` | generated codes (org-wide max, case, custom ignored, format setting, role check), anon lockout, check-out geofence recorded |
 
 Counts are always **scoped to fixture rows**, so a dirty local DB can't break them. Tests run inside `begin; … rollback;`.
 
@@ -1222,11 +1239,20 @@ These cost real debugging time. Don't relearn them.
 | `Future.delayed` in animations leaves pending timers in tests | fold delays into `Interval` curves |
 | Dark-mode launch window was black | light launch themes in `values-night*` |
 | Bootstrap with the publishable key → `permission denied for table profiles` (ran as anon) | the script now rejects `sb_publishable_` keys |
+| Disposing a `TextEditingController` right after `await showDialog/showModalBottomSheet` | The future completes when the route *starts* closing; the field is still on screen. Caused the `_dependents.isEmpty` red screen. Use `promptText` / `DisposeWith`. |
+| Selected chips showed dark text on the ink pill | Chips resolve the label **colour** by state; put a `WidgetStateColor` in `labelStyle.color` (a `WidgetStateTextStyle` is ignored). |
+| `latlong2` exports its own `Path`, which shadows Flutter's | `import 'package:latlong2/latlong.dart' show LatLng;` |
+| Edited edge functions not picked up by the local stack | `docker restart supabase_edge_runtime_aumlux` |
+| Two simultaneous `createUser` calls for the same login | GoTrue returns a generic "Database error creating new user", not "already registered"; treat it as a code clash when the login is code-derived. |
+| Samsung: app "reloads" on screen off/on and after the camera | `colorMode` missing from `configChanges` recreated the activity (ADR-0004). |
+| Debug web build in an emulated viewport dies with `ViewInsets cannot be negative` | Engine debug assertion on simulated resize; review UI on a release build (and beware the browser's HTTP cache of `main.dart.js`). |
 | `google-services` Gradle plugin breaks after the package rename | removed; `firebase_options.dart` is enough (re-run `flutterfire configure` for the new package) |
 
 ---
 
 ## 20. Decision log
+
+Newer decisions are recorded as ADRs in [docs/adr/](docs/adr/README.md): FOSS maps, attendance location visibility, generated employee codes, Android restarts/restoration, full-screen sub-screens.
 
 | Decision | Why |
 |---|---|
