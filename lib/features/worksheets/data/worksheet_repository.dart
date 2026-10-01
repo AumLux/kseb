@@ -6,6 +6,7 @@ import '../../../core/errors/app_failure.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/outbox/outbox.dart';
 import '../../../core/supabase/providers.dart';
+import '../../../core/supabase/update_guard.dart';
 import '../../auth/application/session_controller.dart';
 
 enum WorkType { project, maintenance, calamity }
@@ -302,7 +303,7 @@ class WorksheetRepository {
   }
 
   Future<void> update(String id, WorksheetDraft draft) =>
-      _guard(() => _client.from('worksheets').update(draft.toJson()).eq('id', id));
+      _guard(() => updateOrFail(_client, 'worksheets', draft.toJson(), id));
 
   Future<Worksheet> transition(String id, String action, {String? note}) => _guard(() async {
         final row = await _client.rpc('transition_worksheet', params: {'p_id': id, 'p_action': action, 'p_note': note});

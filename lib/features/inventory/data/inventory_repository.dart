@@ -6,6 +6,7 @@ import '../../../core/errors/app_failure.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/outbox/outbox.dart';
 import '../../../core/supabase/providers.dart';
+import '../../../core/supabase/update_guard.dart';
 
 num _n(Object? v) => (v as num?) ?? 0;
 
@@ -433,7 +434,7 @@ class InventoryRepository {
         if (id == null) {
           await _client.from('material_catalog').insert({'code': code.trim().toUpperCase(), ...row});
         } else {
-          await _client.from('material_catalog').update(row).eq('id', id);
+          await updateOrFail(_client, 'material_catalog', row, id);
         }
       });
 
