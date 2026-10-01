@@ -858,4 +858,271 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get commonDate => 'തീയതി';
+
+  @override
+  String get wsTitle => 'വർക്ക്ഷീറ്റുകൾ';
+
+  @override
+  String get wsNew => 'പുതിയ വർക്ക്ഷീറ്റ്';
+
+  @override
+  String get wsEdit => 'വർക്ക്ഷീറ്റ് തിരുത്തുക';
+
+  @override
+  String get wsMine => 'എന്റേത്';
+
+  @override
+  String get wsSection => 'എന്റെ സെക്ഷനുകൾ';
+
+  @override
+  String get wsAllStatuses => 'എല്ലാം';
+
+  @override
+  String get wsEmpty => 'ഇതുവരെ വർക്ക്ഷീറ്റുകളില്ല';
+
+  @override
+  String get wsEmptyHint =>
+      'ജോലി തുടങ്ങുന്നതിന് മുമ്പ് വർക്ക്ഷീറ്റ് ഉണ്ടാക്കുക.';
+
+  @override
+  String get wsType => 'ജോലിയുടെ തരം';
+
+  @override
+  String get wsTypeProject => 'പ്രോജക്ട്';
+
+  @override
+  String get wsTypeMaintenance => 'അറ്റകുറ്റപ്പണി';
+
+  @override
+  String get wsTypeCalamity => 'പ്രകൃതിക്ഷോഭം / തകരാർ';
+
+  @override
+  String get wsJobTitle => 'ജോലിയുടെ പേര്';
+
+  @override
+  String get wsJobTitleHint => 'ഉദാ. കലൂർ ജംഗ്ഷനിൽ DP ഫ്യൂസ് മാറ്റൽ';
+
+  @override
+  String get wsLocation => 'സ്ഥലം / അടയാളം';
+
+  @override
+  String get wsUseGps => 'എന്റെ സ്ഥാനം ഉപയോഗിക്കുക';
+
+  @override
+  String wsGpsSet(int accuracy) {
+    return 'GPS സേവ് ചെയ്തു (±$accuracy മീ)';
+  }
+
+  @override
+  String get wsPermitBook => 'പെർമിറ്റ് ബുക്ക് നമ്പർ';
+
+  @override
+  String get wsDescription => 'ജോലിയുടെ വിവരണം';
+
+  @override
+  String get wsPlannedDate => 'നിശ്ചയിച്ച തീയതി';
+
+  @override
+  String get wsSaveDraft => 'ഡ്രാഫ്റ്റ് സേവ് ചെയ്യുക';
+
+  @override
+  String get wsSaveSubmit => 'സേവ് ചെയ്ത് സമർപ്പിക്കുക';
+
+  @override
+  String get wsSavedOffline =>
+      'ഫോണിൽ സേവ് ചെയ്തു. നെറ്റ്‌വർക്ക് തിരിച്ചെത്തുമ്പോൾ അപ്‌ലോഡ് ആകും.';
+
+  @override
+  String get wsSubmitted => 'അംഗീകാരത്തിന് അയച്ചു';
+
+  @override
+  String get wsStatusDraft => 'ഡ്രാഫ്റ്റ്';
+
+  @override
+  String get wsStatusSubmitted => 'അംഗീകാരം കാത്ത്';
+
+  @override
+  String get wsStatusApproved => 'അംഗീകരിച്ചു';
+
+  @override
+  String get wsStatusRejected => 'നിരസിച്ചു';
+
+  @override
+  String get wsStatusInProgress => 'പുരോഗമിക്കുന്നു';
+
+  @override
+  String get wsStatusCompleted => 'പൂർത്തിയായി';
+
+  @override
+  String get wsStatusCancelled => 'റദ്ദാക്കി';
+
+  @override
+  String get wsRequestedBy => 'അപേക്ഷിച്ചത്';
+
+  @override
+  String get wsDecision => 'തീരുമാന കുറിപ്പ്';
+
+  @override
+  String get wsActionSubmit => 'അംഗീകാരത്തിന് സമർപ്പിക്കുക';
+
+  @override
+  String get wsActionApprove => 'അംഗീകരിക്കുക';
+
+  @override
+  String get wsActionReject => 'നിരസിക്കുക';
+
+  @override
+  String get wsActionStart => 'ജോലി ആരംഭിക്കുക';
+
+  @override
+  String get wsActionComplete => 'പൂർത്തിയായതായി രേഖപ്പെടുത്തുക';
+
+  @override
+  String get wsActionCancel => 'വർക്ക്ഷീറ്റ് റദ്ദാക്കുക';
+
+  @override
+  String get wsCompletionNote => 'ചെയ്ത ജോലി';
+
+  @override
+  String get wsCancelConfirm =>
+      'ഈ വർക്ക്ഷീറ്റ് റദ്ദാക്കണോ? വീണ്ടും തുറക്കാനാകില്ല.';
+
+  @override
+  String get wsCrew => 'ജോലിക്കാർ';
+
+  @override
+  String get wsCrewEdit => 'ജോലിക്കാരെ മാറ്റുക';
+
+  @override
+  String get wsCrewEmpty => 'ജോലിക്കാരെ നിയോഗിച്ചിട്ടില്ല';
+
+  @override
+  String get wsPhotos => 'ഫോട്ടോകൾ';
+
+  @override
+  String get wsAddPhoto => 'ഫോട്ടോ ചേർക്കുക';
+
+  @override
+  String get wsCamera => 'ക്യാമറ';
+
+  @override
+  String get wsGallery => 'ഗാലറി';
+
+  @override
+  String get wsPhotosEmpty => 'ഇതുവരെ ഫോട്ടോകളില്ല';
+
+  @override
+  String get wsPhotoQueued =>
+      'ഫോട്ടോ സേവ് ചെയ്തു; നെറ്റ്‌വർക്ക് ലഭിക്കുമ്പോൾ അപ്‌ലോഡ് ആകും.';
+
+  @override
+  String get wsPermit => 'പെർമിറ്റ് ടു വർക്ക്';
+
+  @override
+  String get wsPermitMissing =>
+      'ഇതുവരെ ഒപ്പിട്ടിട്ടില്ല. സൂപ്പർവൈസർ പെർമിറ്റ് ഒപ്പിടുന്നതുവരെ ജോലി ആരംഭിക്കാനാകില്ല.';
+
+  @override
+  String get wsPermitSign => 'പെർമിറ്റ് ഒപ്പിടുക';
+
+  @override
+  String get wsPermitLcRef => 'ലൈൻ ക്ലിയർ (LC) റഫറൻസ്';
+
+  @override
+  String get wsPermitLcBy => 'LC നൽകിയത് (KSEB ഉദ്യോഗസ്ഥൻ)';
+
+  @override
+  String get wsPermitIsolation => 'ഐസൊലേഷൻ പോയിന്റുകൾ';
+
+  @override
+  String get wsPermitIsolationHint =>
+      'ഉദാ. DP-14-ലെ AB സ്വിച്ച് തുറന്ന് പൂട്ടി';
+
+  @override
+  String get wsPermitEarthing => 'ഇരുവശത്തും എർത്തിംഗ് ചെയ്തു';
+
+  @override
+  String get wsPermitTestedDead =>
+      'ടെസ്റ്റർ ഉപയോഗിച്ച് ലൈൻ ഡെഡ് എന്ന് ഉറപ്പാക്കി';
+
+  @override
+  String get wsPermitToolbox => 'ജോലിക്കാരുമായി ടൂൾബോക്സ് ടോക്ക് നടത്തി';
+
+  @override
+  String get wsPermitPpe => 'സുരക്ഷാ ഉപകരണങ്ങൾ ഉറപ്പാക്കി';
+
+  @override
+  String get wsPermitPpeRequired =>
+      'ഹെൽമെറ്റ്, ഗ്ലൗസ്, സേഫ്റ്റി ബെൽറ്റ് നിർബന്ധം';
+
+  @override
+  String wsPermitSignedBy(String when) {
+    return 'ഒപ്പിട്ടത് $when';
+  }
+
+  @override
+  String get ppeHelmet => 'ഹെൽമെറ്റ്';
+
+  @override
+  String get ppeGloves => 'ഇൻസുലേറ്റഡ് ഗ്ലൗസ്';
+
+  @override
+  String get ppeSafetyBelt => 'സേഫ്റ്റി ബെൽറ്റ്';
+
+  @override
+  String get ppeBoots => 'സേഫ്റ്റി ബൂട്ട്';
+
+  @override
+  String get ppeInsulatedTools => 'ഇൻസുലേറ്റഡ് ഉപകരണങ്ങൾ';
+
+  @override
+  String get ppeReflectiveVest => 'റിഫ്ലക്ടീവ് വെസ്റ്റ്';
+
+  @override
+  String get incTitle => 'അപകടങ്ങൾ';
+
+  @override
+  String get incReport => 'അപകടം റിപ്പോർട്ട് ചെയ്യുക';
+
+  @override
+  String get incSeverity => 'ഗൗരവം';
+
+  @override
+  String get incNearMiss => 'തലനാരിഴയ്ക്ക് ഒഴിവായത്';
+
+  @override
+  String get incMinor => 'ചെറിയ പരിക്ക് / കേടുപാട്';
+
+  @override
+  String get incMajor => 'ഗുരുതര പരിക്ക് / കേടുപാട്';
+
+  @override
+  String get incFatal => 'മരണം';
+
+  @override
+  String get incOccurredAt => 'എപ്പോൾ';
+
+  @override
+  String get incDescription => 'എന്താണ് സംഭവിച്ചത്';
+
+  @override
+  String get incInjured => 'പരിക്കേറ്റവർ (പേരുകൾ)';
+
+  @override
+  String get incAction => 'ഉടൻ സ്വീകരിച്ച നടപടി';
+
+  @override
+  String get incReported => 'അപകടം റിപ്പോർട്ട് ചെയ്തു';
+
+  @override
+  String get incNone => 'അപകടങ്ങളില്ല';
+
+  @override
+  String get incStatusOpen => 'തുറന്നത്';
+
+  @override
+  String get incStatusInvestigating => 'അന്വേഷണത്തിൽ';
+
+  @override
+  String get incStatusClosed => 'അവസാനിപ്പിച്ചു';
 }
