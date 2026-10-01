@@ -27,6 +27,13 @@ if (!url || !key) {
   console.error("Set SUPABASE_URL and SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY).");
   process.exit(1);
 }
+if (key.startsWith("sb_publishable_")) {
+  console.error(
+    "SUPABASE_SECRET_KEY is the publishable key. Use the secret key (sb_secret_…) from\n" +
+      "Project Settings → API Keys → Secret keys.",
+  );
+  process.exit(1);
+}
 if (!args.code || !/^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$/.test(args.code) || !args.name || !args.email) {
   console.error('Required: --code <EMPLOYEE_CODE> --name "<Full Name>" --email <email>');
   process.exit(1);
