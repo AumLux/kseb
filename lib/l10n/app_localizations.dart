@@ -3103,6 +3103,762 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Note'**
   String get assetNote;
+
+  /// No description provided for @comTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Commercial'**
+  String get comTitle;
+
+  /// No description provided for @comOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get comOverview;
+
+  /// No description provided for @comSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tenders, work orders, invoices, letters'**
+  String get comSearch;
+
+  /// No description provided for @comNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching records'**
+  String get comNoResults;
+
+  /// No description provided for @comExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposits expiring soon'**
+  String get comExpiringSoon;
+
+  /// No description provided for @comNothingExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'No deposits expiring in the next 30 days'**
+  String get comNothingExpiring;
+
+  /// No description provided for @comAgeing.
+  ///
+  /// In en, this message translates to:
+  /// **'Receivables ageing'**
+  String get comAgeing;
+
+  /// No description provided for @comDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Expires today} =1{1 day left} other{{days} days left}}'**
+  String comDaysLeft(int days);
+
+  /// No description provided for @comNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get comNew;
+
+  /// No description provided for @comEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get comEmpty;
+
+  /// No description provided for @comExportXlsx.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Excel'**
+  String get comExportXlsx;
+
+  /// No description provided for @comExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get comExportPdf;
+
+  /// No description provided for @comLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked records'**
+  String get comLinked;
+
+  /// No description provided for @comDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get comDocuments;
+
+  /// No description provided for @comAttachPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach PDF'**
+  String get comAttachPdf;
+
+  /// No description provided for @comNoDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents attached'**
+  String get comNoDocuments;
+
+  /// No description provided for @comReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'View only — changes are made by the COO or Director'**
+  String get comReadOnly;
+
+  /// No description provided for @comAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get comAll;
+
+  /// No description provided for @entTenders.
+  ///
+  /// In en, this message translates to:
+  /// **'Tenders'**
+  String get entTenders;
+
+  /// No description provided for @entDeposits.
+  ///
+  /// In en, this message translates to:
+  /// **'EMD / SD / BG'**
+  String get entDeposits;
+
+  /// No description provided for @entWorkOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Work orders'**
+  String get entWorkOrders;
+
+  /// No description provided for @entBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills / invoices'**
+  String get entBills;
+
+  /// No description provided for @entLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'Dispatch / letters'**
+  String get entLetters;
+
+  /// No description provided for @entGst.
+  ///
+  /// In en, this message translates to:
+  /// **'GST returns'**
+  String get entGst;
+
+  /// No description provided for @fReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Tender / work reference'**
+  String get fReference;
+
+  /// No description provided for @fTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get fTitle;
+
+  /// No description provided for @fTenderType.
+  ///
+  /// In en, this message translates to:
+  /// **'Tender type'**
+  String get fTenderType;
+
+  /// No description provided for @fWorkCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Work category'**
+  String get fWorkCategory;
+
+  /// No description provided for @fDepartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get fDepartment;
+
+  /// No description provided for @fSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Section office'**
+  String get fSection;
+
+  /// No description provided for @fLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get fLocation;
+
+  /// No description provided for @fNoticeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice date'**
+  String get fNoticeDate;
+
+  /// No description provided for @fSubmissionDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission deadline'**
+  String get fSubmissionDeadline;
+
+  /// No description provided for @fOpeningDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening date'**
+  String get fOpeningDate;
+
+  /// No description provided for @fWorkStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Work start date'**
+  String get fWorkStartDate;
+
+  /// No description provided for @fEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate amount'**
+  String get fEstimate;
+
+  /// No description provided for @fEmd.
+  ///
+  /// In en, this message translates to:
+  /// **'EMD amount'**
+  String get fEmd;
+
+  /// No description provided for @fSecurityDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Security deposit'**
+  String get fSecurityDeposit;
+
+  /// No description provided for @fQuoted.
+  ///
+  /// In en, this message translates to:
+  /// **'Quoted amount'**
+  String get fQuoted;
+
+  /// No description provided for @fContactPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact person'**
+  String get fContactPerson;
+
+  /// No description provided for @fContactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact phone'**
+  String get fContactPhone;
+
+  /// No description provided for @fRemarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Remarks'**
+  String get fRemarks;
+
+  /// No description provided for @fStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get fStatus;
+
+  /// No description provided for @fKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get fKind;
+
+  /// No description provided for @fTender.
+  ///
+  /// In en, this message translates to:
+  /// **'Tender'**
+  String get fTender;
+
+  /// No description provided for @fWorkOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Work order'**
+  String get fWorkOrder;
+
+  /// No description provided for @fAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get fAmount;
+
+  /// No description provided for @fPaymentMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment mode'**
+  String get fPaymentMode;
+
+  /// No description provided for @fInstrumentNo.
+  ///
+  /// In en, this message translates to:
+  /// **'DD / BG / UTR no.'**
+  String get fInstrumentNo;
+
+  /// No description provided for @fBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank'**
+  String get fBank;
+
+  /// No description provided for @fDepositDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit date'**
+  String get fDepositDate;
+
+  /// No description provided for @fValidityDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until'**
+  String get fValidityDate;
+
+  /// No description provided for @fReleasedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Released on'**
+  String get fReleasedOn;
+
+  /// No description provided for @fWoNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Work order no.'**
+  String get fWoNumber;
+
+  /// No description provided for @fAgreementNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Agreement no.'**
+  String get fAgreementNo;
+
+  /// No description provided for @fAwardedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Awarded amount'**
+  String get fAwardedAmount;
+
+  /// No description provided for @fIssueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue date'**
+  String get fIssueDate;
+
+  /// No description provided for @fDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion due'**
+  String get fDueDate;
+
+  /// No description provided for @fInvoiceNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice no.'**
+  String get fInvoiceNo;
+
+  /// No description provided for @fBillType.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill type'**
+  String get fBillType;
+
+  /// No description provided for @fInvoiceDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice date'**
+  String get fInvoiceDate;
+
+  /// No description provided for @fTaxAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax (GST) amount'**
+  String get fTaxAmount;
+
+  /// No description provided for @fPassedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed amount'**
+  String get fPassedAmount;
+
+  /// No description provided for @fPaidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid amount'**
+  String get fPaidAmount;
+
+  /// No description provided for @fPaidOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid on'**
+  String get fPaidOn;
+
+  /// No description provided for @fRefNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference no.'**
+  String get fRefNo;
+
+  /// No description provided for @fDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'In / out'**
+  String get fDirection;
+
+  /// No description provided for @fDocType.
+  ///
+  /// In en, this message translates to:
+  /// **'Document type'**
+  String get fDocType;
+
+  /// No description provided for @fParty.
+  ///
+  /// In en, this message translates to:
+  /// **'From / to'**
+  String get fParty;
+
+  /// No description provided for @fSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get fSubject;
+
+  /// No description provided for @fDocDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get fDocDate;
+
+  /// No description provided for @fGstin.
+  ///
+  /// In en, this message translates to:
+  /// **'GSTIN'**
+  String get fGstin;
+
+  /// No description provided for @fLegalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal name'**
+  String get fLegalName;
+
+  /// No description provided for @fReturnType.
+  ///
+  /// In en, this message translates to:
+  /// **'Return type'**
+  String get fReturnType;
+
+  /// No description provided for @fPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Return period (month)'**
+  String get fPeriod;
+
+  /// No description provided for @fTaxable.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxable value'**
+  String get fTaxable;
+
+  /// No description provided for @fCgst.
+  ///
+  /// In en, this message translates to:
+  /// **'CGST'**
+  String get fCgst;
+
+  /// No description provided for @fSgst.
+  ///
+  /// In en, this message translates to:
+  /// **'SGST'**
+  String get fSgst;
+
+  /// No description provided for @fIgst.
+  ///
+  /// In en, this message translates to:
+  /// **'IGST'**
+  String get fIgst;
+
+  /// No description provided for @fFiledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Filed on'**
+  String get fFiledOn;
+
+  /// No description provided for @fArn.
+  ///
+  /// In en, this message translates to:
+  /// **'ARN'**
+  String get fArn;
+
+  /// No description provided for @fGstinInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 15-character GSTIN'**
+  String get fGstinInvalid;
+
+  /// No description provided for @fAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount'**
+  String get fAmountInvalid;
+
+  /// No description provided for @optNone.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get optNone;
+
+  /// No description provided for @optTenderDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get optTenderDraft;
+
+  /// No description provided for @optTenderSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get optTenderSubmitted;
+
+  /// No description provided for @optTenderOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened'**
+  String get optTenderOpened;
+
+  /// No description provided for @optTenderAwarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Awarded'**
+  String get optTenderAwarded;
+
+  /// No description provided for @optTenderLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get optTenderLost;
+
+  /// No description provided for @optTenderCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get optTenderCancelled;
+
+  /// No description provided for @optDepEmd.
+  ///
+  /// In en, this message translates to:
+  /// **'EMD'**
+  String get optDepEmd;
+
+  /// No description provided for @optDepSd.
+  ///
+  /// In en, this message translates to:
+  /// **'Security deposit'**
+  String get optDepSd;
+
+  /// No description provided for @optDepBg.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank guarantee'**
+  String get optDepBg;
+
+  /// No description provided for @optDepRetention.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention'**
+  String get optDepRetention;
+
+  /// No description provided for @optDepHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'Held'**
+  String get optDepHeld;
+
+  /// No description provided for @optDepRefundRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund requested'**
+  String get optDepRefundRequested;
+
+  /// No description provided for @optDepReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Released'**
+  String get optDepReleased;
+
+  /// No description provided for @optDepForfeited.
+  ///
+  /// In en, this message translates to:
+  /// **'Forfeited'**
+  String get optDepForfeited;
+
+  /// No description provided for @optModeDd.
+  ///
+  /// In en, this message translates to:
+  /// **'Demand draft'**
+  String get optModeDd;
+
+  /// No description provided for @optModeBg.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank guarantee'**
+  String get optModeBg;
+
+  /// No description provided for @optModeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get optModeOnline;
+
+  /// No description provided for @optModeFdr.
+  ///
+  /// In en, this message translates to:
+  /// **'FDR'**
+  String get optModeFdr;
+
+  /// No description provided for @optModeCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get optModeCash;
+
+  /// No description provided for @optModeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get optModeOther;
+
+  /// No description provided for @optWoAwarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Awarded'**
+  String get optWoAwarded;
+
+  /// No description provided for @optWoInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get optWoInProgress;
+
+  /// No description provided for @optWoCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get optWoCompleted;
+
+  /// No description provided for @optWoClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get optWoClosed;
+
+  /// No description provided for @optWoTerminated.
+  ///
+  /// In en, this message translates to:
+  /// **'Terminated'**
+  String get optWoTerminated;
+
+  /// No description provided for @optBillRa.
+  ///
+  /// In en, this message translates to:
+  /// **'Running account (RA)'**
+  String get optBillRa;
+
+  /// No description provided for @optBillFinal.
+  ///
+  /// In en, this message translates to:
+  /// **'Final'**
+  String get optBillFinal;
+
+  /// No description provided for @optBillAdvance.
+  ///
+  /// In en, this message translates to:
+  /// **'Advance'**
+  String get optBillAdvance;
+
+  /// No description provided for @optBillOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get optBillOther;
+
+  /// No description provided for @optBillSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get optBillSubmitted;
+
+  /// No description provided for @optBillPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed'**
+  String get optBillPassed;
+
+  /// No description provided for @optBillPartiallyPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially paid'**
+  String get optBillPartiallyPaid;
+
+  /// No description provided for @optBillPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get optBillPaid;
+
+  /// No description provided for @optBillRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get optBillRejected;
+
+  /// No description provided for @optDirIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get optDirIn;
+
+  /// No description provided for @optDirOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get optDirOut;
+
+  /// No description provided for @optDocLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Letter'**
+  String get optDocLetter;
+
+  /// No description provided for @optDocNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice'**
+  String get optDocNotice;
+
+  /// No description provided for @optDocCircular.
+  ///
+  /// In en, this message translates to:
+  /// **'Circular'**
+  String get optDocCircular;
+
+  /// No description provided for @optDocWorkOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Work order'**
+  String get optDocWorkOrder;
+
+  /// No description provided for @optDocOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get optDocOther;
+
+  /// No description provided for @comPdfTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF is larger than 10 MB.'**
+  String get comPdfTooLarge;
 }
 
 class _AppLocalizationsDelegate
