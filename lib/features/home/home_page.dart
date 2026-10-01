@@ -9,6 +9,7 @@ import '../../core/outbox/outbox.dart';
 import '../../core/router/app_router.dart';
 import '../auth/application/session_controller.dart';
 import '../auth/domain/app_user.dart';
+import '../notifications/notifications.dart';
 import 'dashboard_repository.dart';
 
 String roleLabel(AppLocalizations l10n, AppRole role) => switch (role) {
@@ -50,6 +51,7 @@ class HomePage extends ConsumerWidget {
           ],
         ),
         actions: [
+          const NotificationBell(),
           Padding(
             padding: const EdgeInsets.only(right: AppSpacing.lg),
             child: SyncBadge(
@@ -61,7 +63,9 @@ class HomePage extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(dashboardProvider);
+          ref
+            ..invalidate(dashboardProvider)
+            ..invalidate(notificationsProvider);
           await ref.read(sessionProvider.notifier).refreshProfile();
         },
         child: ListView(
