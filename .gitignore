@@ -64,3 +64,16 @@ local.properties
 # Windows/Linux/macOS Flutter ephemeral directories
 **/flutter/ephemeral/
 **/Flutter/ephemeral/
+
+# Release signing (never commit)
+android/key.properties
+*.jks
+*.keystore
+
+# Supabase local state & secrets
+supabase/.temp/
+supabase/.branches/
+supabase/functions/.env
+**/service-account*.json
+tools/**/node_modules/
+tools/**/out/
