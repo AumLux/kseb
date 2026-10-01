@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../core/config/feature_flags.dart';
 import '../../core/design/design.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/l10n/locale_controller.dart';
@@ -157,6 +158,12 @@ class MorePage extends ConsumerWidget {
             onTap: () => context.go(Routes.assets),
           ),
           SectionHeader(l10n.moreTitle),
+          if (FeatureFlags.enableBonusModule)
+            AppListRow(
+              leading: const Icon(Icons.card_giftcard_rounded, color: AppColors.inkMute),
+              title: l10n.bonusTitle,
+              onTap: () => context.go(Routes.bonus),
+            ),
           AppListRow(
             leading: const Icon(Icons.sync_rounded, color: AppColors.inkMute),
             title: l10n.moreSyncQueue,
