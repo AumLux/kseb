@@ -14,6 +14,11 @@ on:
     branches: [staging, releases, "revamp/**"]
     paths-ignore: ["docs/**", "**/*.md"]
   workflow_dispatch:
+    inputs:
+      web_only:
+        description: "Skip the APK build and reuse the last preview APK (web-only fixes, ~2 min)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -57,7 +62,7 @@ jobs:
       - run: flutter pub get
       - name: Build
         run: >
-          flutter build web --release --base-href /web/
+          flutter build web --release --no-pub --base-href /web/
           --build-number=$((1000 + BUILD_NUMBER))
           --dart-define=AUMLUX_ENV=${{ github.ref_name == 'releases' && 'production' || 'staging' }}
       - uses: actions/upload-artifact@v4
@@ -68,7 +73,7 @@ jobs:
 
   apk:
     name: Build APK
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && !inputs.web_only
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -77,7 +82,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
+      # Caches dependencies, wrapper and the Gradle build cache (task outputs).
+      # Only staging writes the cache; other refs read it.
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref_name != 'staging' }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
@@ -109,7 +118,7 @@ jobs:
       # than a universal APK, so the customer download is quick.
       - name: Build
         run: >
-          flutter build apk --release --target-platform android-arm64
+          flutter build apk --release --no-pub --target-platform android-arm64
           --build-number=$((1000 + BUILD_NUMBER))
           --dart-define=AUMLUX_ENV=${{ github.ref_name == 'releases' && 'production' || 'staging' }}
       - name: Verify
@@ -134,7 +143,10 @@ jobs:
 
   preview:
     name: Publish preview site
-    if: github.event_name != 'pull_request' && github.ref_name != 'releases'
+    if: >-
+      !cancelled() && github.event_name != 'pull_request' && github.ref_name != 'releases' &&
+      needs.test.result == 'success' && needs.web.result == 'success' &&
+      (needs.apk.result == 'success' || (inputs.web_only && needs.apk.result == 'skipped'))
     needs: [test, web, apk]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -149,6 +161,13 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
+      - name: Reuse the last preview APK (web-only run)
+        if: inputs.web_only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/apk
+          gh release download preview --repo "$GITHUB_REPOSITORY" -p aumlux.apk -O artifacts/apk/app-release.apk
       - name: Assemble site
         run: |
           sudo apt-get install -y -qq qrencode >/dev/null
@@ -159,6 +178,7 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
       - name: Update the rolling "preview" release (download mirror)
+        if: ${{ !inputs.web_only }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
