@@ -171,7 +171,7 @@ jobs:
       - name: Assemble site
         run: |
           sudo apt-get install -y -qq qrencode >/dev/null
-          tools/ci/assemble-site.sh staging artifacts/web artifacts/apk/app-release.apk site
+          BUILD_NUMBER=$((1000 + BUILD_NUMBER)) bash tools/ci/assemble-site.sh staging artifacts/web artifacts/apk/app-release.apk site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }
