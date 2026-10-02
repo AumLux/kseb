@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform, kIsWeb;
@@ -26,22 +24,9 @@ ThemeData createAppTheme() {
   );
 }
 
-/// Bundled fonts are SIL OFL 1.1; surface their licenses in the About page.
-void _registerFontLicenses() {
-  LicenseRegistry.addLicense(() async* {
-    for (final (family, file) in const [
-      ('Inter', 'assets/fonts/Inter-OFL.txt'),
-      ('Noto Sans Malayalam', 'assets/fonts/NotoSansMalayalam-OFL.txt'),
-    ]) {
-      yield LicenseEntryWithLineBreaks([family], await rootBundle.loadString(file));
-    }
-  });
-}
-
 void main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
-  _registerFontLicenses();
 
   // Initialize Firebase only on supported platforms (Android, iOS, Web)
   // Windows doesn't have Firebase C++ SDK support in current Flutter version
