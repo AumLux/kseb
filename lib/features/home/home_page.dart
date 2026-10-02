@@ -40,7 +40,7 @@ class HomePage extends ConsumerWidget {
     final dashboard = ref.watch(dashboardProvider);
     final pending = ref.watch(outboxProvider.select((s) => s.pending));
     if (user == null) return const SizedBox.shrink();
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = context.isWide;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
@@ -259,7 +259,7 @@ class _Shortcuts extends StatelessWidget {
           child: Text(l10n.homeShortcuts, style: AppTypography.subtitle),
         ),
         LayoutBuilder(builder: (context, c) {
-          final perRow = c.maxWidth >= 600 ? 8 : 4;
+          final perRow = c.maxWidth >= Breakpoints.tablet ? 8 : 4;
           final w = c.maxWidth / perRow;
           return Wrap(children: [
             for (final (i, (icon, label, tint, route)) in actions.indexed)
@@ -327,7 +327,7 @@ class _KpiGrid extends StatelessWidget {
           ),
         ),
         SliverLayoutBuilder(builder: (context, c) {
-          final columns = c.crossAxisExtent >= 900 ? 4 : c.crossAxisExtent >= 600 ? 3 : 2;
+          final columns = c.crossAxisExtent >= 900 ? 4 : c.crossAxisExtent >= Breakpoints.tablet ? 3 : 2;
           return SliverGrid.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: columns,

@@ -481,7 +481,7 @@ class _AssetDetailPageState extends ConsumerState<AssetDetailPage> {
                         (Icons.delete_outline_rounded, l10n.assetEvScrap, AppColors.danger, 'scrapped'),
                       ],
                     ];
-                    final w = c.maxWidth / (c.maxWidth >= 600 ? 6 : 4);
+                    final w = c.maxWidth / (c.maxWidth >= Breakpoints.tablet ? 6 : 4);
                     return Wrap(children: [
                       for (final (icon, label, tint, type) in tiles)
                         SizedBox(

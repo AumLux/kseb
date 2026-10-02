@@ -41,7 +41,7 @@ class AppShell extends ConsumerWidget {
     return LayoutBuilder(builder: (context, constraints) {
       // The rail is for genuinely large screens. A phone in landscape is wide
       // but only ~360dp tall, so it keeps the bottom bar (height is scarce).
-      final useRail = constraints.maxWidth >= 600 && constraints.maxHeight >= 480;
+      final useRail = constraints.maxWidth >= Breakpoints.tablet && constraints.maxHeight >= Breakpoints.railMinHeight;
       if (useRail) {
         return Scaffold(
           body: Row(

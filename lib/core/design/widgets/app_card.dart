@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_tokens.dart';
+import '../../responsive/responsive.dart';
 import '../motion/motion.dart';
 
 /// White card with a hairline border (DESIGN.md › Cards). Tappable when
@@ -171,12 +172,10 @@ class QuickAction extends StatelessWidget {
               children: [
                 IconTile(icon, size: 52, color: tint),
                 const SizedBox(height: AppSpacing.sm),
-                Text(
+                // Never breaks inside a word ("New wor / ksheet") on narrow tiles.
+                FitLabel(
                   label,
                   style: AppTypography.label.copyWith(fontSize: 12.5, color: AppColors.inkSecondary),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
