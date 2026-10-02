@@ -23,7 +23,9 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'releases' }}
 
 env:
-  FLUTTER_CHANNEL: stable
+  # Pinned to the version the team builds with locally: an unpinned "stable"
+  # drifted ahead and required a newer Gradle than the project uses.
+  FLUTTER_VERSION: "3.44.2"
   BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
@@ -32,10 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
       - run: flutter pub get
       - run: flutter analyze
@@ -47,10 +49,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
       - run: flutter pub get
       - name: Build
@@ -70,15 +72,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
           cache: gradle
       - uses: subosito/flutter-action@v2
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
       - run: flutter pub get
       - name: Configure release signing
@@ -144,7 +146,7 @@ jobs:
       name: github-pages
       url: https://aumlux.simplewebsite.in
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
       - name: Assemble site
@@ -184,7 +186,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
       - name: Publish GitHub release
