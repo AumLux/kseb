@@ -77,12 +77,3 @@ supabase/functions/.env
 **/service-account*.json
 tools/**/node_modules/
 tools/**/out/
-
-# Local tool installs (Supabase CLI via npm/scoop)
-/node_modules/
-/package.json
-/package-lock.json
-/install.ps1
-
-# Local Claude Code / preview config
-/.claude/
