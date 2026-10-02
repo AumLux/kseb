@@ -99,6 +99,11 @@ class _SessionListenable extends ChangeNotifier {
 /// The app-wide navigator. Sub-screens (details, forms, registers) open on
 /// it, full-screen above the tab bar, so they get the whole screen and a
 /// pinned primary action; tab roots stay in the shell.
+///
+/// EVERY route below a tab root needs `parentNavigatorKey: rootNavigatorKey`,
+/// not just the first level: go_router puts a route without it on the nearest
+/// *shell* navigator, i.e. behind its full-screen parent (invisible). Guarded
+/// by test/core/router/route_tree_test.dart.
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -158,11 +163,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (_, __) => const WorksheetsPage(),
               routes: [
                 GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, __) => const WorksheetFormPage()),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: ':id',
                   builder: (_, s) => WorksheetDetailPage(id: s.pathParameters['id']!),
                   routes: [
-                    GoRoute(path: 'edit', builder: (_, s) => WorksheetFormPage(worksheetId: s.pathParameters['id'])),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'edit', builder: (_, s) => WorksheetFormPage(worksheetId: s.pathParameters['id'])),
                   ],
                 ),
               ],
@@ -174,16 +179,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (_, __) => const MorePage(),
               routes: [
                 GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'sync', builder: (_, __) => const SyncQueuePage()),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: 'staff',
                   builder: (_, __) => const StaffListPage(),
                   routes: [
-                    GoRoute(path: 'new', builder: (_, __) => const StaffFormPage()),
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, __) => const StaffFormPage()),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: ':id',
                       builder: (_, s) => StaffDetailPage(userId: s.pathParameters['id']!),
                       routes: [
-                        GoRoute(
+                        GoRoute(parentNavigatorKey: rootNavigatorKey,
                           path: 'edit',
                           builder: (_, s) => StaffFormPage(userId: s.pathParameters['id']),
                         ),
@@ -195,20 +200,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'org', builder: (_, __) => const OrgPage()),
                 GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'holidays', builder: (_, __) => const HolidaysPage()),
                 GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'bonus', builder: (_, __) => const BonusPage()),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: 'commercial',
                   builder: (_, __) => const CommercialHomePage(),
                   routes: [
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: ':entity',
                       builder: (_, s) => EntityListPage(entityKey: s.pathParameters['entity']!),
                       routes: [
-                        GoRoute(path: 'new', builder: (_, s) => EntityFormPage(entityKey: s.pathParameters['entity']!)),
-                        GoRoute(
+                        GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, s) => EntityFormPage(entityKey: s.pathParameters['entity']!)),
+                        GoRoute(parentNavigatorKey: rootNavigatorKey,
                           path: ':id',
                           builder: (_, s) => EntityDetailPage(entityKey: s.pathParameters['entity']!, id: s.pathParameters['id']!),
                           routes: [
-                            GoRoute(
+                            GoRoute(parentNavigatorKey: rootNavigatorKey,
                               path: 'edit',
                               builder: (_, s) => EntityFormPage(entityKey: s.pathParameters['entity']!, id: s.pathParameters['id']),
                             ),
@@ -218,44 +223,44 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ],
                 ),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: 'poles',
                   builder: (_, __) => const PolesPage(),
                   routes: [
-                    GoRoute(path: 'new', builder: (_, __) => const PoleFormPage()),
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, __) => const PoleFormPage()),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: ':id',
                       builder: (_, s) => PoleDetailPage(id: s.pathParameters['id']!),
-                      routes: [GoRoute(path: 'edit', builder: (_, s) => PoleFormPage(poleId: s.pathParameters['id']))],
+                      routes: [GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'edit', builder: (_, s) => PoleFormPage(poleId: s.pathParameters['id']))],
                     ),
                   ],
                 ),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: 'assets',
                   builder: (_, __) => const AssetsPage(),
                   routes: [
-                    GoRoute(path: 'new', builder: (_, __) => const AssetFormPage()),
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'new', builder: (_, __) => const AssetFormPage()),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: ':id',
                       builder: (_, s) => AssetDetailPage(id: s.pathParameters['id']!),
-                      routes: [GoRoute(path: 'edit', builder: (_, s) => AssetFormPage(assetId: s.pathParameters['id']))],
+                      routes: [GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'edit', builder: (_, s) => AssetFormPage(assetId: s.pathParameters['id']))],
                     ),
                   ],
                 ),
-                GoRoute(parentNavigatorKey: rootNavigatorKey, 
+                GoRoute(parentNavigatorKey: rootNavigatorKey,
                   path: 'inventory',
                   builder: (_, __) => const InventoryPage(),
                   routes: [
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: 'new',
                       builder: (_, s) => MaterialRequestFormPage(worksheetId: s.uri.queryParameters['worksheet']),
                     ),
-                    GoRoute(
+                    GoRoute(parentNavigatorKey: rootNavigatorKey,
                       path: 'requests/:id',
                       builder: (_, s) => MaterialRequestDetailPage(id: s.pathParameters['id']!),
                     ),
-                    GoRoute(path: 'catalog', builder: (_, __) => const CatalogPage()),
-                    GoRoute(path: 'stores', builder: (_, __) => const StoresPage()),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'catalog', builder: (_, __) => const CatalogPage()),
+                    GoRoute(parentNavigatorKey: rootNavigatorKey, path: 'stores', builder: (_, __) => const StoresPage()),
                   ],
                 ),
               ],

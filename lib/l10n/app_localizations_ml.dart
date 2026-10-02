@@ -2233,4 +2233,63 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get moreApp => 'ആപ്പ്';
+
+  @override
+  String get orgCountCircles => 'സർക്കിളുകൾ';
+
+  @override
+  String get orgCountDivisions => 'ഡിവിഷനുകൾ';
+
+  @override
+  String get orgCountSubdivisions => 'സബ് ഡിവിഷനുകൾ';
+
+  @override
+  String get orgCountSections => 'സെക്ഷനുകൾ';
+
+  @override
+  String get orgSearchUnits => 'സർക്കിൾ, ഡിവിഷൻ അല്ലെങ്കിൽ സെക്ഷൻ തിരയുക';
+
+  @override
+  String orgSectionsWithoutLocation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count സെക്ഷനുകൾക്ക് ഓഫീസ് സ്ഥലം നൽകിയിട്ടില്ല — അവിടെ ഹാജറിന് ജിയോഫെൻസ് ഇല്ല',
+      one: '1 സെക്ഷന് ഓഫീസ് സ്ഥലം നൽകിയിട്ടില്ല — അവിടെ ഹാജറിന് ജിയോഫെൻസ് ഇല്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comRegisters => 'രജിസ്റ്ററുകൾ';
+
+  @override
+  String get comOutstanding => 'ലഭിക്കാനുള്ള തുക';
+
+  @override
+  String comUnpaidBills(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count അടയ്ക്കാത്ത ബില്ലുകളിൽ',
+      one: '1 അടയ്ക്കാത്ത ബില്ലിൽ',
+      zero: 'അടയ്ക്കാത്ത ബില്ലുകളില്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String comAgeingDays(String range) {
+    return '$range ദിവസം';
+  }
+
+  @override
+  String get comOverdue90 => '90 ദിവസത്തിലധികം';
+
+  @override
+  String get comDaysShort => 'ദിവസം';
+
+  @override
+  String get orgOfficeLocation => 'ഓഫീസ് സ്ഥലം';
 }

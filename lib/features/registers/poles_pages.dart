@@ -177,11 +177,15 @@ class _PoleFormPageState extends ConsumerState<PoleFormPage> {
     try {
       if (_isEdit) {
         await repo.updatePole(widget.poleId!, _fields);
-        ref.invalidate(poleProvider(widget.poleId!));
+        ref
+          ..invalidate(poleProvider(widget.poleId!))
+          ..invalidate(polesProvider);
         if (mounted) Navigator.of(context).pop(true);
       } else {
         final (id, synced) = await repo.recordPole(_fields);
         if (!mounted) return;
+        // The list's `await push` never returns past pushReplacement.
+        ref.invalidate(polesProvider);
         showSnack(context, synced ? l10n.poleSaved : l10n.attQueued);
         // Straight to the record so photos can be added on the spot.
         if (synced) {

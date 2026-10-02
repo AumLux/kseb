@@ -11,6 +11,7 @@ import '../../core/l10n/l10n.dart';
 import '../../core/media/document_list.dart';
 import '../../core/ui/dialogs.dart';
 import '../auth/application/session_controller.dart';
+import '../home/dashboard_repository.dart';
 import 'commercial_export.dart';
 import 'commercial_repository.dart';
 import 'entities.dart';
@@ -148,7 +149,7 @@ class _EntityListPageState extends ConsumerState<EntityListPage> {
                   itemBuilder: (context, i) {
                     final r = filtered[i];
                     return AppListRow(
-                      leading: IconTile(_e.icon),
+                      leading: IconTile(_e.icon, color: entityTint(_e)),
                       title: _e.display(r).isEmpty
                           ? formatField(l10n, _e.fields.first, r[_e.fields.first.key])
                           : _e.display(r),
@@ -220,6 +221,7 @@ class EntityDetailPage extends ConsumerWidget {
                   FadeSlideIn(
                     child: DetailHeader(
                       icon: e.icon,
+                      iconColor: entityTint(e),
                       title: e.display(value).isEmpty ? e.title(l10n) : e.display(value),
                       subtitle: e.title(l10n),
                       status: _statusChip(l10n, e, value),
@@ -277,7 +279,7 @@ class _LinkedSection extends ConsumerWidget {
       SectionHeader(link.entity.title(l10n)),
       for (final r in rows)
         AppListRow(
-          leading: IconTile(link.entity.icon, size: 36),
+          leading: IconTile(link.entity.icon, color: entityTint(link.entity), size: 36),
           title: link.entity.display(r),
           subtitle: _secondary(l10n, link.entity, r, refs),
           trailing: _statusChip(l10n, link.entity, r),
@@ -363,6 +365,13 @@ class _EntityFormPageState extends ConsumerState<EntityFormPage> {
     try {
       final id = await ref.read(commercialRepositoryProvider).save(_e, _collect(), id: widget.id);
       if (!mounted) return;
+      // Refresh here, not after the list's `await push`: pushReplacement
+      // below drops that route's completer, so the await never returns.
+      ref
+        ..invalidate(entityRowsProvider(_e.key))
+        ..invalidate(depositsExpiringProvider)
+        ..invalidate(billAgeingProvider)
+        ..invalidate(dashboardProvider);
       if (widget.id == null) {
         context.pushReplacement('/more/commercial/${_e.key}/$id');
       } else {
@@ -506,6 +515,19 @@ class _EntityFormPageState extends ConsumerState<EntityFormPage> {
 
 /// Commercial overview (managers+): expiring deposits, receivables ageing,
 /// search across all registers, and the six registers.
+/// One colour per register, used on its tile, list rows and detail header.
+Color entityTint(EntityDef e) => switch (e.key) {
+      'tenders' => AppColors.primaryDeep,
+      'deposits' => AppColors.success,
+      'work-orders' => AppColors.info,
+      'bills' => AppColors.brandOrangeInk,
+      'letters' => AppColors.inkSecondary,
+      _ => AppColors.ruby,
+    };
+
+/// Commercial overview in the Groww portfolio style: receivables up front
+/// with an ageing bar, headline numbers, the six registers, deposits about
+/// to expire, and search across everything.
 class CommercialHomePage extends ConsumerStatefulWidget {
   const CommercialHomePage({super.key});
 
@@ -514,8 +536,15 @@ class CommercialHomePage extends ConsumerStatefulWidget {
 }
 
 class _CommercialHomePageState extends ConsumerState<CommercialHomePage> {
+  final _searchCtl = TextEditingController();
   String _q = '';
   Future<List<({EntityDef entity, DbRow row})>>? _search;
+
+  @override
+  void dispose() {
+    _searchCtl.dispose();
+    super.dispose();
+  }
 
   void _runSearch(String q) {
     setState(() {
@@ -527,91 +556,297 @@ class _CommercialHomePageState extends ConsumerState<CommercialHomePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final expiring = ref.watch(depositsExpiringProvider).value ?? const <DbRow>[];
-    final ageing = ref.watch(billAgeingProvider).value ?? const <DbRow>[];
-    final buckets = <String, num>{};
-    for (final b in ageing.where((b) => b['bucket'] != 'settled')) {
-      buckets.update(b['bucket'] as String, (v) => v + ((b['outstanding'] as num?) ?? 0),
-          ifAbsent: () => (b['outstanding'] as num?) ?? 0);
-    }
+    final expiring = ref.watch(depositsExpiringProvider);
+    final ageing = ref.watch(billAgeingProvider);
+    final kpis = ref.watch(dashboardProvider).value;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.comTitle)),
       body: RefreshIndicator(
         onRefresh: () async => ref
           ..invalidate(depositsExpiringProvider)
-          ..invalidate(billAgeingProvider),
-        child: ListView(padding: const EdgeInsets.all(AppSpacing.lg), children: [
+          ..invalidate(billAgeingProvider)
+          ..invalidate(dashboardProvider),
+        child: ListView(padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.xxl), children: [
+          FadeSlideIn(
+            child: switch (ageing) {
+              AsyncData(:final value) => _ReceivablesCard(rows: value),
+              AsyncError() => const SizedBox.shrink(),
+              _ => const Skeleton(child: SkeletonBox(height: 180, radius: AppRadius.lg)),
+            },
+          ),
+          if (kpis != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            FadeSlideIn(
+              index: 1,
+              child: StatStrip(items: [
+                StatItem(
+                  label: l10n.kpiOpenTenders,
+                  value: Fmt.qty(kpis.number('open_tenders')),
+                  onTap: () => context.push('/more/commercial/tenders'),
+                ),
+                StatItem(
+                  label: l10n.kpiActiveWorkOrders,
+                  value: Fmt.qty(kpis.number('active_work_orders')),
+                  onTap: () => context.push('/more/commercial/work-orders'),
+                ),
+                StatItem(
+                  label: l10n.kpiDepositsHeld,
+                  value: Fmt.moneyCompact(kpis.number('deposits_held')),
+                  color: AppColors.success,
+                  onTap: () => context.push('/more/commercial/deposits'),
+                ),
+              ]),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.lg),
           TextField(
-            decoration: InputDecoration(hintText: l10n.comSearch, prefixIcon: const Icon(Icons.search_rounded)),
+            controller: _searchCtl,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: l10n.comSearch,
+              prefixIcon: const Icon(Icons.search_rounded),
+              suffixIcon: _q.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: l10n.commonClear,
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: () {
+                        _searchCtl.clear();
+                        _runSearch('');
+                      },
+                    ),
+            ),
             onChanged: _runSearch,
           ),
           if (_search != null)
             FutureBuilder(
               future: _search,
               builder: (context, snap) {
-                if (!snap.hasData) return const Padding(padding: EdgeInsets.all(AppSpacing.xl), child: LoadingView());
+                if (!snap.hasData) {
+                  return const SizedBox(height: 160, child: LoadingView());
+                }
                 final hits = snap.data!;
                 if (hits.isEmpty) {
                   return Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Text('${l10n.comNoResults}: "$_q"', style: AppTypography.caption),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+                    child: Text('${l10n.comNoResults}: "$_q"', style: AppTypography.caption, textAlign: TextAlign.center),
                   );
                 }
-                return Column(children: [
-                  for (final h in hits)
-                    AppListRow(
-                      leading: Icon(h.entity.icon, color: AppColors.inkMute),
-                      title: h.entity.display(h.row),
-                      subtitle: h.entity.title(l10n),
-                      onTap: () => context.push('/more/commercial/${h.entity.key}/${h.row['id']}'),
-                    ),
-                ]);
+                return Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.md),
+                  child: AppCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(children: [
+                      for (final (i, h) in hits.indexed)
+                        AppListRow(
+                          leading: IconTile(h.entity.icon, color: entityTint(h.entity), size: 36),
+                          title: h.entity.display(h.row),
+                          subtitle: h.entity.title(l10n),
+                          showDivider: i < hits.length - 1,
+                          onTap: () => context.push('/more/commercial/${h.entity.key}/${h.row['id']}'),
+                        ),
+                    ]),
+                  ),
+                );
               },
             ),
-          SectionHeader(l10n.comOverview),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xl, AppSpacing.xs, AppSpacing.md),
+            child: Text(l10n.comRegisters, style: AppTypography.subtitle),
+          ),
           LayoutBuilder(builder: (context, c) {
             final cols = c.maxWidth >= 700 ? 3 : 2;
             final w = (c.maxWidth - AppSpacing.md * (cols - 1)) / cols;
             return Wrap(spacing: AppSpacing.md, runSpacing: AppSpacing.md, children: [
-              for (final e in commercialEntities)
+              for (final (i, e) in commercialEntities.indexed)
                 SizedBox(
                   width: w,
-                  child: AppCard(
-                    onTap: () => context.push('/more/commercial/${e.key}'),
-                    child: Row(children: [
-                      Icon(e.icon, color: AppColors.primaryInk),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(child: Text(e.title(l10n), style: AppTypography.bodyStrong)),
-                    ]),
+                  child: FadeSlideIn(
+                    index: i,
+                    child: AppCard(
+                      onTap: () => context.push('/more/commercial/${e.key}'),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(children: [
+                          IconTile(e.icon, color: entityTint(e), size: 40),
+                          const Spacer(),
+                          const Icon(Icons.arrow_outward_rounded, size: AppSizes.iconSm, color: AppColors.inkDisabled),
+                        ]),
+                        const SizedBox(height: AppSpacing.md),
+                        Text(e.title(l10n), style: AppTypography.bodyStrong, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      ]),
+                    ),
                   ),
                 ),
             ]);
           }),
-          SectionHeader(l10n.comExpiringSoon),
-          if (expiring.isEmpty)
-            Text(l10n.comNothingExpiring, style: AppTypography.caption)
-          else
-            for (final d in expiring)
-              AppListRow(
-                leading: const Icon(Icons.timer_rounded, color: AppColors.warning),
-                title: '${depositsEntity.field('kind').labelFor(l10n, d['kind'] as String)} · ${Fmt.money(d['amount'] as num?)}',
-                subtitle: [?d['instrument_no'] as String?, Fmt.date(DateTime.tryParse('${d['validity_date']}'))].join(' · '),
-                trailing: StatusChip(
-                  label: l10n.comDaysLeft((d['days_left'] as num?)?.toInt() ?? 0),
-                  tone: ((d['days_left'] as num?) ?? 0) <= 7 ? StatusTone.danger : StatusTone.warning,
-                  dense: true,
-                ),
-                onTap: () => context.push('/more/commercial/deposits/${d['id']}'),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.xl, AppSpacing.xs, AppSpacing.md),
+            child: Text(l10n.comExpiringSoon, style: AppTypography.subtitle),
+          ),
+          switch (expiring) {
+            AsyncData(:final value) when value.isEmpty => AppCard(
+                child: Row(children: [
+                  const IconTile(Icons.verified_rounded, color: AppColors.success, size: 36),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(child: Text(l10n.comNothingExpiring, style: AppTypography.body)),
+                ]),
               ),
-          SectionHeader(l10n.comAgeing),
+            AsyncData(:final value) => AppCard(
+                padding: EdgeInsets.zero,
+                child: Column(children: [
+                  for (final (i, d) in value.indexed) _ExpiringRow(deposit: d, divider: i < value.length - 1),
+                ]),
+              ),
+            AsyncError(:final error) => ErrorState(
+                title: failureMessage(l10n, error),
+                onRetry: () => ref.invalidate(depositsExpiringProvider),
+              ),
+            _ => const SizedBox(height: 140, child: LoadingView()),
+          },
+        ]),
+      ),
+    );
+  }
+}
+
+class _ExpiringRow extends StatelessWidget {
+  const _ExpiringRow({required this.deposit, required this.divider});
+
+  final DbRow deposit;
+  final bool divider;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final d = deposit;
+    final days = (d['days_left'] as num?)?.toInt() ?? 0;
+    final urgent = days <= 7;
+    return AppListRow(
+      leading: Container(
+        width: 46,
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs + 2),
+        decoration: BoxDecoration(
+          color: (urgent ? AppColors.danger : AppColors.warning).withValues(alpha: 0.10),
+          borderRadius: AppRadius.mdAll,
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text('$days',
+              style: AppTypography.title.copyWith(
+                fontSize: 18,
+                height: 1.1,
+                color: urgent ? AppColors.danger : AppColors.warning,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              )),
+          Text(l10n.comDaysShort,
+              style: AppTypography.overline.copyWith(fontSize: 10, color: urgent ? AppColors.danger : AppColors.warning)),
+        ]),
+      ),
+      title: '${depositsEntity.field('kind').labelFor(l10n, d['kind'] as String)} · ${Fmt.money(d['amount'] as num?)}',
+      subtitle: [?d['instrument_no'] as String?, ?d['bank_name'] as String?, Fmt.date(DateTime.tryParse('${d['validity_date']}'))]
+          .join(' · '),
+      showDivider: divider,
+      onTap: () => context.push('/more/commercial/deposits/${d['id']}'),
+    );
+  }
+}
+
+/// Dark hero: total outstanding, bill count, and a stacked ageing bar with
+/// a legend (0–30 / 31–60 / 61–90 / 90+ days).
+class _ReceivablesCard extends StatelessWidget {
+  const _ReceivablesCard({required this.rows});
+
+  final List<DbRow> rows;
+
+  static const _buckets = ['0-30', '31-60', '61-90', '90+'];
+  static const _colors = [Color(0xFF34D399), Color(0xFFFBBF24), Color(0xFFFB923C), Color(0xFFF87171)];
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final open = rows.where((b) => b['bucket'] != 'settled').toList();
+    final sums = {for (final b in _buckets) b: 0.0};
+    for (final b in open) {
+      final k = b['bucket'] as String;
+      if (sums.containsKey(k)) sums[k] = sums[k]! + ((b['outstanding'] as num?) ?? 0).toDouble();
+    }
+    final total = sums.values.fold<double>(0, (a, b) => a + b);
+
+    return Semantics(
+      label: '${l10n.comOutstanding}: ${Fmt.money(total)}',
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg + 4),
+        decoration: BoxDecoration(
+          borderRadius: AppRadius.lgAll,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.brandDark, Color(0xFF2A2477)],
+          ),
+          boxShadow: AppShadows.level2,
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            for (final b in ['0-30', '31-60', '61-90', '90+']) ...[
-              Expanded(child: KpiCard(label: '$b d', value: Fmt.moneyCompact(buckets[b] ?? 0))),
-              if (b != '90+') const SizedBox(width: AppSpacing.sm),
-            ],
+            const IconTile(Icons.request_quote_rounded, color: Colors.white, background: Color(0x26FFFFFF), size: 36),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(l10n.comOutstanding,
+                  style: AppTypography.label.copyWith(color: const Color(0xFFC9CCF0))),
+            ),
           ]),
-          const SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.md),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(Fmt.money(total), style: AppTypography.display.copyWith(color: Colors.white)),
+          ),
+          Text(l10n.comUnpaidBills(open.length), style: AppTypography.caption.copyWith(color: const Color(0xFFC9CCF0))),
+          const SizedBox(height: AppSpacing.lg),
+          // Stacked ageing bar.
+          ClipRRect(
+            borderRadius: AppRadius.pillAll,
+            child: SizedBox(
+              height: 10,
+              child: total <= 0
+                  ? const ColoredBox(color: Color(0x33FFFFFF))
+                  : Row(children: [
+                      for (final (i, b) in _buckets.indexed)
+                        if (sums[b]! > 0)
+                          Expanded(
+                            flex: (sums[b]! / total * 1000).round().clamp(1, 1000),
+                            child: ColoredBox(color: _colors[i]),
+                          ),
+                    ]),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // Two-column legend: range over amount, so long (Malayalam) labels
+          // wrap inside their cell instead of overflowing the card.
+          LayoutBuilder(builder: (context, c) {
+            final w = (c.maxWidth - AppSpacing.md) / 2;
+            return Wrap(spacing: AppSpacing.md, runSpacing: AppSpacing.sm, children: [
+              for (final (i, b) in _buckets.indexed)
+                SizedBox(
+                  width: w,
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Container(
+                          width: 8, height: 8, decoration: BoxDecoration(color: _colors[i], shape: BoxShape.circle)),
+                    ),
+                    const SizedBox(width: AppSpacing.xs + 2),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(l10n.comAgeingDays(b),
+                            style: AppTypography.caption.copyWith(color: const Color(0xFFC9CCF0))),
+                        Text(Fmt.moneyCompact(sums[b]!),
+                            style: AppTypography.bodyTabular.copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+                      ]),
+                    ),
+                  ]),
+                ),
+            ]);
+          }),
         ]),
       ),
     );

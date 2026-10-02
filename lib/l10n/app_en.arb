@@ -940,5 +940,39 @@
   "commonDetails": "Details",
   "invValue": "Value",
   "commonOpen": "Open",
-  "moreApp": "App"
+  "moreApp": "App",
+  "orgCountCircles": "Circles",
+  "orgCountDivisions": "Divisions",
+  "orgCountSubdivisions": "Sub-divisions",
+  "orgCountSections": "Sections",
+  "orgSearchUnits": "Search circle, division or section",
+  "orgSectionsWithoutLocation": "{count, plural, =1{1 section has no office location — attendance can't be geofenced there} other{{count} sections have no office location — attendance can't be geofenced there}}",
+  "@orgSectionsWithoutLocation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "comRegisters": "Registers",
+  "comOutstanding": "Receivables outstanding",
+  "comUnpaidBills": "{count, plural, =0{No unpaid bills} =1{Across 1 unpaid bill} other{Across {count} unpaid bills}}",
+  "@comUnpaidBills": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "comAgeingDays": "{range} days",
+  "@comAgeingDays": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "comOverdue90": "Over 90 days",
+  "comDaysShort": "days",
+  "orgOfficeLocation": "Office location"
 }

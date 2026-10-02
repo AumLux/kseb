@@ -138,6 +138,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('AUM0201'), findsOneWidget, reason: 'the next free employee ID is generated');
+    expect(
+      find.descendant(of: find.byType(StickyActionBar), matching: find.widgetWithText(FilledButton, 'Save')),
+      findsOneWidget,
+      reason: 'Save is pinned at the bottom, always reachable',
+    );
+    expect(find.text('Generate automatically'), findsNothing, reason: 'only offered in custom-ID mode');
     await tester.enterText(find.byType(TextFormField).at(0), 'Biju Paul');
 
     await tester.tap(find.byType(DropdownButtonFormField<AppRole>));
@@ -199,6 +205,7 @@ void main() {
     await tester.tap(find.text('Use a custom ID'));
     await tester.pumpAndSettle();
     expect(find.widgetWithText(TextFormField, 'AUM0201'), findsOneWidget, reason: 'prefilled with the suggestion');
+    expect(find.text('Generate automatically'), findsOneWidget, reason: 'a way back to the generated ID');
     await tester.enterText(find.byType(TextFormField).at(0), 'LEG-77');
     await tester.enterText(find.byType(TextFormField).at(1), 'Old Timer');
     await tester.tap(find.byType(DropdownButtonFormField<AppRole>));

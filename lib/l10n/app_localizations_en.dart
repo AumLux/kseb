@@ -2223,4 +2223,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moreApp => 'App';
+
+  @override
+  String get orgCountCircles => 'Circles';
+
+  @override
+  String get orgCountDivisions => 'Divisions';
+
+  @override
+  String get orgCountSubdivisions => 'Sub-divisions';
+
+  @override
+  String get orgCountSections => 'Sections';
+
+  @override
+  String get orgSearchUnits => 'Search circle, division or section';
+
+  @override
+  String orgSectionsWithoutLocation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count sections have no office location — attendance can\'t be geofenced there',
+      one:
+          '1 section has no office location — attendance can\'t be geofenced there',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comRegisters => 'Registers';
+
+  @override
+  String get comOutstanding => 'Receivables outstanding';
+
+  @override
+  String comUnpaidBills(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Across $count unpaid bills',
+      one: 'Across 1 unpaid bill',
+      zero: 'No unpaid bills',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String comAgeingDays(String range) {
+    return '$range days';
+  }
+
+  @override
+  String get comOverdue90 => 'Over 90 days';
+
+  @override
+  String get comDaysShort => 'days';
+
+  @override
+  String get orgOfficeLocation => 'Office location';
 }

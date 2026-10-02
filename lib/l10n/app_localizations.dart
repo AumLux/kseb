@@ -4279,6 +4279,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App'**
   String get moreApp;
+
+  /// No description provided for @orgCountCircles.
+  ///
+  /// In en, this message translates to:
+  /// **'Circles'**
+  String get orgCountCircles;
+
+  /// No description provided for @orgCountDivisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Divisions'**
+  String get orgCountDivisions;
+
+  /// No description provided for @orgCountSubdivisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-divisions'**
+  String get orgCountSubdivisions;
+
+  /// No description provided for @orgCountSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Sections'**
+  String get orgCountSections;
+
+  /// No description provided for @orgSearchUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Search circle, division or section'**
+  String get orgSearchUnits;
+
+  /// No description provided for @orgSectionsWithoutLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 section has no office location — attendance can\'t be geofenced there} other{{count} sections have no office location — attendance can\'t be geofenced there}}'**
+  String orgSectionsWithoutLocation(int count);
+
+  /// No description provided for @comRegisters.
+  ///
+  /// In en, this message translates to:
+  /// **'Registers'**
+  String get comRegisters;
+
+  /// No description provided for @comOutstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Receivables outstanding'**
+  String get comOutstanding;
+
+  /// No description provided for @comUnpaidBills.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No unpaid bills} =1{Across 1 unpaid bill} other{Across {count} unpaid bills}}'**
+  String comUnpaidBills(int count);
+
+  /// No description provided for @comAgeingDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} days'**
+  String comAgeingDays(String range);
+
+  /// No description provided for @comOverdue90.
+  ///
+  /// In en, this message translates to:
+  /// **'Over 90 days'**
+  String get comOverdue90;
+
+  /// No description provided for @comDaysShort.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get comDaysShort;
+
+  /// No description provided for @orgOfficeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Office location'**
+  String get orgOfficeLocation;
 }
 
 class _AppLocalizationsDelegate

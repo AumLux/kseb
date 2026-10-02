@@ -141,11 +141,7 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
 
     return Scaffold(
       bottomNavigationBar: StickyActionBar(children: [
-        AppButton.tertiary(
-                        label: l10n.staffCodeUseAuto,
-                        icon: Icons.auto_awesome_rounded,
-                        onPressed: () => setState(() => _autoCode = true),
-                      ),
+        AppButton(label: l10n.commonSave, loading: _busy, expand: true, onPressed: _save),
       ]),
       appBar: AppBar(title: Text(_isEdit ? l10n.staffEditTitle : l10n.staffNewTitle)),
       body: SafeArea(
@@ -184,7 +180,12 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                   if (!_isEdit)
                     Align(
                       alignment: Alignment.centerLeft,
-),
+                      child: AppButton.tertiary(
+                        label: l10n.staffCodeUseAuto,
+                        icon: Icons.auto_awesome_rounded,
+                        onPressed: () => setState(() => _autoCode = true),
+                      ),
+                    ),
                   ],
                   const SizedBox(height: AppSpacing.lg),
                   AppTextField(
@@ -258,7 +259,6 @@ class _StaffFormPageState extends ConsumerState<StaffFormPage> {
                     suffix: const Icon(Icons.calendar_today_rounded),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  AppButton(label: l10n.commonSave, loading: _busy, expand: true, onPressed: _save),
                 ],
               ),
             ),

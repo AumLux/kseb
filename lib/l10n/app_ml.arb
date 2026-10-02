@@ -696,5 +696,18 @@
   "commonDetails": "വിശദാംശങ്ങൾ",
   "invValue": "മൂല്യം",
   "commonOpen": "തുറക്കുക",
-  "moreApp": "ആപ്പ്"
+  "moreApp": "ആപ്പ്",
+  "orgCountCircles": "സർക്കിളുകൾ",
+  "orgCountDivisions": "ഡിവിഷനുകൾ",
+  "orgCountSubdivisions": "സബ് ഡിവിഷനുകൾ",
+  "orgCountSections": "സെക്ഷനുകൾ",
+  "orgSearchUnits": "സർക്കിൾ, ഡിവിഷൻ അല്ലെങ്കിൽ സെക്ഷൻ തിരയുക",
+  "orgSectionsWithoutLocation": "{count, plural, =1{1 സെക്ഷന് ഓഫീസ് സ്ഥലം നൽകിയിട്ടില്ല — അവിടെ ഹാജറിന് ജിയോഫെൻസ് ഇല്ല} other{{count} സെക്ഷനുകൾക്ക് ഓഫീസ് സ്ഥലം നൽകിയിട്ടില്ല — അവിടെ ഹാജറിന് ജിയോഫെൻസ് ഇല്ല}}",
+  "comRegisters": "രജിസ്റ്ററുകൾ",
+  "comOutstanding": "ലഭിക്കാനുള്ള തുക",
+  "comUnpaidBills": "{count, plural, =0{അടയ്ക്കാത്ത ബില്ലുകളില്ല} =1{1 അടയ്ക്കാത്ത ബില്ലിൽ} other{{count} അടയ്ക്കാത്ത ബില്ലുകളിൽ}}",
+  "comAgeingDays": "{range} ദിവസം",
+  "comOverdue90": "90 ദിവസത്തിലധികം",
+  "comDaysShort": "ദിവസം",
+  "orgOfficeLocation": "ഓഫീസ് സ്ഥലം"
 }

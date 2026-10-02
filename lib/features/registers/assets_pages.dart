@@ -183,7 +183,9 @@ class _AssetFormPageState extends ConsumerState<AssetFormPage> {
     try {
       if (_isEdit) {
         await repo.updateAsset(widget.assetId!, common);
-        ref.invalidate(assetProvider(widget.assetId!));
+        ref
+          ..invalidate(assetProvider(widget.assetId!))
+          ..invalidate(assetsProvider);
         if (mounted) Navigator.of(context).pop(true);
       } else {
         final id = await repo.registerAsset({
@@ -194,7 +196,10 @@ class _AssetFormPageState extends ConsumerState<AssetFormPage> {
           'condition': _condition,
           'status': _status,
         });
-        if (mounted) context.pushReplacement('/more/assets/$id');
+        if (!mounted) return;
+        // The list's `await push` never returns past pushReplacement.
+        ref.invalidate(assetsProvider);
+        context.pushReplacement('/more/assets/$id');
       }
     } catch (e) {
       if (mounted) showSnack(context, failureMessage(context.l10n, e));

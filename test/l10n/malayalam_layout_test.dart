@@ -16,6 +16,9 @@ import 'package:kseb/features/attendance/presentation/my_attendance_view.dart';
 import 'package:kseb/features/attendance/presentation/team_attendance_view.dart';
 import 'package:kseb/features/auth/data/auth_repository.dart';
 import 'package:kseb/features/auth/presentation/login_page.dart';
+import 'package:kseb/features/commercial/commercial_repository.dart';
+import 'package:kseb/features/commercial/entity_pages.dart';
+import 'package:kseb/features/org/presentation/org_page.dart';
 import 'package:kseb/features/org/presentation/section_picker.dart';
 import 'package:kseb/features/staff/data/staff_repository.dart';
 import 'package:kseb/features/staff/presentation/staff_form_page.dart';
@@ -161,6 +164,15 @@ Future<void> _pump(WidgetTester tester, Widget child, {double textScale = 1.0}) 
             TeamDayRow(_member('203', 'Anil', 'staff'), null),
           ]),
       worksheetsProvider.overrideWith((ref, scope) async => [_ws('1', 'submitted'), _ws('2', 'in_progress')]),
+      billAgeingProvider.overrideWith((ref) async => [
+            for (final (i, b) in ['0-30', '31-60', '61-90', '90+', 'settled'].indexed)
+              {'id': 'b$i', 'bucket': b, 'outstanding': 1250000 * (i + 1)},
+          ]),
+      depositsExpiringProvider.overrideWith((ref) async => [
+            {'id': 'd1', 'kind': 'bg', 'amount': 2500000, 'instrument_no': 'BG/2026/00451', 'bank_name': 'State Bank of India',
+             'validity_date': '2026-10-09', 'days_left': 7},
+            {'id': 'd2', 'kind': 'emd', 'amount': 150000, 'validity_date': '2026-10-28', 'days_left': 26},
+          ]),
       locationServiceProvider.overrideWithValue(_Gps()),
       myTodayProvider.overrideWith((ref) async => null),
       myMonthProvider.overrideWith((ref, month) async => const []),
@@ -239,6 +251,24 @@ void main() {
         await tester.tap(find.text('open'));
         await tester.pumpAndSettle();
         expect(find.text('Electrical Section, Kaloor'), findsOneWidget);
+      });
+
+      testWidgets('organisation drill-down fits', (tester) async {
+        await _pump(tester, const OrgPage(), textScale: scale);
+        expect(find.byType(StatStrip), findsOneWidget);
+        await tester.tap(find.text('Electrical Circle, Ernakulam'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Electrical Division, Ernakulam'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Electrical Sub-division, Kaloor'));
+        await tester.pumpAndSettle();
+        expect(find.text('Electrical Section, Kaloor'), findsOneWidget);
+      });
+
+      testWidgets('commercial overview fits', (tester) async {
+        await _pump(tester, const CommercialHomePage(), textScale: scale);
+        await tester.drag(find.byType(ListView).first, const Offset(0, -1400));
+        await tester.pumpAndSettle();
       });
 
       testWidgets('bottom navigation labels fit', (tester) async {
