@@ -52,10 +52,14 @@
   .meta { margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.62); }
   .meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-  .phone { justify-self: center; width: 300px; height: 620px; border-radius: 44px; padding: 12px; background: #0B0D2A; box-shadow: 0 40px 80px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.08); position: relative; }
+  .phone { justify-self: center; width: 300px; height: 621px; border-radius: 44px; padding: 12px; background: #0B0D2A; box-shadow: 0 40px 80px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.08); position: relative; }
   .phone::before { content: ""; position: absolute; top: 20px; left: 50%; width: 90px; height: 22px; margin-left: -45px; border-radius: 12px; background: #0B0D2A; z-index: 2; }
-  .phone iframe, .phone .poster { width: 100%; height: 100%; border: 0; border-radius: 34px; background: #fff; display: block; }
-  .poster { display: grid !important; place-items: center; text-align: center; color: var(--ink); padding: 24px; }
+  /* The app renders at a real phone viewport (390x844 CSS px) and is scaled
+     to the frame, so the preview looks like a phone, not a 276px sliver. */
+  .screen { position: relative; width: 100%; height: 100%; border-radius: 34px; overflow: hidden; background: #fff; }
+  .screen iframe { position: absolute; top: 0; left: 0; width: 390px; height: 844px; border: 0; background: #fff;
+                   transform: scale(var(--s, .7077)); transform-origin: 0 0; }
+  .poster { width: 100%; height: 100%; display: grid; place-items: center; text-align: center; color: var(--ink); padding: 24px; }
   .poster p { color: var(--mute); font-size: 14px; }
 
   section { padding: 64px 0; }
@@ -126,6 +130,7 @@
       <p class="meta">Android 7.0+ · 64-bit phones · <a href="{{APK_MIRROR}}">mirror download</a> · SHA-256 <code>{{SHA_SHORT}}…</code></p>
     </div>
     <div class="phone" aria-label="Live preview of the app">
+      <div class="screen" id="screen">
       <div class="poster" id="poster">
         <div>
           <div class="logo" style="width:56px;height:56px;margin:0 auto 14px;font-size:24px;border-radius:16px">A</div>
@@ -133,6 +138,7 @@
           <p>Runs the real app against the preview server.</p>
           <button class="btn btn-primary btn-small" onclick="startPreview()">Start preview</button>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -198,7 +204,14 @@
     f.title = 'AumLux web app';
     f.loading = 'lazy';
     p.replaceWith(f);
+    fit();
   }
+  // Scale the 390px-wide app viewport to whatever width the frame has.
+  function fit() {
+    var sc = document.getElementById('screen');
+    if (sc) sc.style.setProperty('--s', (sc.clientWidth / 390).toFixed(4));
+  }
+  window.addEventListener('resize', fit);
 </script>
 </body>
 </html>

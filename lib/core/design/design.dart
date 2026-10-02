@@ -3,6 +3,7 @@ library;
 
 export 'app_theme.dart';
 export 'app_tokens.dart';
+export '../responsive/responsive.dart';
 export 'motion/motion.dart';
 export 'widgets/app_button.dart';
 export 'widgets/brand_mark.dart';

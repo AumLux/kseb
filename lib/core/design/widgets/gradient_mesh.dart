@@ -38,6 +38,12 @@ class _MeshPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Blob radii scale with the *width*, so on wide (desktop/tablet) screens
+    // they reach far below the hero. Unclipped, that overflow was drawn over
+    // the sections beneath it (a CustomScrollView paints its first sliver
+    // last), washing out Home's shortcuts and KPI tiles. Paint the backdrop
+    // only (the child is not clipped).
+    canvas.clipRect(Offset.zero & size);
     canvas.drawRect(Offset.zero & size, Paint()..color = AppColors.canvas);
     for (final (center, radius, color, alpha) in _blobs) {
       final c = Offset(center.dx * size.width, center.dy * size.height);

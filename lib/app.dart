@@ -68,7 +68,9 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
         final minutes = ref.watch(appSettingsProvider).value?.idleTimeoutMinutes ?? 15;
         final online = ref.watch(onlineProvider).value ?? true;
         final page = child ?? const SizedBox.shrink();
-        return IdleGuard(
+        // Device-aware type density (lib/core/responsive), above every page.
+        return ResponsiveScope(
+          child: IdleGuard(
           timeoutMinutes: minutes,
           // App-level, so full-screen pages (forms, details) show it too.
           child: online
@@ -83,6 +85,7 @@ class _AumluxAppState extends ConsumerState<AumluxApp> with WidgetsBindingObserv
                   ),
                   Expanded(child: MediaQuery.removePadding(context: context, removeTop: true, child: page)),
                 ]),
+          ),
         );
       },
     );

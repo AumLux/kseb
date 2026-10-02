@@ -946,6 +946,7 @@ It's **memoised** per script, so it isn't rebuilt on every root rebuild.
 - **Detail:** summary card with status chip, sections (`SectionHeader`), actions as buttons at the bottom; destructive actions use `confirmAction`.
 - **Sheets:** `showAppSheet` + `SheetScaffold` (optional `leading` icon, title, subtitle, scrollable body, pinned primary/secondary buttons). Use them for every prompt, short form, picker and confirmation. `confirmAction` is a sheet too; there are no centred `AlertDialog`s left.
 - **Overview pages** (Teams, Holidays, Catalogue, Org, Commercial): a `StatStrip` of counts or a gradient hero card (`brandDark → primaryDeep`) for the one number or date that matters, then overline-titled groups of `AppCard`-wrapped `AppListRow`s with tinted `IconTile`s. Search and `ChoiceChip` filters sit above the groups.
+- **Responsive rules (`lib/core/responsive/responsive.dart`, exported by `design.dart`):** `Breakpoints` (compact < 360, phone, tablet ≥ 600, desktop ≥ 1024), `context.device` / `isCompact` / `isWide` / `responsive(phone:, tablet:, desktop:)` / `pageGutter`. Use these instead of ad-hoc `width >= 600` checks. `ResponsiveScope` (in `app.dart`) tightens type slightly below 360dp on top of the user's text size, and `FitLabel` shrinks short captions instead of breaking a word ("New wor/ksheet").
 - **Discoverability:** put secondary destinations as visible `QuickAction` tiles (Inventory → Catalogue, Stores, Stock register), not inside a ⋮ menu.
 
 ### 10.8 Accessibility checklist (enforced in review)
@@ -1252,6 +1253,8 @@ These cost real debugging time. Don't relearn them.
 | A new record didn't appear in its list after saving | The form `pushReplacement`s to the new record's page, which drops the list's `await context.push(...)` completer, so the list's refresh never ran. The form invalidates the list provider itself after a successful save. |
 | A sheet opened from More/Attendance/Work was half-hidden by the bottom nav bar | `showModalBottomSheet` defaults to the nearest (shell) navigator; use `showAppSheet` / `useRootNavigator: true` (`root_sheets_test.dart`). |
 | New icons render as empty tiles on the web build | The browser cached the previous tree-shaken `MaterialIcons-Regular.otf`; bust it with the bundle when reviewing (`fetch(url, {cache: 'reload'})`). Android bundles the font, so it isn't affected. |
+| Home looked washed out on desktop | `GradientMesh` blobs are sized from the width and weren't clipped; a `CustomScrollView` paints its first sliver last, so the overflow covered the shortcuts and KPIs. The painter clips to its box (`gradient_mesh_test.dart`). |
+| The website's phone preview looked cramped | The iframe was 276px wide (smaller than any phone). It now renders at 390×844 and is scaled to the frame. |
 | `google-services` Gradle plugin breaks after the package rename | removed; `firebase_options.dart` is enough (re-run `flutterfire configure` for the new package) |
 
 ---
