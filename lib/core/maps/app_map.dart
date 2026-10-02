@@ -184,7 +184,7 @@ class LocationPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (points.isEmpty) return const SizedBox.shrink();
     final all = [for (final p in points) p.point, if (fence != null) fence!.$1];
-    void open() => Navigator.of(context).push(MaterialPageRoute<void>(
+    void open() => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(
           builder: (_) => MapViewPage(title: title ?? context.l10n.mapTitle, points: points, fence: fence),
         ));
     return Semantics(

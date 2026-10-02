@@ -87,7 +87,12 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(l10n.changePasswordSubtitle, style: AppTypography.body),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconTile(Icons.lock_reset_rounded, color: AppColors.primaryDeep, size: 56),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    Text(l10n.changePasswordSubtitle, style: AppTypography.body.copyWith(color: AppColors.inkSecondary)),
                     const SizedBox(height: AppSpacing.xl),
                     if (_error != null) ...[
                       Text(_error!, style: AppTypography.label.copyWith(color: AppColors.danger)),

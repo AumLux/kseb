@@ -212,7 +212,7 @@ class _Thumb extends ConsumerWidget {
     final url = ref.watch(signedUrlProvider(a.storagePath)).value;
     return _Tile(
       semanticLabel: a.fileName,
-      onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+      onTap: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(
         builder: (_) => PhotoViewerPage(attachments: attachments, initialIndex: index),
       )),
       child: Stack(fit: StackFit.expand, children: [

@@ -135,7 +135,7 @@ class MorePage extends ConsumerWidget {
       ),
       _Item(Icons.translate_rounded, AppColors.primaryDeep, l10n.moreLanguage, () => _pickLanguage(context, ref),
           subtitle: locale.languageCode == 'ml' ? l10n.languageMalayalam : l10n.languageEnglish),
-      _Item(Icons.password_rounded, AppColors.warning, l10n.moreChangePassword, () => Navigator.of(context).push(
+      _Item(Icons.password_rounded, AppColors.warning, l10n.moreChangePassword, () => Navigator.of(context, rootNavigator: true).push(
             MaterialPageRoute<void>(builder: (_) => const ChangePasswordPage(voluntary: true)),
           )),
       _Item(Icons.info_outline_rounded, AppColors.inkSecondary, l10n.moreAbout, () => _about(context)),

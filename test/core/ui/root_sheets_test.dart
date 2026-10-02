@@ -22,4 +22,16 @@ void main() {
     }
     expect(missing, isEmpty, reason: 'pass useRootNavigator: true (or use showAppSheet)');
   });
+
+  test('full-screen pages pushed imperatively use the root navigator', () {
+    final missing = <String>[];
+    for (final f in Directory('lib').listSync(recursive: true).whereType<File>()) {
+      if (!f.path.endsWith('.dart')) continue;
+      final lines = f.readAsLinesSync();
+      for (final (i, l) in lines.indexed) {
+        if (l.contains('Navigator.of(context).push(')) missing.add('${f.path}:${i + 1}');
+      }
+    }
+    expect(missing, isEmpty, reason: 'use Navigator.of(context, rootNavigator: true).push, or a go_router route');
+  });
 }

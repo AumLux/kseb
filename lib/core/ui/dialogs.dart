@@ -17,10 +17,16 @@ Future<bool> confirmAction(
 }) async {
   final l10n = context.l10n;
   final tone = destructive ? AppColors.danger : AppColors.primary;
+  // "Suspend X? They are signed out…" → question as the title, the rest as
+  // the explanation, so a long message doesn't render as one heavy title.
+  final q = message.indexOf('?');
+  final split = title == null && q > 0 && q < message.length - 1;
+  final heading = title ?? (split ? message.substring(0, q + 1) : message);
+  final String? body = title != null ? message : (split ? message.substring(q + 1).trim() : null);
   final ok = await showAppSheet<bool>(
     context,
     builder: (context) => SheetScaffold(
-      title: title ?? message,
+      title: heading,
       primaryLabel: confirmLabel,
       primaryDestructive: destructive,
       onPrimary: () => Navigator.pop(context, true),
@@ -28,7 +34,7 @@ Future<bool> confirmAction(
       onSecondary: () => Navigator.pop(context, false),
       leading: IconTile(icon ?? (destructive ? Icons.warning_amber_rounded : Icons.help_outline_rounded), color: tone),
       children: [
-        if (title != null) Text(message, style: AppTypography.body.copyWith(color: AppColors.inkSecondary)),
+        if (body != null && body.isNotEmpty) Text(body, style: AppTypography.body.copyWith(color: AppColors.inkSecondary)),
       ],
     ),
   );

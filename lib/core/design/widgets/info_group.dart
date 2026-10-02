@@ -65,7 +65,11 @@ class _InfoLine extends StatelessWidget {
     final r = row;
     final valueStyle = (r.tabular ? AppTypography.bodyTabular : AppTypography.bodyStrong)
         .copyWith(fontWeight: FontWeight.w600);
-    final stacked = r.child == null && (r.value!.length > 28 || r.value!.contains('\n'));
+    final v = r.value ?? '';
+    // Stack long values, and long unbreakable tokens (emails, URLs, codes)
+    // that would otherwise wrap mid-word in the right-hand column.
+    final stacked = r.child == null &&
+        (v.length > 28 || v.contains('\n') || (!v.contains(' ') && v.length > 18) || r.label.length + v.length > 40);
     final label = Text(r.label, style: AppTypography.caption.copyWith(color: AppColors.inkMute));
     final value = r.child ??
         Text(r.value!, style: valueStyle, textAlign: stacked ? TextAlign.start : TextAlign.end);
