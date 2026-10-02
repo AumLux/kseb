@@ -20,6 +20,14 @@ test -s "$APK"
 rm -rf "$OUT"
 mkdir -p "$OUT/web" "$OUT/downloads"
 cp -R "$WEB/." "$OUT/web/"
+# Freshness after every deploy (GitHub Pages caches for 10 minutes and the
+# file names never change): version the app's entry URLs, and replace the
+# deprecated Flutter service worker with one that removes itself.
+sed -i "s|\"mainJsPath\":\"main.dart.js\"|\"mainJsPath\":\"main.dart.js?v=$BUILD\"|" "$OUT/web/flutter_bootstrap.js"
+sed -i "s|src=\"flutter_bootstrap.js\"|src=\"flutter_bootstrap.js?v=$BUILD\"|" "$OUT/web/index.html"
+grep -q "main.dart.js?v=$BUILD" "$OUT/web/flutter_bootstrap.js"
+grep -q "flutter_bootstrap.js?v=$BUILD" "$OUT/web/index.html"
+cp tools/ci/sw-kill.js "$OUT/web/flutter_service_worker.js"
 APK_NAME="aumlux-${VERSION}-${BUILD}.apk"
 cp "$APK" "$OUT/downloads/$APK_NAME"
 cp "$APK" "$OUT/downloads/aumlux.apk"   # stable link for older shares
