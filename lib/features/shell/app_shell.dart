@@ -36,7 +36,15 @@ class AppShell extends ConsumerWidget {
       (Icons.grid_view_outlined, Icons.grid_view_rounded, l10n.navMore),
     ];
 
-    final body = navigationShell;
+    // System Back on Attendance/Work/More returns to Home (Groww/Instagram
+    // pattern) instead of leaving the app; on Home it exits as usual.
+    final body = PopScope(
+      canPop: navigationShell.currentIndex == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _go(0);
+      },
+      child: navigationShell,
+    );
 
     return LayoutBuilder(builder: (context, constraints) {
       // The rail is for genuinely large screens. A phone in landscape is wide

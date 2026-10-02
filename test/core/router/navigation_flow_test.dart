@@ -17,6 +17,8 @@ import 'package:kseb/features/commercial/commercial_repository.dart';
 import 'package:kseb/features/commercial/entities.dart';
 import 'package:kseb/features/commercial/entity_pages.dart';
 import 'package:kseb/features/home/dashboard_repository.dart';
+import 'package:kseb/features/home/home_page.dart';
+import 'package:kseb/features/more/more_page.dart';
 import 'package:kseb/features/notifications/notifications.dart';
 import 'package:kseb/features/org/data/org_repository.dart';
 import 'package:kseb/features/staff/data/staff_repository.dart';
@@ -197,5 +199,28 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(EntityListPage), findsOneWidget);
     expect(find.textContaining('LT line extension'), findsOneWidget, reason: 'the list refreshed');
+  });
+
+  // Regression: shortcuts used go(), which rebuilt the target's whole stack,
+  // so Back from e.g. Staff walked to the More menu instead of Home.
+  testWidgets('Home → shortcut → Back returns to Home', (tester) async {
+    await _boot(tester, at: Routes.home);
+    expect(find.byType(HomePage), findsOneWidget);
+    await tester.tap(find.widgetWithText(QuickAction, 'Staff'));
+    await tester.pumpAndSettle();
+    expect(find.byType(StaffListPage), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(HomePage), findsOneWidget, reason: 'back to Home, not the More menu');
+    expect(find.byType(MorePage), findsNothing);
+  });
+
+  testWidgets('System Back on another tab returns to Home', (tester) async {
+    await _boot(tester, at: Routes.more);
+    expect(find.byType(MorePage), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(HomePage), findsOneWidget);
   });
 }

@@ -68,7 +68,7 @@ class HomePage extends ConsumerWidget {
                           Row(children: [
                             if (!wide) const BrandMark(size: 34),
                             const Spacer(),
-                            SyncBadge(pending: pending, onTap: () => context.go(Routes.syncQueue)),
+                            SyncBadge(pending: pending, onTap: () => openFromHome(context, Routes.syncQueue)),
                             const NotificationBell(),
                           ]),
                           const SizedBox(height: AppSpacing.xl),
@@ -126,6 +126,22 @@ class HomePage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Opens a destination from Home so that Back returns to Home.
+///
+/// Tab roots (Attendance, Work, More) switch tabs; Back from another tab
+/// then lands on Home (AppShell). Everything else is *pushed* above Home:
+/// `go('/more/inventory/new')` would instead rebuild the whole More stack,
+/// so Back walked up to Inventory and then the More menu.
+@visibleForTesting
+void openFromHome(BuildContext context, String route) {
+  const tabRoots = {Routes.home, Routes.attendance, Routes.work, Routes.more};
+  if (tabRoots.contains(route)) {
+    context.go(route);
+  } else {
+    context.push(route);
   }
 }
 
@@ -267,7 +283,7 @@ class _Shortcuts extends StatelessWidget {
                 width: w,
                 child: FadeSlideIn(
                   index: i,
-                  child: QuickAction(icon: icon, label: label, tint: tint, onTap: () => context.go(route)),
+                  child: QuickAction(icon: icon, label: label, tint: tint, onTap: () => openFromHome(context, route)),
                 ),
               ),
           ]);
@@ -345,7 +361,7 @@ class _KpiGrid extends StatelessWidget {
                   value: k.value,
                   icon: k.icon,
                   tint: k.tint,
-                  onTap: k.route == null ? null : () => context.go(k.route!),
+                  onTap: k.route == null ? null : () => openFromHome(context, k.route!),
                 ),
               );
             },
