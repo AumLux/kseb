@@ -42,6 +42,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
               icon: const Icon(Icons.table_view_rounded),
               onPressed: () => showModalBottomSheet<void>(
                 context: context,
+                useRootNavigator: true,
                 isScrollControlled: true,
                 builder: (_) => const _MusterSheet(),
               ),

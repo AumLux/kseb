@@ -11,7 +11,7 @@ import '../data/worksheet_repository.dart';
 import 'worksheet_labels.dart';
 
 Future<bool> _sheet(BuildContext context, Widget child) async =>
-    await showModalBottomSheet<bool>(context: context, isScrollControlled: true, builder: (_) => child) ?? false;
+    await showModalBottomSheet<bool>(context: context, useRootNavigator: true, isScrollControlled: true, builder: (_) => child) ?? false;
 
 EdgeInsets _sheetPadding(BuildContext context) => EdgeInsets.fromLTRB(
     AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom);

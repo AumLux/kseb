@@ -164,6 +164,7 @@ class _StockTabState extends ConsumerState<_StockTab> {
               ),
               onTap: () => showModalBottomSheet<void>(
                 context: context,
+                useRootNavigator: true,
                 isScrollControlled: true,
                 builder: (_) => _StockLineSheet(line: s),
               ),
@@ -189,8 +190,8 @@ class _StockLineSheetState extends ConsumerState<_StockLineSheet> {
 
   Future<void> _adjust({required bool scrap}) async {
     final l10n = context.l10n;
-    final result = await showDialog<(num, String)>(
-      context: context,
+    final result = await showAppSheet<(num, String)>(
+      context,
       builder: (_) => _QtyReasonDialog(
         title: scrap ? l10n.invScrap : l10n.invAdjust,
         help: scrap ? null : l10n.invAdjustHelp,
@@ -357,15 +358,20 @@ class _QtyReasonDialogState extends State<_QtyReasonDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AlertDialog(
-      title: Text(widget.title),
-      content: Form(
-        key: _formKey,
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          if (widget.help != null) ...[
-            Text(widget.help!, style: AppTypography.caption),
-            const SizedBox(height: AppSpacing.md),
-          ],
+    return Form(
+      key: _formKey,
+      child: SheetScaffold(
+        title: widget.title,
+        subtitle: widget.help,
+        primaryLabel: l10n.commonSave,
+        onPrimary: () {
+          if (_formKey.currentState?.validate() ?? false) {
+            Navigator.pop(context, (num.parse(_qty.text), _reason.text.trim()));
+          }
+        },
+        secondaryLabel: l10n.commonCancel,
+        onSecondary: () => Navigator.pop(context),
+        children: [
           AppTextField(
             label: l10n.invQuantity,
             controller: _qty,
@@ -383,19 +389,9 @@ class _QtyReasonDialogState extends State<_QtyReasonDialog> {
             required: true,
             validator: (v) => (v?.trim().length ?? 0) >= 5 ? null : l10n.attReasonTooShort,
           ),
-        ]),
+          const SizedBox(height: AppSpacing.lg),
+        ],
       ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
-        TextButton(
-          onPressed: () {
-            if (_formKey.currentState?.validate() ?? false) {
-              Navigator.pop(context, (num.parse(_qty.text), _reason.text.trim()));
-            }
-          },
-          child: Text(l10n.commonSave),
-        ),
-      ],
     );
   }
 }

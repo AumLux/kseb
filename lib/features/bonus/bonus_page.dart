@@ -8,6 +8,7 @@ import '../../core/format/formatters.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/supabase/providers.dart';
 import '../../core/ui/dialogs.dart';
+import '../../core/ui/sheets.dart';
 import '../auth/application/session_controller.dart';
 import '../auth/domain/app_user.dart';
 import '../leave/leave.dart' show requestStatusLabel;
@@ -73,8 +74,7 @@ class BonusPage extends ConsumerWidget {
       floatingActionButton: me.role.atLeast(AppRole.supervisor)
           ? FloatingActionButton.extended(
               onPressed: () async {
-                final ok = await showModalBottomSheet<bool>(
-                    context: context, isScrollControlled: true, builder: (_) => const _ProposeSheet());
+                final ok = await showAppSheet<bool>(context, builder: (_) => const _ProposeSheet());
                 if (ok == true) ref.invalidate(bonusEntriesProvider);
               },
               icon: const Icon(Icons.card_giftcard_rounded),
@@ -176,14 +176,16 @@ class _ProposeSheetState extends ConsumerState<_ProposeSheet> {
         .where((p) => p.active && p.id != me.id && me.role.outranks(p.role) && me.sectionIds.contains(p.sectionId))
         .toList();
     final digits = [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))];
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom),
-      child: Form(
-        key: _formKey,
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(l10n.bonusPropose, style: AppTypography.subtitle),
-          const SizedBox(height: AppSpacing.lg),
+    return Form(
+      key: _formKey,
+      child: SheetScaffold(
+        title: l10n.bonusPropose,
+        subtitle: l10n.bonusPendingNote,
+        leading: const IconTile(Icons.card_giftcard_rounded, color: AppColors.brandOrangeInk, size: 48),
+        primaryLabel: l10n.bonusPropose,
+        busy: _busy,
+        onPrimary: _save,
+        children: [
           AppDropdownField<String>(
             label: l10n.bonusFor,
             required: true,
@@ -210,9 +212,8 @@ class _ProposeSheetState extends ConsumerState<_ProposeSheet> {
             maxLines: 2,
             validator: (v) => (v?.trim().length ?? 0) >= 5 ? null : l10n.attReasonTooShort,
           ),
-          const SizedBox(height: AppSpacing.xl),
-          AppButton(label: l10n.bonusPropose, expand: true, loading: _busy, onPressed: _save),
-        ]),
+          const SizedBox(height: AppSpacing.lg),
+        ],
       ),
     );
   }

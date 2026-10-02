@@ -2283,4 +2283,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orgOfficeLocation => 'Office location';
+
+  @override
+  String get moreLanguageHint => 'Menus, labels and messages switch instantly.';
+
+  @override
+  String get moreVersion => 'Version';
+
+  @override
+  String get moreMapData => 'Map data';
+
+  @override
+  String get moreLicences => 'Open-source licences';
+
+  @override
+  String get teamsCountMembers => 'In teams';
+
+  @override
+  String get teamsCountUnassigned => 'Not in a team';
+
+  @override
+  String teamsWithoutSupervisor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count teams have no supervisor',
+      one: '1 team has no supervisor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teamEdit => 'Edit team';
+
+  @override
+  String get teamNoMembersHint =>
+      'No one is in this team yet. Assign people from Staff › Edit.';
+
+  @override
+  String get teamActiveHint => 'Suspended teams can\'t be assigned work.';
+
+  @override
+  String get invCountMaterials => 'Materials';
+
+  @override
+  String get invCountCategories => 'Categories';
+
+  @override
+  String get invNoMatches => 'No materials match';
+
+  @override
+  String get invNoStores => 'No stores yet';
+
+  @override
+  String invStoreMaterials(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count materials',
+      one: '1 material',
+      zero: 'No stock',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String invStoreLow(int count) {
+    return '$count low';
+  }
+
+  @override
+  String get holidaysNext => 'Next holiday';
+
+  @override
+  String get holidaysToday => 'Today';
+
+  @override
+  String holidaysInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'In $count days',
+      one: 'Tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get holidaysCountTotal => 'This year';
+
+  @override
+  String get holidaysCountUpcoming => 'Upcoming';
+
+  @override
+  String get holidaysCountSection => 'Section only';
+
+  @override
+  String get holidaysStateWide => 'State-wide';
+
+  @override
+  String get holidaysSectionOnly => 'Section holiday';
+
+  @override
+  String get syncAllDoneHint =>
+      'Anything you record offline appears here until it uploads.';
+
+  @override
+  String get syncPendingHint =>
+      'Saved on this phone. Uploads automatically when you\'re online.';
+
+  @override
+  String get syncFailedHint =>
+      'Some items were rejected. Retry them, or discard if they\'re no longer needed.';
 }

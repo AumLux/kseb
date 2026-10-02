@@ -10,6 +10,7 @@ import '../../core/l10n/l10n.dart';
 import '../../core/outbox/outbox.dart';
 import '../../core/supabase/providers.dart';
 import '../../core/ui/dialogs.dart';
+import '../../core/ui/sheets.dart';
 import '../auth/application/session_controller.dart';
 
 enum LeaveType { casual, sick, earned, unpaid, other }
@@ -144,11 +145,7 @@ class LeavePage extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.leaveMine)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final sent = await showModalBottomSheet<bool>(
-            context: context,
-            isScrollControlled: true,
-            builder: (_) => const _LeaveForm(),
-          );
+          final sent = await showAppSheet<bool>(context, builder: (_) => const _LeaveForm());
           if (sent == true) ref.invalidate(myLeaveProvider);
         },
         icon: const Icon(Icons.add_rounded),
@@ -271,52 +268,50 @@ class _LeaveFormState extends ConsumerState<_LeaveForm> {
           ),
         );
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(l10n.leaveRequest, style: AppTypography.subtitle),
-            const SizedBox(height: AppSpacing.lg),
-            Row(children: [
-              dateField(l10n.leaveFrom, _from, (d) => setState(() {
-                    _from = d;
-                    if (_to.isBefore(d)) _to = d;
-                  })),
-              const SizedBox(width: AppSpacing.md),
-              dateField(l10n.leaveTo, _to, (d) => setState(() => _to = d)),
-            ]),
-            if (_to.isBefore(_from))
-              Text(l10n.leaveDateOrder, style: AppTypography.caption.copyWith(color: AppColors.danger)),
-            const SizedBox(height: AppSpacing.lg),
-            AppDropdownField<LeaveType>(
-              label: l10n.leaveType,
-              items: LeaveType.values,
-              value: _type,
-              itemLabel: (t) => leaveTypeLabel(l10n, t),
-              onChanged: (t) => setState(() => _type = t ?? _type),
+    final days = _to.isBefore(_from) ? 0 : _to.difference(_from).inDays + 1;
+    return Form(
+      key: _formKey,
+      child: SheetScaffold(
+        title: l10n.leaveRequest,
+        leading: const IconTile(Icons.beach_access_rounded, color: AppColors.info, size: 48),
+        primaryLabel: l10n.leaveSubmit,
+        busy: _busy,
+        onPrimary: _to.isBefore(_from) ? null : _submit,
+        children: [
+          Row(children: [
+            dateField(l10n.leaveFrom, _from, (d) => setState(() {
+                  _from = d;
+                  if (_to.isBefore(d)) _to = d;
+                })),
+            const SizedBox(width: AppSpacing.md),
+            dateField(l10n.leaveTo, _to, (d) => setState(() => _to = d)),
+          ]),
+          const SizedBox(height: AppSpacing.sm),
+          if (_to.isBefore(_from))
+            Text(l10n.leaveDateOrder, style: AppTypography.caption.copyWith(color: AppColors.danger))
+          else
+            Align(
+              alignment: Alignment.centerLeft,
+              child: StatusChip(label: l10n.leaveDays(days), tone: StatusTone.info, icon: Icons.event_rounded, dense: true),
             ),
-            const SizedBox(height: AppSpacing.lg),
-            AppTextField(
-              label: l10n.leaveReason,
-              controller: _reason,
-              required: true,
-              maxLines: 2,
-              validator: (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(l10n.leaveReason),
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            AppButton(
-              label: l10n.leaveSubmit,
-              loading: _busy,
-              expand: true,
-              onPressed: _to.isBefore(_from) ? null : _submit,
-            ),
-          ],
-        ),
+          const SizedBox(height: AppSpacing.lg),
+          AppDropdownField<LeaveType>(
+            label: l10n.leaveType,
+            items: LeaveType.values,
+            value: _type,
+            itemLabel: (t) => leaveTypeLabel(l10n, t),
+            onChanged: (t) => setState(() => _type = t ?? _type),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          AppTextField(
+            label: l10n.leaveReason,
+            controller: _reason,
+            required: true,
+            maxLines: 2,
+            validator: (v) => (v?.trim().length ?? 0) >= 3 ? null : l10n.fieldRequired(l10n.leaveReason),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+        ],
       ),
     );
   }

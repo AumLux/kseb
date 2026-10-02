@@ -4357,6 +4357,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Office location'**
   String get orgOfficeLocation;
+
+  /// No description provided for @moreLanguageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Menus, labels and messages switch instantly.'**
+  String get moreLanguageHint;
+
+  /// No description provided for @moreVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get moreVersion;
+
+  /// No description provided for @moreMapData.
+  ///
+  /// In en, this message translates to:
+  /// **'Map data'**
+  String get moreMapData;
+
+  /// No description provided for @moreLicences.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licences'**
+  String get moreLicences;
+
+  /// No description provided for @teamsCountMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'In teams'**
+  String get teamsCountMembers;
+
+  /// No description provided for @teamsCountUnassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in a team'**
+  String get teamsCountUnassigned;
+
+  /// No description provided for @teamsWithoutSupervisor.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 team has no supervisor} other{{count} teams have no supervisor}}'**
+  String teamsWithoutSupervisor(int count);
+
+  /// No description provided for @teamEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit team'**
+  String get teamEdit;
+
+  /// No description provided for @teamNoMembersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No one is in this team yet. Assign people from Staff › Edit.'**
+  String get teamNoMembersHint;
+
+  /// No description provided for @teamActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended teams can\'t be assigned work.'**
+  String get teamActiveHint;
+
+  /// No description provided for @invCountMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get invCountMaterials;
+
+  /// No description provided for @invCountCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get invCountCategories;
+
+  /// No description provided for @invNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No materials match'**
+  String get invNoMatches;
+
+  /// No description provided for @invNoStores.
+  ///
+  /// In en, this message translates to:
+  /// **'No stores yet'**
+  String get invNoStores;
+
+  /// No description provided for @invStoreMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No stock} =1{1 material} other{{count} materials}}'**
+  String invStoreMaterials(int count);
+
+  /// No description provided for @invStoreLow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} low'**
+  String invStoreLow(int count);
+
+  /// No description provided for @holidaysNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next holiday'**
+  String get holidaysNext;
+
+  /// No description provided for @holidaysToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get holidaysToday;
+
+  /// No description provided for @holidaysInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Tomorrow} other{In {count} days}}'**
+  String holidaysInDays(int count);
+
+  /// No description provided for @holidaysCountTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get holidaysCountTotal;
+
+  /// No description provided for @holidaysCountUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get holidaysCountUpcoming;
+
+  /// No description provided for @holidaysCountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Section only'**
+  String get holidaysCountSection;
+
+  /// No description provided for @holidaysStateWide.
+  ///
+  /// In en, this message translates to:
+  /// **'State-wide'**
+  String get holidaysStateWide;
+
+  /// No description provided for @holidaysSectionOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Section holiday'**
+  String get holidaysSectionOnly;
+
+  /// No description provided for @syncAllDoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you record offline appears here until it uploads.'**
+  String get syncAllDoneHint;
+
+  /// No description provided for @syncPendingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone. Uploads automatically when you\'re online.'**
+  String get syncPendingHint;
+
+  /// No description provided for @syncFailedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Some items were rejected. Retry them, or discard if they\'re no longer needed.'**
+  String get syncFailedHint;
 }
 
 class _AppLocalizationsDelegate

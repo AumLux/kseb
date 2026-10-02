@@ -11,6 +11,7 @@ import '../data/staff_repository.dart';
 Future<void> showCredentialsSheet(BuildContext context, String name, IssuedCredentials creds) {
   return showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isDismissible: false,
     enableDrag: false,
     isScrollControlled: true,

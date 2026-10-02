@@ -12,14 +12,18 @@ import 'package:kseb/core/location/location_service.dart';
 import 'package:kseb/core/outbox/outbox.dart';
 import 'package:kseb/core/supabase/providers.dart';
 import 'package:kseb/features/attendance/data/attendance_repository.dart';
+import 'package:kseb/features/attendance/presentation/holidays_page.dart';
 import 'package:kseb/features/attendance/presentation/my_attendance_view.dart';
 import 'package:kseb/features/attendance/presentation/team_attendance_view.dart';
 import 'package:kseb/features/auth/data/auth_repository.dart';
 import 'package:kseb/features/auth/presentation/login_page.dart';
 import 'package:kseb/features/commercial/commercial_repository.dart';
 import 'package:kseb/features/commercial/entity_pages.dart';
+import 'package:kseb/features/inventory/data/inventory_repository.dart';
+import 'package:kseb/features/inventory/presentation/catalog_pages.dart';
 import 'package:kseb/features/org/presentation/org_page.dart';
 import 'package:kseb/features/org/presentation/section_picker.dart';
+import 'package:kseb/features/org/presentation/teams_page.dart';
 import 'package:kseb/features/staff/data/staff_repository.dart';
 import 'package:kseb/features/staff/presentation/staff_form_page.dart';
 import 'package:kseb/features/worksheets/data/worksheet_repository.dart';
@@ -176,6 +180,29 @@ Future<void> _pump(WidgetTester tester, Widget child, {double textScale = 1.0}) 
       locationServiceProvider.overrideWithValue(_Gps()),
       myTodayProvider.overrideWith((ref) async => null),
       myMonthProvider.overrideWith((ref, month) async => const []),
+      directoryProvider.overrideWith((ref) async => [
+            const Person(id: 'sup', fullName: 'Suresh Kumar Narayanan', employeeCode: 'AUM0201', role: AppRole.supervisor, sectionId: 's1', teamId: 't1'),
+            for (var i = 0; i < 5; i++)
+              Person(id: 'w$i', fullName: 'Line Worker Number $i', employeeCode: 'AUM030$i', role: AppRole.staff, sectionId: 's1', teamId: i < 4 ? 't1' : null),
+          ]),
+      holidaysProvider.overrideWith((ref, year) async => [
+            for (final (m, d, n) in [(1, 26, 'Republic Day'), (8, 28, 'Ayyankali Jayanthi'), (10, 2, 'Gandhi Jayanthi'), (12, 25, 'Christmas')])
+              Holiday(id: 'h$m', date: DateTime(year, m, d), name: n),
+            Holiday(id: 'hs', date: DateTime(year, 11, 14), name: 'Section foundation day (very long name)', sectionId: 's1'),
+          ]),
+      catalogProvider.overrideWith((ref) async => const [
+            CatalogItem(id: 'm1', code: 'PLE-PSC-9M', name: 'PSC pole 9 m', category: 'Pole', unit: 'nos', reorderLevel: 10),
+            CatalogItem(id: 'm2', code: 'CBL-ABC-3X50', name: 'LT aerial bunched cable 3×50+1×35 sq mm', category: 'Cable', unit: 'm', reorderLevel: 200),
+            CatalogItem(id: 'm3', code: 'MTR-1PH-SM', name: 'Single-phase static energy meter', category: 'Metering', unit: 'nos', reorderLevel: 25),
+          ]),
+      storesProvider.overrideWith((ref) async => const [
+            Store(id: 'st1', sectionId: 's1', name: 'Kaloor section store'),
+            Store(id: 'st2', sectionId: 's2', name: 'Edappally section store'),
+          ]),
+      stockProvider.overrideWith((ref) async => const [
+            StockLine(materialId: 'm1', materialCode: 'PLE-PSC-9M', materialName: 'PSC pole 9 m', category: 'Pole', unit: 'nos',
+                storeId: 'st1', storeName: 'Kaloor section store', onHand: 4, reorderLevel: 10, lowStock: true),
+          ]),
     ],
     child: MaterialApp(
       locale: ml,
@@ -269,6 +296,50 @@ void main() {
         await _pump(tester, const CommercialHomePage(), textScale: scale);
         await tester.drag(find.byType(ListView).first, const Offset(0, -1400));
         await tester.pumpAndSettle();
+      });
+
+      testWidgets('teams list and team sheet fit', (tester) async {
+        await _pump(tester, const TeamsPage(), textScale: scale);
+        expect(find.byType(StatStrip), findsOneWidget);
+        await tester.tap(find.text('Kaloor Line Team'));
+        await tester.pumpAndSettle();
+        expect(find.text('Line Worker Number 0'), findsOneWidget);
+      });
+
+      testWidgets('holidays (next-holiday card, months) fit', (tester) async {
+        await _pump(tester, const HolidaysPage(), textScale: scale);
+        await tester.drag(find.byType(ListView).first, const Offset(0, -1200));
+        await tester.pumpAndSettle();
+      });
+
+      testWidgets('material catalogue fits', (tester) async {
+        await _pump(tester, const CatalogPage(), textScale: scale);
+        expect(find.text('PSC pole 9 m'), findsOneWidget);
+      });
+
+      testWidgets('stores fit', (tester) async {
+        await _pump(tester, const StoresPage(), textScale: scale);
+        expect(find.text('Kaloor section store'), findsOneWidget);
+      });
+
+      testWidgets('language picker fits', (tester) async {
+        await _pump(tester, const MorePage(), textScale: scale);
+        final l10n = AppLocalizations.of(tester.element(find.byType(MorePage)));
+        await tester.dragUntilVisible(find.text(l10n.moreLanguage), find.byType(ListView), const Offset(0, -200));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(l10n.moreLanguage));
+        await tester.pumpAndSettle();
+        expect(find.text('Malayalam'), findsOneWidget);
+      });
+
+      testWidgets('sign-out confirmation sheet fits', (tester) async {
+        await _pump(tester, const MorePage(), textScale: scale);
+        final l10n = AppLocalizations.of(tester.element(find.byType(MorePage)));
+        await tester.dragUntilVisible(find.text(l10n.moreSignOut), find.byType(ListView), const Offset(0, -200));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(l10n.moreSignOut));
+        await tester.pumpAndSettle();
+        expect(find.text(l10n.moreSignOutConfirmTitle), findsOneWidget);
       });
 
       testWidgets('bottom navigation labels fit', (tester) async {

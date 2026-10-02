@@ -974,5 +974,60 @@
   },
   "comOverdue90": "Over 90 days",
   "comDaysShort": "days",
-  "orgOfficeLocation": "Office location"
+  "orgOfficeLocation": "Office location",
+  "moreLanguageHint": "Menus, labels and messages switch instantly.",
+  "moreVersion": "Version",
+  "moreMapData": "Map data",
+  "moreLicences": "Open-source licences",
+  "teamsCountMembers": "In teams",
+  "teamsCountUnassigned": "Not in a team",
+  "teamsWithoutSupervisor": "{count, plural, =1{1 team has no supervisor} other{{count} teams have no supervisor}}",
+  "@teamsWithoutSupervisor": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "teamEdit": "Edit team",
+  "teamNoMembersHint": "No one is in this team yet. Assign people from Staff › Edit.",
+  "teamActiveHint": "Suspended teams can't be assigned work.",
+  "invCountMaterials": "Materials",
+  "invCountCategories": "Categories",
+  "invNoMatches": "No materials match",
+  "invNoStores": "No stores yet",
+  "invStoreMaterials": "{count, plural, =0{No stock} =1{1 material} other{{count} materials}}",
+  "@invStoreMaterials": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invStoreLow": "{count} low",
+  "@invStoreLow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "holidaysNext": "Next holiday",
+  "holidaysToday": "Today",
+  "holidaysInDays": "{count, plural, =1{Tomorrow} other{In {count} days}}",
+  "@holidaysInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "holidaysCountTotal": "This year",
+  "holidaysCountUpcoming": "Upcoming",
+  "holidaysCountSection": "Section only",
+  "holidaysStateWide": "State-wide",
+  "holidaysSectionOnly": "Section holiday",
+  "syncAllDoneHint": "Anything you record offline appears here until it uploads.",
+  "syncPendingHint": "Saved on this phone. Uploads automatically when you're online.",
+  "syncFailedHint": "Some items were rejected. Retry them, or discard if they're no longer needed."
 }

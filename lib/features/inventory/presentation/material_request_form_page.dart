@@ -49,6 +49,7 @@ class _MaterialRequestFormPageState extends ConsumerState<MaterialRequestFormPag
   Future<void> _pickMaterial(List<CatalogItem> items) async {
     final picked = await showModalBottomSheet<CatalogItem>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       builder: (_) => _MaterialPicker(items: items),
     );

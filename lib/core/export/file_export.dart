@@ -49,6 +49,7 @@ Future<bool> exportFile(
   if (!context.mounted) return false;
   final action = await showModalBottomSheet<String>(
     context: context,
+    useRootNavigator: true,
     builder: (context) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.xl),

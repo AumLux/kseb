@@ -9,6 +9,8 @@ import '../../core/l10n/l10n.dart';
 import '../../core/l10n/locale_controller.dart';
 import '../../core/outbox/outbox.dart';
 import '../../core/router/app_router.dart';
+import '../../core/ui/dialogs.dart';
+import '../../core/ui/sheets.dart';
 import '../auth/application/session_controller.dart';
 import '../auth/domain/app_user.dart';
 import '../auth/presentation/change_password_page.dart';
@@ -19,50 +21,78 @@ class MorePage extends ConsumerWidget {
 
   Future<void> _confirmSignOut(BuildContext context, WidgetRef ref, int pending) async {
     final l10n = context.l10n;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.moreSignOutConfirmTitle),
-        content: Text(pending > 0 ? l10n.moreSignOutPendingBody(pending) : l10n.moreSignOutConfirmBody),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.moreSignOut)),
-        ],
-      ),
+    final ok = await confirmAction(
+      context,
+      title: l10n.moreSignOutConfirmTitle,
+      message: pending > 0 ? l10n.moreSignOutPendingBody(pending) : l10n.moreSignOutConfirmBody,
+      confirmLabel: l10n.moreSignOut,
+      destructive: true,
+      icon: Icons.logout_rounded,
     );
-    if (ok == true) await ref.read(sessionProvider.notifier).signOut();
+    if (ok) await ref.read(sessionProvider.notifier).signOut();
   }
 
   Future<void> _pickLanguage(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final current = ref.read(localeProvider).languageCode;
-    final picked = await showModalBottomSheet<String>(
-      context: context,
-      builder: (context) => SafeArea(
-        child: RadioGroup<String>(
-          groupValue: current,
-          onChanged: (v) => Navigator.pop(context, v),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<String>(value: 'en', title: Text(l10n.languageEnglish)),
-              RadioListTile<String>(value: 'ml', title: Text(l10n.languageMalayalam)),
-            ],
-          ),
-        ),
+    final picked = await showAppSheet<String>(
+      context,
+      builder: (context) => SheetScaffold(
+        title: l10n.moreLanguage,
+        subtitle: l10n.moreLanguageHint,
+        children: [
+          for (final (code, glyph, name, hint) in [
+            ('en', 'Aa', l10n.languageEnglish, 'ഇംഗ്ലീഷ്'),
+            ('ml', 'അ', l10n.languageMalayalam, 'Malayalam'),
+          ]) ...[
+            _ChoiceCard(
+              glyph: glyph,
+              title: name,
+              subtitle: hint,
+              selected: current == code,
+              onTap: () => Navigator.pop(context, code),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          const SizedBox(height: AppSpacing.lg),
+        ],
       ),
     );
-    if (picked != null) await ref.read(localeProvider.notifier).set(Locale(picked));
+    if (picked != null && picked != current) await ref.read(localeProvider.notifier).set(Locale(picked));
   }
 
   Future<void> _about(BuildContext context) async {
+    final l10n = context.l10n;
     final info = await PackageInfo.fromPlatform();
     if (!context.mounted) return;
-    showLicensePage(
-      context: context,
-      applicationName: context.l10n.appName,
-      applicationVersion: '${info.version} (${info.buildNumber})',
-      applicationIcon: const Padding(padding: EdgeInsets.all(AppSpacing.lg), child: BrandMark()),
+    final version = '${info.version} (${info.buildNumber})';
+    await showAppSheet<void>(
+      context,
+      builder: (context) => SheetScaffold(
+        title: l10n.appName,
+        subtitle: l10n.appTagline,
+        leading: const BrandMark(size: 56),
+        children: [
+          InfoGroup(rows: [
+            InfoRow(l10n.moreVersion, version, icon: Icons.verified_rounded, tabular: true),
+            InfoRow(l10n.moreMapData, '© OpenStreetMap', icon: Icons.map_rounded),
+            InfoRow(
+              l10n.moreLicences,
+              null,
+              icon: Icons.description_outlined,
+              child: const SizedBox.shrink(), // InfoRow draws the chevron for tappable rows
+              onTap: () => showLicensePage(
+                context: context,
+                useRootNavigator: true,
+                applicationName: l10n.appName,
+                applicationVersion: version,
+                applicationIcon: const Padding(padding: EdgeInsets.all(AppSpacing.lg), child: BrandMark()),
+              ),
+            ),
+          ]),
+          const SizedBox(height: AppSpacing.xl),
+        ],
+      ),
     );
   }
 
@@ -207,5 +237,67 @@ class _Group extends StatelessWidget {
             ]),
           ),
         ]),
+      );
+}
+
+/// A large, tappable option with a selected state (language picker).
+class _ChoiceCard extends StatelessWidget {
+  const _ChoiceCard({
+    required this.glyph,
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String glyph;
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        selected: selected,
+        button: true,
+        child: Pressable(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: AppMotion.fast,
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: selected ? AppColors.primarySoft : AppColors.canvas,
+              borderRadius: AppRadius.lgAll,
+              border: Border.all(color: selected ? AppColors.primary : AppColors.hairline, width: selected ? 1.5 : 1),
+            ),
+            child: Row(children: [
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: selected ? AppColors.primary : AppColors.canvasSoft,
+                  borderRadius: AppRadius.mdAll,
+                ),
+                child: Text(
+                  glyph,
+                  style: AppTypography.subtitle.copyWith(color: selected ? Colors.white : AppColors.ink),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.lg),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(title, style: AppTypography.subtitle),
+                  Text(subtitle, style: AppTypography.caption),
+                ]),
+              ),
+              AnimatedOpacity(
+                duration: AppMotion.fast,
+                opacity: selected ? 1 : 0,
+                child: const Icon(Icons.check_circle_rounded, color: AppColors.primary),
+              ),
+            ]),
+          ),
+        ),
       );
 }

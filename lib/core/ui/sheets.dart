@@ -9,6 +9,7 @@ import '../l10n/l10n.dart';
 /// short form (Groww-style), instead of centred dialogs.
 Future<T?> showAppSheet<T>(BuildContext context, {required WidgetBuilder builder}) => showModalBottomSheet<T>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       builder: builder,
@@ -28,6 +29,7 @@ class SheetScaffold extends StatelessWidget {
     this.secondaryLabel,
     this.onSecondary,
     this.busy = false,
+    this.leading,
   });
 
   final String title;
@@ -39,6 +41,9 @@ class SheetScaffold extends StatelessWidget {
   final String? secondaryLabel;
   final VoidCallback? onSecondary;
   final bool busy;
+
+  /// Optional icon/illustration above the title (confirmations, pickers).
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,7 @@ class SheetScaffold extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.lg),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                if (leading != null) ...[leading!, const SizedBox(height: AppSpacing.md)],
                 Text(title, style: AppTypography.title),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSpacing.xs),

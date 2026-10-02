@@ -13,6 +13,7 @@ Future<bool> explainLocationIfNeeded(BuildContext context, WidgetRef ref) async 
   final l10n = context.l10n;
   final ok = await showModalBottomSheet<bool>(
     context: context,
+    useRootNavigator: true,
     isDismissible: false,
     isScrollControlled: true,
     builder: (context) => SafeArea(

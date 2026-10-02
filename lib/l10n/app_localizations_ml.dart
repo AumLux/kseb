@@ -2292,4 +2292,116 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get orgOfficeLocation => 'ഓഫീസ് സ്ഥലം';
+
+  @override
+  String get moreLanguageHint => 'മെനുകളും ലേബലുകളും സന്ദേശങ്ങളും ഉടൻ മാറും.';
+
+  @override
+  String get moreVersion => 'പതിപ്പ്';
+
+  @override
+  String get moreMapData => 'മാപ്പ് ഡാറ്റ';
+
+  @override
+  String get moreLicences => 'ഓപ്പൺ സോഴ്സ് ലൈസൻസുകൾ';
+
+  @override
+  String get teamsCountMembers => 'ടീമുകളിൽ';
+
+  @override
+  String get teamsCountUnassigned => 'ടീമില്ലാത്തവർ';
+
+  @override
+  String teamsWithoutSupervisor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ടീമുകൾക്ക് സൂപ്പർവൈസർ ഇല്ല',
+      one: '1 ടീമിന് സൂപ്പർവൈസർ ഇല്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teamEdit => 'ടീം തിരുത്തുക';
+
+  @override
+  String get teamNoMembersHint =>
+      'ഈ ടീമിൽ ഇതുവരെ ആരുമില്ല. സ്റ്റാഫ് › തിരുത്തുക വഴി ചേർക്കുക.';
+
+  @override
+  String get teamActiveHint => 'നിർത്തിവെച്ച ടീമുകൾക്ക് ജോലി നൽകാനാവില്ല.';
+
+  @override
+  String get invCountMaterials => 'സാമഗ്രികൾ';
+
+  @override
+  String get invCountCategories => 'വിഭാഗങ്ങൾ';
+
+  @override
+  String get invNoMatches => 'പൊരുത്തപ്പെടുന്ന സാമഗ്രികളില്ല';
+
+  @override
+  String get invNoStores => 'സ്റ്റോറുകളൊന്നുമില്ല';
+
+  @override
+  String invStoreMaterials(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count സാമഗ്രികൾ',
+      one: '1 സാമഗ്രി',
+      zero: 'സ്റ്റോക്കില്ല',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String invStoreLow(int count) {
+    return '$count കുറവ്';
+  }
+
+  @override
+  String get holidaysNext => 'അടുത്ത അവധി';
+
+  @override
+  String get holidaysToday => 'ഇന്ന്';
+
+  @override
+  String holidaysInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ദിവസത്തിൽ',
+      one: 'നാളെ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get holidaysCountTotal => 'ഈ വർഷം';
+
+  @override
+  String get holidaysCountUpcoming => 'വരാനുള്ളവ';
+
+  @override
+  String get holidaysCountSection => 'സെക്ഷൻ മാത്രം';
+
+  @override
+  String get holidaysStateWide => 'സംസ്ഥാനതലം';
+
+  @override
+  String get holidaysSectionOnly => 'സെക്ഷൻ അവധി';
+
+  @override
+  String get syncAllDoneHint =>
+      'ഓഫ്‌ലൈനായി രേഖപ്പെടുത്തുന്നവ അപ്‌ലോഡ് ആകുന്നതുവരെ ഇവിടെ കാണാം.';
+
+  @override
+  String get syncPendingHint =>
+      'ഈ ഫോണിൽ സൂക്ഷിച്ചിട്ടുണ്ട്. ഓൺലൈനാകുമ്പോൾ സ്വയം അപ്‌ലോഡ് ആകും.';
+
+  @override
+  String get syncFailedHint =>
+      'ചിലവ സ്വീകരിച്ചില്ല. വീണ്ടും ശ്രമിക്കുക, ആവശ്യമില്ലെങ്കിൽ ഒഴിവാക്കുക.';
 }
