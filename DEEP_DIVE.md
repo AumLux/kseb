@@ -1255,6 +1255,7 @@ These cost real debugging time. Don't relearn them.
 | New icons render as empty tiles on the web build | The browser cached the previous tree-shaken `MaterialIcons-Regular.otf`; bust it with the bundle when reviewing (`fetch(url, {cache: 'reload'})`). Android bundles the font, so it isn't affected. |
 | Home looked washed out on desktop | `GradientMesh` blobs are sized from the width and weren't clipped; a `CustomScrollView` paints its first sliver last, so the overflow covered the shortcuts and KPIs. The painter clips to its box (`gradient_mesh_test.dart`). |
 | The website's phone preview looked cramped | The iframe was 276px wide (smaller than any phone). It now renders at 390×844 and is scaled to the frame. |
+| Visitors kept seeing the previous web build after a deploy | Flutter's deprecated service worker cached `main.dart.js`, and Pages caches 10 min with unchanging file names. `web/flutter_bootstrap.js` loads without a service worker, `assemble-site.sh` versions `main.dart.js?v=<build>` / `flutter_bootstrap.js?v=<build>`, and `tools/ci/sw-kill.js` replaces the old worker so it clears its caches and unregisters for returning visitors. |
 | `google-services` Gradle plugin breaks after the package rename | removed; `firebase_options.dart` is enough (re-run `flutterfire configure` for the new package) |
 
 ---
