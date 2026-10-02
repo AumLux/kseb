@@ -1,142 +1,204 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Aumlux</title>
-  <style>
-    :root {
-      color-scheme: light;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f7f6;
-      color: #18211f;
-    }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        linear-gradient(135deg, rgba(255, 107, 53, 0.12), transparent 34%),
-        linear-gradient(225deg, rgba(28, 112, 91, 0.14), transparent 38%),
-        #f4f7f6;
-    }
-    .shell {
-      width: min(960px, calc(100% - 32px));
-      min-height: 100vh;
-      margin: 0 auto;
-      display: grid;
-      align-content: center;
-      gap: 28px;
-      padding: 32px 0;
-      box-sizing: border-box;
-    }
-    header {
-      display: grid;
-      gap: 12px;
-    }
-    .mark {
-      width: 56px;
-      height: 56px;
-      display: block;
-    }
-    h1 {
-      margin: 0;
-      font-size: clamp(36px, 7vw, 72px);
-      line-height: 0.95;
-      letter-spacing: 0;
-    }
-    p {
-      max-width: 620px;
-      margin: 0;
-      line-height: 1.5;
-      color: #52615d;
-      font-size: 18px;
-    }
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .action {
-      min-height: 190px;
-      display: grid;
-      align-content: space-between;
-      gap: 24px;
-      padding: 24px;
-      border: 1px solid #d9e3df;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.88);
-      color: inherit;
-      text-decoration: none;
-      box-shadow: 0 18px 50px rgba(24, 33, 31, 0.08);
-      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-    }
-    .action:hover {
-      transform: translateY(-2px);
-      border-color: #9db9b1;
-      box-shadow: 0 24px 60px rgba(24, 33, 31, 0.12);
-    }
-    .action strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 24px;
-    }
-    .action span {
-      color: #52615d;
-      line-height: 1.45;
-    }
-    .cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: fit-content;
-      min-height: 42px;
-      padding: 0 16px;
-      border-radius: 6px;
-      background: #18211f;
-      color: #ffffff;
-      font-weight: 700;
-    }
-    .download .cta {
-      background: #533afd;
-    }
-    footer {
-      color: #687671;
-      font-size: 14px;
-    }
-    @media (max-width: 720px) {
-      .actions {
-        grid-template-columns: 1fr;
-      }
-      .action {
-        min-height: 160px;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AumLux — Field operations for KSEB works</title>
+<meta name="description" content="AumLux: attendance, worksheets, inventory and commercial registers for KSEB contractor teams. Try it in your browser or install the Android app.">
+<meta name="theme-color" content="#1C1E54">
+<meta property="og:title" content="AumLux — Field operations for KSEB works">
+<meta property="og:description" content="Try the app in your browser or install it on Android. Build {{VERSION}} ({{BUILD}}).">
+<meta property="og:type" content="website">
+<link rel="icon" href="web/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #533AFD; --primary-deep: #4434D4; --brand-dark: #1C1E54; --orange: #FF6B35;
+    --ink: #0D253D; --ink-2: #273951; --mute: #5B6B84; --line: #E3E8EE; --soft: #F6F9FC; --card: #fff;
+    --ok: #137A3F; --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--soft); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  header { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.86); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 12px; height: 64px; }
+  .logo { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--orange), #EA2261 55%, var(--primary)); display: grid; place-items: center; color: #fff; font-weight: 700; }
+  .brand { font-weight: 700; font-size: 18px; letter-spacing: -.2px; }
+  .pill { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #EEEBFF; color: var(--primary-deep); }
+  header nav { margin-left: auto; display: flex; gap: 8px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 48px; padding: 0 20px; border-radius: 12px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease, background .12s; cursor: pointer; }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 8px 24px rgba(83,58,253,.28); }
+  .btn-primary:hover { background: var(--primary-deep); }
+  .btn-light { background: #fff; color: var(--ink); border-color: var(--line); }
+  .btn-light:hover { border-color: #C9D2DE; }
+  .btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+
+  .hero { background: radial-gradient(1200px 500px at 85% -10%, rgba(255,107,53,.22), transparent 60%), radial-gradient(900px 500px at 0% 0%, rgba(83,58,253,.35), transparent 60%), var(--brand-dark); color: #fff; }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding-top: 64px; padding-bottom: 72px; }
+  .eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: rgba(255,255,255,.72); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #34D399; box-shadow: 0 0 0 4px rgba(52,211,153,.2); }
+  h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.05; letter-spacing: -1.2px; font-weight: 300; margin: 16px 0; }
+  h1 b { font-weight: 600; }
+  .lead { font-size: 18px; line-height: 1.6; color: rgba(255,255,255,.8); max-width: 540px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .meta { margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.62); }
+  .meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .phone { justify-self: center; width: 300px; height: 620px; border-radius: 44px; padding: 12px; background: #0B0D2A; box-shadow: 0 40px 80px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.08); position: relative; }
+  .phone::before { content: ""; position: absolute; top: 20px; left: 50%; width: 90px; height: 22px; margin-left: -45px; border-radius: 12px; background: #0B0D2A; z-index: 2; }
+  .phone iframe, .phone .poster { width: 100%; height: 100%; border: 0; border-radius: 34px; background: #fff; display: block; }
+  .poster { display: grid !important; place-items: center; text-align: center; color: var(--ink); padding: 24px; }
+  .poster p { color: var(--mute); font-size: 14px; }
+
+  section { padding: 64px 0; }
+  h2 { font-size: 28px; letter-spacing: -.5px; font-weight: 600; margin: 0 0 8px; }
+  .sub { color: var(--mute); margin: 0 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card h3 { margin: 12px 0 6px; font-size: 16px; }
+  .card p { margin: 0; color: var(--mute); font-size: 14px; line-height: 1.55; }
+  .ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; }
+
+  .install { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .steps li { counter-increment: s; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 16px 60px; position: relative; line-height: 1.5; }
+  .steps li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: #EEEBFF; color: var(--primary-deep); font-weight: 700; display: grid; place-items: center; }
+  .qr { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .qr svg { width: 200px; height: 200px; }
+  .qr p { font-size: 13px; color: var(--mute); margin: 10px 0 0; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; font-size: 14px; }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { color: var(--mute); width: 180px; }
+  td code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; word-break: break-all; }
+
+  footer { padding: 32px 0 48px; color: var(--mute); font-size: 13px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 900px) {
+    .hero .wrap { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; }
+    .phone { display: none; }
+    .grid { grid-template-columns: 1fr; }
+    .install { grid-template-columns: 1fr; }
+    .qr { display: none; }
+    header nav .btn-light { display: none; }
+    .cta .btn { flex: 1 1 100%; }
+  }
+</style>
 </head>
 <body>
-  <main class="shell">
-    <header>
-      <svg class="mark" viewBox="0 0 108 108" role="img" aria-label="AumLux"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B35"/><stop offset=".55" stop-color="#EA2261"/><stop offset="1" stop-color="#533AFD"/></linearGradient></defs><rect width="108" height="108" rx="26" fill="url(#g)"/><g stroke="#fff" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M38 78 54 31 70 78" stroke-width="7.5"/><path d="M33 45h42M44.2 62h19.6" stroke-width="6"/></g><g fill="#fff"><circle cx="33" cy="53" r="3.6"/><circle cx="75" cy="53" r="3.6"/></g></svg>
-      <h1>Aumlux</h1>
-      <p>Open the app instantly in your browser or install the latest Android release APK.</p>
-    </header>
-    <section class="actions" aria-label="Aumlux options">
-      <a class="action preview" href="/web/">
-        <span>
-          <strong>Web Preview</strong>
-          Use the app quickly from any modern browser without installing anything.
-        </span>
-        <span class="cta">Open web app</span>
-      </a>
-      <a class="action download" href="/downloads/aumlux.apk">
-        <span>
-          <strong>App Download</strong>
-          Get the latest Android APK built from the release branch.
-        </span>
-        <span class="cta">Download APK</span>
-      </a>
-    </section>
-    <footer>Latest build published automatically from GitHub.</footer>
-  </main>
+<header>
+  <div class="wrap">
+    <div class="logo">A</div>
+    <span class="brand">AumLux</span>
+    <span class="pill">{{ENV_LABEL}}</span>
+    <nav>
+      <a class="btn btn-light btn-small" href="web/">Open web app</a>
+      <a class="btn btn-primary btn-small" href="{{APK_URL}}" download>Download APK</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> Build {{VERSION}} · updated {{DATE_HUMAN}}</span>
+      <h1>Field operations for <b>KSEB works</b>, in your pocket.</h1>
+      <p class="lead">Attendance with GPS check-in, worksheets with geotagged photos, material requests, pole surveys and commercial registers. Built for line crews and section offices, and it works offline.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="{{APK_URL}}" download>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 00-.66-.38l-1.86 3.22a11.4 11.4 0 00-9.84 0L5.22 5.92a.38.38 0 00-.66.38L6.4 9.48A10.8 10.8 0 001 18h22a10.8 10.8 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg>
+          Download for Android · {{APK_SIZE}}
+        </a>
+        <a class="btn btn-light" href="web/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+          Try it in the browser
+        </a>
+      </div>
+      <p class="meta">Android 7.0+ · 64-bit phones · <a href="{{APK_MIRROR}}">mirror download</a> · SHA-256 <code>{{SHA_SHORT}}…</code></p>
+    </div>
+    <div class="phone" aria-label="Live preview of the app">
+      <div class="poster" id="poster">
+        <div>
+          <div class="logo" style="width:56px;height:56px;margin:0 auto 14px;font-size:24px;border-radius:16px">A</div>
+          <strong>Live preview</strong>
+          <p>Runs the real app against the preview server.</p>
+          <button class="btn btn-primary btn-small" onclick="startPreview()">Start preview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>What's inside</h2>
+    <p class="sub">One app for the whole contractor team, from line staff to the director.</p>
+    <div class="grid">
+      <div class="card"><div class="ico" style="background:#EEEBFF">📍</div><h3>GPS attendance</h3><p>Check in and out within the section geofence. Managers see where and when on a map, with leave and muster roll built in.</p></div>
+      <div class="card"><div class="ico" style="background:#E7F6ED">🛠️</div><h3>Worksheets</h3><p>Plan jobs, assign crews, run the permit-to-work checklist and attach geotagged photos, with approvals end to end.</p></div>
+      <div class="card"><div class="ico" style="background:#EAF1FD">📦</div><h3>Inventory</h3><p>Stores, material requests, issues and returns with a full stock ledger and a monthly Excel register.</p></div>
+      <div class="card"><div class="ico" style="background:#FFF1EA">🧾</div><h3>Commercial</h3><p>Tenders, EMD, security deposits and bank guarantees, work orders, bills with ageing, letters and GST.</p></div>
+      <div class="card"><div class="ico" style="background:#FDECEF">⚡</div><h3>Polevar &amp; assets</h3><p>Survey poles on site with GPS and photos, and keep an asset register per section.</p></div>
+      <div class="card"><div class="ico" style="background:#F6F9FC">📶</div><h3>Offline-first, Malayalam ready</h3><p>Work without signal; everything syncs when you're back online. Switch between English and മലയാളം anytime.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap install">
+    <div>
+      <h2>Install on Android</h2>
+      <p class="sub">Takes under a minute. Updates install over the previous version.</p>
+      <ol class="steps">
+        <li><strong>Download the APK</strong> on your phone (or scan the code).</li>
+        <li>Open it. If Android asks, allow <em>Install unknown apps</em> for your browser or Files app.</li>
+        <li>Tap <strong>Install</strong>, then open AumLux and sign in with your employee ID.</li>
+      </ol>
+    </div>
+    <div class="qr">
+      {{QR_SVG}}
+      <p>Scan with your phone camera to download</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Build details</h2>
+    <p class="sub">Every push to the development branch publishes a new build here automatically.</p>
+    <table>
+      <tr><td>Version</td><td>{{VERSION}} (build {{BUILD}})</td></tr>
+      <tr><td>Environment</td><td>{{ENV_LABEL}}</td></tr>
+      <tr><td>Published</td><td>{{DATE}}</td></tr>
+      <tr><td>Source</td><td><a href="https://github.com/{{REPO}}/commit/{{COMMIT}}">{{COMMIT_SHORT}}</a> on <code>{{BRANCH}}</code></td></tr>
+      <tr><td>APK size</td><td>{{APK_SIZE}}</td></tr>
+      <tr><td>SHA-256</td><td><code>{{SHA256}}</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© AumLux · Preview builds are for evaluation; data on the preview server may be reset.</div>
+</footer>
+
+<script>
+  function startPreview() {
+    var p = document.getElementById('poster');
+    var f = document.createElement('iframe');
+    f.src = 'web/';
+    f.title = 'AumLux web app';
+    f.loading = 'lazy';
+    p.replaceWith(f);
+  }
+</script>
 </body>
 </html>
