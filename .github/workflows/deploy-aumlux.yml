@@ -6,6 +6,8 @@ name: Deploy Aumlux
 # releases → release-signed production APK + web bundle as a versioned
 #            GitHub release (production never auto-deploys over the preview).
 # PRs      → analyze + test only.
+# Pushes touching only the landing page / CI scripts skip the Flutter jobs and
+# republish with the last builds (minutes matter if the repo goes private).
 on:
   push:
     branches: [staging, releases]
@@ -34,8 +36,38 @@ env:
   BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
+  # Pushes that only touch the landing page or CI scripts skip the Flutter
+  # jobs; the preview job then republishes with the last builds stored on the
+  # rolling "preview" release. `releases` always builds.
+  changes:
+    name: Detect changes
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      app: ${{ github.ref_name == 'releases' && 'true' || steps.filter.outputs.app || 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: filter
+        if: github.event_name == 'push'
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'lib/**'
+              - 'test/**'
+              - 'assets/**'
+              - 'android/**'
+              - 'web/**'
+              - 'pubspec.*'
+              - 'l10n.yaml'
+              - 'analysis_options.yaml'
+              - '.github/workflows/deploy-aumlux.yml'
+
   test:
     name: Analyze & test
+    needs: changes
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.changes.outputs.app == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -50,7 +82,8 @@ jobs:
 
   web:
     name: Build web
-    if: github.event_name != 'pull_request'
+    needs: changes
+    if: github.event_name != 'pull_request' && needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -73,7 +106,8 @@ jobs:
 
   apk:
     name: Build APK
-    if: github.event_name != 'pull_request' && !inputs.web_only
+    needs: changes
+    if: github.event_name != 'pull_request' && needs.changes.outputs.app == 'true' && !inputs.web_only
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -145,9 +179,11 @@ jobs:
     name: Publish preview site
     if: >-
       !cancelled() && github.event_name != 'pull_request' && github.ref_name != 'releases' &&
-      needs.test.result == 'success' && needs.web.result == 'success' &&
-      (needs.apk.result == 'success' || (inputs.web_only && needs.apk.result == 'skipped'))
-    needs: [test, web, apk]
+      needs.changes.result == 'success' &&
+      contains(fromJSON('["success","skipped"]'), needs.test.result) &&
+      contains(fromJSON('["success","skipped"]'), needs.web.result) &&
+      contains(fromJSON('["success","skipped"]'), needs.apk.result)
+    needs: [changes, test, web, apk]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -157,17 +193,25 @@ jobs:
     environment:
       name: github-pages
       url: https://aumlux.simplewebsite.in
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WEB_BUILT: ${{ needs.web.result == 'success' }}
+      APK_BUILT: ${{ needs.apk.result == 'success' }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with: { path: artifacts }
-      - name: Reuse the last preview APK (web-only run)
-        if: inputs.web_only
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Reuse the last preview builds for skipped jobs
         run: |
-          mkdir -p artifacts/apk
-          gh release download preview --repo "$GITHUB_REPOSITORY" -p aumlux.apk -O artifacts/apk/app-release.apk
+          set -euo pipefail
+          if [ "$APK_BUILT" != "true" ]; then
+            mkdir -p artifacts/apk
+            gh release download preview --repo "$GITHUB_REPOSITORY" -p aumlux.apk -O artifacts/apk/app-release.apk
+          fi
+          if [ "$WEB_BUILT" != "true" ]; then
+            gh release download preview --repo "$GITHUB_REPOSITORY" -p aumlux-web.zip -O web.zip
+            mkdir -p artifacts/web && unzip -q web.zip -d artifacts/web
+          fi
       - name: Assemble site
         run: |
           sudo apt-get install -y -qq qrencode >/dev/null
@@ -177,19 +221,18 @@ jobs:
         with: { path: site }
       - id: deployment
         uses: actions/deploy-pages@v4
-      - name: Update the rolling "preview" release (download mirror)
-        if: ${{ !inputs.web_only }}
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Update the rolling "preview" release (mirror + reusable builds)
         run: |
           set -euo pipefail
-          cp artifacts/apk/app-release.apk aumlux.apk
-          NOTES="Preview build $((1000 + BUILD_NUMBER)) from ${GITHUB_SHA:0:7}. Web: https://aumlux.simplewebsite.in"
+          FILES=()
+          if [ "$APK_BUILT" = "true" ]; then cp artifacts/apk/app-release.apk aumlux.apk; FILES+=(aumlux.apk); fi
+          if [ "$WEB_BUILT" = "true" ]; then (cd artifacts/web && zip -qr ../../aumlux-web.zip .); FILES+=(aumlux-web.zip); fi
+          NOTES="Preview from ${GITHUB_SHA:0:7}. Site: https://aumlux.simplewebsite.in"
           if gh release view preview >/dev/null 2>&1; then
-            gh release upload preview aumlux.apk --clobber
+            [ ${#FILES[@]} -eq 0 ] || gh release upload preview "${FILES[@]}" --clobber
             gh release edit preview --notes "$NOTES" --target "$GITHUB_SHA"
           else
-            gh release create preview aumlux.apk --prerelease --title "Preview (staging)" --notes "$NOTES" --target "$GITHUB_SHA"
+            gh release create preview "${FILES[@]}" --prerelease --title "Preview (staging)" --notes "$NOTES" --target "$GITHUB_SHA"
           fi
       - name: Smoke-test the live site
         run: |
@@ -200,7 +243,7 @@ jobs:
   release:
     name: Production release
     if: github.event_name == 'push' && github.ref_name == 'releases'
-    needs: [test, web, apk]
+    needs: [changes, test, web, apk]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
