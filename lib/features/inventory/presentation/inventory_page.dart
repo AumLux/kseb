@@ -10,6 +10,7 @@ import '../../auth/application/session_controller.dart';
 import '../../auth/domain/app_user.dart';
 import '../../org/data/org_repository.dart';
 import '../data/inventory_repository.dart';
+import 'catalog_pages.dart' show categoryStyle;
 import 'inventory_labels.dart';
 import 'stock_register_export.dart';
 import '../../../core/ui/sheets.dart';
@@ -20,34 +21,11 @@ class InventoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final me = ref.watch(currentUserProvider)!;
-    final isManager = me.role.atLeast(AppRole.manager);
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.invTitle),
-          actions: [
-            if (isManager)
-              PopupMenuButton<String>(
-                onSelected: (v) {
-                  switch (v) {
-                    case 'catalog':
-                      context.push('/more/inventory/catalog');
-                    case 'stores':
-                      context.push('/more/inventory/stores');
-                    case 'register':
-                      exportStockRegister(context, ref);
-                  }
-                },
-                itemBuilder: (_) => [
-                  PopupMenuItem(value: 'catalog', child: Text(l10n.invCatalog)),
-                  PopupMenuItem(value: 'stores', child: Text(l10n.invStores)),
-                  PopupMenuItem(value: 'register', child: Text(l10n.invExportRegister)),
-                ],
-              ),
-          ],
           bottom: TabBar(tabs: [Tab(text: l10n.invStock), Tab(text: l10n.invRequests)]),
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -84,9 +62,39 @@ class _StockTabState extends ConsumerState<_StockTab> {
     final stock = ref.watch(stockProvider);
     final stores = ref.watch(storesProvider).value ?? const <Store>[];
 
-    return Column(children: [
+    final me = ref.watch(currentUserProvider)!;
+    final lines = stock.value ?? const <StockLine>[];
+    final low = lines.where((l) => l.lowStock).length;
+
+    final header = <Widget>[
+      if (me.role.atLeast(AppRole.manager))
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
+          child: Row(children: [
+            for (final (icon, label, tint, onTap) in [
+              (Icons.category_rounded, l10n.invCatalog, AppColors.primaryDeep, () => context.push('/more/inventory/catalog')),
+              (Icons.warehouse_rounded, l10n.invStores, AppColors.info, () => context.push('/more/inventory/stores')),
+              (Icons.table_view_rounded, l10n.invExportRegister, AppColors.success, () => exportStockRegister(context, ref)),
+            ])
+              Expanded(child: QuickAction(icon: icon, label: label, tint: tint, onTap: onTap)),
+          ]),
+        ),
+      if (lines.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
+          child: StatStrip(items: [
+            StatItem(label: l10n.invCountMaterials, value: '${{for (final l in lines) l.materialId}.length}'),
+            StatItem(
+              label: l10n.invLow,
+              value: '$low',
+              color: low > 0 ? AppColors.warning : null,
+              onTap: () => setState(() => _lowOnly = !_lowOnly),
+            ),
+            StatItem(label: l10n.invStores, value: '${stores.length}'),
+          ]),
+        ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
         child: TextField(
           decoration: InputDecoration(hintText: l10n.invSearch, prefixIcon: const Icon(Icons.search_rounded)),
           onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
@@ -96,29 +104,35 @@ class _StockTabState extends ConsumerState<_StockTab> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Row(children: [
-          if (stores.length > 1)
-            Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
-              child: DropdownButton<String?>(
-                value: _storeId,
-                underline: const SizedBox.shrink(),
-                items: [
-                  DropdownMenuItem(value: null, child: Text(l10n.invAllStores)),
-                  for (final s in stores) DropdownMenuItem(value: s.id, child: Text(s.name)),
-                ],
-                onChanged: (v) => setState(() => _storeId = v),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.sm),
+            child: FilterChip(
+              avatar: const Icon(Icons.warning_amber_rounded, size: 16),
+              label: Text(l10n.invLowOnly),
+              selected: _lowOnly,
+              onSelected: (v) => setState(() => _lowOnly = v),
             ),
-          FilterChip(
-            label: Text(l10n.invLowOnly),
-            selected: _lowOnly,
-            onSelected: (v) => setState(() => _lowOnly = v),
           ),
+          if (stores.length > 1)
+            for (final st in [null, ...stores])
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
+                child: ChoiceChip(
+                  label: Text(st?.name ?? l10n.invAllStores),
+                  selected: _storeId == st?.id,
+                  onSelected: (_) => setState(() => _storeId = st?.id),
+                ),
+              ),
         ]),
       ),
-      Expanded(
-        child: switch (stock) {
-          AsyncData(:final value) => _list(context, value
+      const SizedBox(height: AppSpacing.sm),
+    ];
+
+    return switch (stock) {
+      AsyncData(:final value) => _list(
+          context,
+          header,
+          value
               .where((s) => _storeId == null || s.storeId == _storeId)
               .where((s) => !_lowOnly || s.lowStock)
               .where((s) =>
@@ -126,32 +140,37 @@ class _StockTabState extends ConsumerState<_StockTab> {
                   s.materialName.toLowerCase().contains(_query) ||
                   s.materialCode.toLowerCase().contains(_query))
               .toList()),
-          AsyncError(:final error) => ErrorState(
-              title: l10n.commonSomethingWrong,
-              message: failureMessage(l10n, error),
-              retryLabel: l10n.commonRetry,
-              onRetry: () => ref.invalidate(stockProvider),
-            ),
-          _ => const LoadingView(),
-        },
-      ),
-    ]);
+      AsyncError(:final error) => ErrorState(
+          title: l10n.commonSomethingWrong,
+          message: failureMessage(l10n, error),
+          retryLabel: l10n.commonRetry,
+          onRetry: () => ref.invalidate(stockProvider),
+        ),
+      _ => const LoadingView(),
+    };
   }
 
-  Widget _list(BuildContext context, List<StockLine> lines) {
+  Widget _list(BuildContext context, List<Widget> header, List<StockLine> lines) {
     final l10n = context.l10n;
-    if (lines.isEmpty) {
-      return EmptyState(icon: Icons.inventory_2_outlined, title: l10n.invNoStock, message: l10n.invNoStockHint);
-    }
     return RefreshIndicator(
       onRefresh: () => ref.refresh(stockProvider.future),
-      child: LazyListView(
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 96),
-        itemCount: lines.length,
-          itemBuilder: (context, i) {
+        itemCount: header.length + (lines.isEmpty ? 1 : lines.length),
+          itemBuilder: (context, index) {
+            if (index < header.length) return header[index];
+            if (lines.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.xxl),
+                child: EmptyState(icon: Icons.inventory_2_outlined, title: l10n.invNoStock, message: l10n.invNoStockHint),
+              );
+            }
+            final i = index - header.length;
             final s = lines[i];
             return AppListRow(
-              leading: IconTile(Icons.inventory_2_rounded, color: s.lowStock ? AppColors.warning : AppColors.info),
+              leading: IconTile(categoryStyle(s.category).$1,
+                  color: s.lowStock ? AppColors.warning : categoryStyle(s.category).$2),
               title: s.materialName,
               subtitle: '${s.materialCode} · ${s.storeName}',
               trailing: Column(

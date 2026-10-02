@@ -197,12 +197,17 @@ class _CrewSheetState extends ConsumerState<_CrewSheet> {
               shrinkWrap: true,
               children: [
                 for (final p in people)
-                  CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(p.fullName),
-                    subtitle: Text(p.employeeCode, style: AppTypography.caption),
-                    value: _selected.contains(p.id),
-                    onChanged: (v) => setState(() => (v ?? false) ? _selected.add(p.id) : _selected.remove(p.id)),
+                  AppListRow(
+                    leading: Avatar(p.fullName, size: 36),
+                    title: p.fullName,
+                    subtitle: p.employeeCode,
+                    selected: _selected.contains(p.id),
+                    trailing: Checkbox(
+                      value: _selected.contains(p.id),
+                      onChanged: (v) => setState(() => (v ?? false) ? _selected.add(p.id) : _selected.remove(p.id)),
+                    ),
+                    onTap: () => setState(() => _selected.contains(p.id) ? _selected.remove(p.id) : _selected.add(p.id)),
+                    dividerIndent: AppSpacing.lg + 36 + AppSpacing.md,
                   ),
               ],
             ),

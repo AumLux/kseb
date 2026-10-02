@@ -11,7 +11,8 @@
 ## Decision
 
 - **Tab roots** (`/home`, `/attendance`, `/work`, `/more`) stay in the `StatefulShellRoute`.
-- Every **direct child** of a tab root has `parentNavigatorKey: rootNavigatorKey`. It opens full-screen above the tab bar, Groww-style, and its descendants inherit that.
+- **Every route below a tab root**, at any depth, has `parentNavigatorKey: rootNavigatorKey`, so it opens full-screen above the tab bar, Groww-style. Descendants do **not** inherit it: go_router puts a route without the key on the nearest *shell* navigator, i.e. behind its full-screen parent, where it is invisible. `test/core/router/route_tree_test.dart` walks the tree and fails on any route that misses it.
+- **Every modal bottom sheet** opens on the root navigator (`showAppSheet`, or `useRootNavigator: true`). Otherwise a sheet opened from a tab root sits under the bottom navigation bar. Guarded by `test/core/ui/root_sheets_test.dart`.
 - **Tapping a tab always opens its root** (`goBranch(index, initialLocation: true)`).
 - Forms pin their primary action in a `StickyActionBar` (`Scaffold.bottomNavigationBar`), and detail pages pin their workflow actions the same way.
 - The offline banner moved from the shell to the app builder, so full-screen pages show it too.
@@ -21,6 +22,10 @@
 - More room for content, and an always-visible primary action. Back returns to the tab you came from.
 - Deep links and notification routes are unchanged (`/work/<id>`, `/more/inventory/requests/<id>`).
 - Leaving a tab and coming back no longer resumes a half-finished sub-flow. This is deliberate (requested); forms are short, and drafts that matter (worksheets) are saved explicitly.
+
+## Revision (2026-10-02)
+
+The first version said descendants inherit the root navigator. They don't. Add staff, staff details, commercial records and the Assets, Polevar and Inventory sub-pages opened hidden behind their parents, so taps seemed to do nothing. All 18 nested routes now set the key explicitly, with the structural test above and a behavioural one (`navigation_flow_test.dart`).
 
 ## Alternatives considered
 

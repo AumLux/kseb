@@ -4519,6 +4519,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some items were rejected. Retry them, or discard if they\'re no longer needed.'**
   String get syncFailedHint;
+
+  /// No description provided for @invPickMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the month to export as Excel.'**
+  String get invPickMonth;
+
+  /// No description provided for @bonusYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your approved bonus'**
+  String get bonusYours;
 }
 
 class _AppLocalizationsDelegate

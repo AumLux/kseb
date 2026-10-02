@@ -17,10 +17,12 @@ import 'package:kseb/features/attendance/presentation/my_attendance_view.dart';
 import 'package:kseb/features/attendance/presentation/team_attendance_view.dart';
 import 'package:kseb/features/auth/data/auth_repository.dart';
 import 'package:kseb/features/auth/presentation/login_page.dart';
+import 'package:kseb/features/bonus/bonus_page.dart';
 import 'package:kseb/features/commercial/commercial_repository.dart';
 import 'package:kseb/features/commercial/entity_pages.dart';
 import 'package:kseb/features/inventory/data/inventory_repository.dart';
 import 'package:kseb/features/inventory/presentation/catalog_pages.dart';
+import 'package:kseb/features/inventory/presentation/inventory_page.dart';
 import 'package:kseb/features/org/presentation/org_page.dart';
 import 'package:kseb/features/org/presentation/section_picker.dart';
 import 'package:kseb/features/org/presentation/teams_page.dart';
@@ -180,6 +182,11 @@ Future<void> _pump(WidgetTester tester, Widget child, {double textScale = 1.0}) 
       locationServiceProvider.overrideWithValue(_Gps()),
       myTodayProvider.overrideWith((ref) async => null),
       myMonthProvider.overrideWith((ref, month) async => const []),
+      materialRequestsProvider.overrideWith((ref) async => const []),
+      bonusEntriesProvider.overrideWith((ref) async => [
+            BonusEntry(id: 'b1', userId: 'm1', points: 1250, amount: 1234567, reason: 'Restored 11kV feeder overnight during monsoon outage',
+                status: 'approved', createdAt: DateTime(2026, 9, 14)),
+          ]),
       directoryProvider.overrideWith((ref) async => [
             const Person(id: 'sup', fullName: 'Suresh Kumar Narayanan', employeeCode: 'AUM0201', role: AppRole.supervisor, sectionId: 's1', teamId: 't1'),
             for (var i = 0; i < 5; i++)
@@ -315,6 +322,18 @@ void main() {
       testWidgets('material catalogue fits', (tester) async {
         await _pump(tester, const CatalogPage(), textScale: scale);
         expect(find.text('PSC pole 9 m'), findsOneWidget);
+      });
+
+      testWidgets('inventory stock tab (quick actions, chips) fits', (tester) async {
+        await _pump(tester, const InventoryPage(), textScale: scale);
+        expect(find.byType(QuickAction), findsNWidgets(3));
+        await tester.drag(find.byType(ListView).first, const Offset(0, -600));
+        await tester.pumpAndSettle();
+      });
+
+      testWidgets('bonus hero and ledger fit', (tester) async {
+        await _pump(tester, const BonusPage(), textScale: scale);
+        expect(find.byType(NoteBanner), findsOneWidget);
       });
 
       testWidgets('stores fit', (tester) async {

@@ -2404,4 +2404,11 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get syncFailedHint =>
       'ചിലവ സ്വീകരിച്ചില്ല. വീണ്ടും ശ്രമിക്കുക, ആവശ്യമില്ലെങ്കിൽ ഒഴിവാക്കുക.';
+
+  @override
+  String get invPickMonth =>
+      'എക്സലായി എക്സ്പോർട്ട് ചെയ്യേണ്ട മാസം തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get bonusYours => 'നിങ്ങളുടെ അംഗീകരിച്ച ബോണസ്';
 }

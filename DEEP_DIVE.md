@@ -777,7 +777,7 @@ Route map:
   /more/inventory/catalog  /more/inventory/stores
 ```
 
-**Navigation model (ADR-0005).** Tab roots live in the shell. Every direct child of a tab root is on the **root navigator** (`rootNavigatorKey`), so it opens full-screen above the tab bar. Tapping a tab always opens its root. The redirect keeps the intended destination through `/splash?from=` and `/login?from=` (in-app paths only), and with `restorationScopeId` on app, router, shell and branches, Android restores the screen if it kills the app (ADR-0004).
+**Navigation model (ADR-0005).** Tab roots live in the shell. **Every** route below a tab root, at any depth, sets `parentNavigatorKey: rootNavigatorKey`, so it opens full-screen above the tab bar. Nested routes do not inherit the key; one without it lands on the shell navigator, hidden behind its parent (`route_tree_test.dart` guards this). Bottom sheets also open on the root navigator (`showAppSheet`; `root_sheets_test.dart`). Tapping a tab always opens its root. The redirect keeps the intended destination through `/splash?from=` and `/login?from=` (in-app paths only), and with `restorationScopeId` on app, router, shell and branches, Android restores the screen if it kills the app (ADR-0004).
 
 `Routes` holds the constants. **Server-embedded deep links** (notification `route`, `my_approvals.route`) use `/work/<id>` and `/more/inventory/requests/<id>`. Don't rename these without a migration. Unknown routes render a friendly "coming soon" `EmptyState`.
 
@@ -944,7 +944,9 @@ It's **memoised** per script, so it isn't rebuilt on every root rebuild.
 - **List pages:** `Scaffold` + filter chips + `RefreshIndicator(LazyListView(AppListRow…))` + extended FAB for "New".
 - **Forms:** centred column (max 640), labels above fields, one primary `AppButton` (expand) + secondary.
 - **Detail:** summary card with status chip, sections (`SectionHeader`), actions as buttons at the bottom; destructive actions use `confirmAction`.
-- **Sheets:** modal bottom sheets with drag handle; `isScrollControlled` and scrollable content for anything that can be tall.
+- **Sheets:** `showAppSheet` + `SheetScaffold` (optional `leading` icon, title, subtitle, scrollable body, pinned primary/secondary buttons). Use them for every prompt, short form, picker and confirmation. `confirmAction` is a sheet too; there are no centred `AlertDialog`s left.
+- **Overview pages** (Teams, Holidays, Catalogue, Org, Commercial): a `StatStrip` of counts or a gradient hero card (`brandDark → primaryDeep`) for the one number or date that matters, then overline-titled groups of `AppCard`-wrapped `AppListRow`s with tinted `IconTile`s. Search and `ChoiceChip` filters sit above the groups.
+- **Discoverability:** put secondary destinations as visible `QuickAction` tiles (Inventory → Catalogue, Stores, Stock register), not inside a ⋮ menu.
 
 ### 10.8 Accessibility checklist (enforced in review)
 
@@ -1246,6 +1248,10 @@ These cost real debugging time. Don't relearn them.
 | Two simultaneous `createUser` calls for the same login | GoTrue returns a generic "Database error creating new user", not "already registered"; treat it as a code clash when the login is code-derived. |
 | Samsung: app "reloads" on screen off/on and after the camera | `colorMode` missing from `configChanges` recreated the activity (ADR-0004). |
 | Debug web build in an emulated viewport dies with `ViewInsets cannot be negative` | Engine debug assertion on simulated resize; review UI on a release build (and beware the browser's HTTP cache of `main.dart.js`). |
+| Sub-pages of sub-pages "did nothing" when tapped | go_router puts a route without `parentNavigatorKey` on the nearest *shell* navigator, behind its full-screen parent. Every nested route sets `rootNavigatorKey` (`route_tree_test.dart`). |
+| A new record didn't appear in its list after saving | The form `pushReplacement`s to the new record's page, which drops the list's `await context.push(...)` completer, so the list's refresh never ran. The form invalidates the list provider itself after a successful save. |
+| A sheet opened from More/Attendance/Work was half-hidden by the bottom nav bar | `showModalBottomSheet` defaults to the nearest (shell) navigator; use `showAppSheet` / `useRootNavigator: true` (`root_sheets_test.dart`). |
+| New icons render as empty tiles on the web build | The browser cached the previous tree-shaken `MaterialIcons-Regular.otf`; bust it with the bundle when reviewing (`fetch(url, {cache: 'reload'})`). Android bundles the font, so it isn't affected. |
 | `google-services` Gradle plugin breaks after the package rename | removed; `firebase_options.dart` is enough (re-run `flutterfire configure` for the new package) |
 
 ---

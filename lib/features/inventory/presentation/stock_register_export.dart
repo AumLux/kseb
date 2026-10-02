@@ -1,14 +1,16 @@
 import 'dart:typed_data';
 
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/design/design.dart';
 import '../../../core/export/file_export.dart';
 import '../../../core/format/ist.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/ui/dialogs.dart';
+import '../../../core/ui/sheets.dart';
 import '../data/inventory_repository.dart';
 
 /// Stock register (all movements) for a month, as Excel.
@@ -50,16 +52,42 @@ Future<void> exportStockRegister(BuildContext context, WidgetRef ref) async {
   final l10n = context.l10n;
   final thisMonth = Ist.monthStart(Ist.today());
   final months = [for (var i = 0; i < 12; i++) DateTime(thisMonth.year, thisMonth.month - i)];
-  final month = await showDialog<DateTime>(
-    context: context,
-    builder: (context) => SimpleDialog(
-      title: Text(l10n.invExportRegister),
+  final month = await showAppSheet<DateTime>(
+    context,
+    builder: (context) => SheetScaffold(
+      title: l10n.invExportRegister,
+      subtitle: l10n.invPickMonth,
+      leading: const IconTile(Icons.table_view_rounded, color: AppColors.success, size: 48),
       children: [
-        for (final m in months)
-          SimpleDialogOption(
-            onPressed: () => Navigator.pop(context, m),
-            child: Text(MaterialLocalizations.of(context).formatMonthYear(m)),
-          ),
+        GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: AppSpacing.sm,
+          crossAxisSpacing: AppSpacing.sm,
+          childAspectRatio: 1.6,
+          children: [
+            for (final (i, m) in months.indexed)
+              Pressable(
+                onTap: () => Navigator.pop(context, m),
+                borderRadius: AppRadius.mdAll,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: i == 0 ? AppColors.primarySoft : AppColors.canvas,
+                    borderRadius: AppRadius.mdAll,
+                    border: Border.all(color: i == 0 ? AppColors.primary : AppColors.hairline),
+                  ),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Text(DateFormat.MMM(Localizations.localeOf(context).toString()).format(m),
+                        style: AppTypography.subtitle.copyWith(color: i == 0 ? AppColors.primaryDeep : AppColors.ink)),
+                    Text('${m.year}', style: AppTypography.caption),
+                  ]),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xl),
       ],
     ),
   );

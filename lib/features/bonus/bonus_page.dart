@@ -82,35 +82,86 @@ class BonusPage extends ConsumerWidget {
             )
           : null,
       body: switch (entries) {
-        AsyncData(:final value) => ListView(padding: const EdgeInsets.only(bottom: 96), children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Row(children: [
-                Expanded(child: KpiCard(label: l10n.bonusPoints, value: Fmt.qty(points), featured: true)),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(child: KpiCard(label: l10n.bonusAmount, value: Fmt.money(amount))),
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Text(l10n.bonusPendingNote, style: AppTypography.caption),
-            ),
-            if (value.isEmpty)
-              EmptyState(icon: Icons.card_giftcard_rounded, title: l10n.bonusEmpty)
-            else
-              for (final e in value)
-                AppListRow(
-                  leading: const IconTile(Icons.card_giftcard_rounded, color: AppColors.brandOrangeInk),
-                  title: e.reason,
-                  subtitle: [
-                    if (e.userId != me.id) people.where((p) => p.id == e.userId).firstOrNull?.fullName ?? '—',
-                    if (e.points != 0) '${e.points} pts',
-                    if (e.amount != 0) Fmt.money(e.amount),
-                    Fmt.date(e.createdAt),
-                  ].join(' · '),
-                  trailing: StatusChip.fromDomain(e.status, label: requestStatusLabel(l10n, e.status)),
+        AsyncData(:final value) => RefreshIndicator(
+            onRefresh: () => ref.refresh(bonusEntriesProvider.future),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 96),
+              children: [
+                FadeSlideIn(
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    decoration: const BoxDecoration(
+                      borderRadius: AppRadius.lgAll,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.brandDark, AppColors.primaryDeep],
+                      ),
+                    ),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        Expanded(
+                          child: Text(l10n.bonusYours.toUpperCase(),
+                              maxLines: 2,
+                              style: AppTypography.overline.copyWith(color: Colors.white.withValues(alpha: 0.7))),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs + 2),
+                          decoration: const BoxDecoration(color: AppColors.brandOrange, borderRadius: AppRadius.mdAll),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            const Icon(Icons.stars_rounded, color: Colors.white, size: 16),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(Fmt.qty(points), style: AppTypography.label.copyWith(color: Colors.white)),
+                          ]),
+                        ),
+                      ]),
+                      const SizedBox(height: AppSpacing.md),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(Fmt.money(amount), style: AppTypography.display.copyWith(color: Colors.white, fontSize: 34)),
+                      ),
+                      Text('${l10n.bonusAmount} · ${l10n.bonusPoints}: ${Fmt.qty(points)}',
+                          style: AppTypography.caption.copyWith(color: Colors.white70)),
+                    ]),
+                  ),
                 ),
-          ]),
+                const SizedBox(height: AppSpacing.md),
+                NoteBanner(text: l10n.bonusPendingNote, icon: Icons.verified_user_rounded),
+                if (value.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xxl),
+                    child: EmptyState(icon: Icons.card_giftcard_rounded, title: l10n.bonusEmpty),
+                  )
+                else ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  FadeSlideIn(
+                    index: 1,
+                    child: AppCard(
+                      padding: EdgeInsets.zero,
+                      child: Column(children: [
+                        for (final (i, e) in value.indexed)
+                          AppListRow(
+                            leading: const IconTile(Icons.card_giftcard_rounded, color: AppColors.brandOrangeInk),
+                            title: e.reason,
+                            subtitle: [
+                              if (e.userId != me.id) people.where((p) => p.id == e.userId).firstOrNull?.fullName ?? '—',
+                              if (e.points != 0) '${e.points} pts',
+                              if (e.amount != 0) Fmt.money(e.amount),
+                              Fmt.date(e.createdAt),
+                            ].join(' · '),
+                            trailing: StatusChip.fromDomain(e.status, label: requestStatusLabel(l10n, e.status)),
+                            showDivider: i < value.length - 1,
+                          ),
+                      ]),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         AsyncError(:final error) => ErrorState(title: failureMessage(l10n, error), onRetry: () => ref.invalidate(bonusEntriesProvider)),
         _ => const LoadingView(),
       },

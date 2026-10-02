@@ -2395,4 +2395,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncFailedHint =>
       'Some items were rejected. Retry them, or discard if they\'re no longer needed.';
+
+  @override
+  String get invPickMonth => 'Pick the month to export as Excel.';
+
+  @override
+  String get bonusYours => 'Your approved bonus';
 }
